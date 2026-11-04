@@ -1,45 +1,45 @@
 [submodule "vyapaar-core"]
 	path = vyapaar-core
-	url = https://github.com/vyapaar-labs/vyapaar-core.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-core.git
 [submodule "vyapaar-ledger"]
 	path = vyapaar-ledger
-	url = https://github.com/vyapaar-labs/vyapaar-ledger.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-ledger.git
 [submodule "vyapaar-risk"]
 	path = vyapaar-risk
-	url = https://github.com/vyapaar-labs/vyapaar-risk.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-risk.git
 [submodule "vyapaar-market"]
 	path = vyapaar-market
-	url = https://github.com/vyapaar-labs/vyapaar-market.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-market.git
 [submodule "vyapaar-exec"]
 	path = vyapaar-exec
-	url = https://github.com/vyapaar-labs/vyapaar-exec.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-exec.git
 [submodule "vyapaar-runtime"]
 	path = vyapaar-runtime
-	url = https://github.com/vyapaar-labs/vyapaar-runtime.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-runtime.git
 [submodule "vyapaar-agent"]
 	path = vyapaar-agent
-	url = https://github.com/vyapaar-labs/vyapaar-agent.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-agent.git
 [submodule "vyapaar-ffi"]
 	path = vyapaar-ffi
-	url = https://github.com/vyapaar-labs/vyapaar-ffi.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-ffi.git
 [submodule "vyapaar-ui"]
 	path = vyapaar-ui
-	url = https://github.com/vyapaar-labs/vyapaar-ui.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-ui.git
 [submodule "vyapaar-strategies"]
 	path = vyapaar-strategies
-	url = https://github.com/vyapaar-labs/vyapaar-strategies.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-strategies.git
 [submodule "vyapaar-adapters"]
 	path = vyapaar-adapters
-	url = https://github.com/vyapaar-labs/vyapaar-adapters.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-adapters.git
 [submodule "vyapaar-data"]
 	path = vyapaar-data
-	url = https://github.com/vyapaar-labs/vyapaar-data.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-data.git
 [submodule "vyapaar-examples"]
 	path = vyapaar-examples
-	url = https://github.com/vyapaar-labs/vyapaar-examples.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-examples.git
 [submodule "vyapaar-fe"]
 	path = vyapaar-fe
-	url = https://github.com/vyapaar-labs/vyapaar-fe.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-fe.git
 [submodule "vyapaar-docs"]
 	path = vyapaar-docs
-	url = https://github.com/vyapaar-labs/vyapaar-docs.git
+	url = git@github.com-dev:vyapaar-labs/vyapaar-docs.git
