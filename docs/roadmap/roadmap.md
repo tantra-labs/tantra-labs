@@ -3,7 +3,7 @@
 ## Phase 1: Foundation & Pure Domain Core (Tiers 0, 1A, 1B)
 - [x] **Milestone 1.1 (`vyapaar-core`)**: Migrate and harden Shared Kernel value objects (`Price`, `Quantity`, `Money`, `InstrumentId`, `ClientOrderId`, `AlgoId`, `AccountId`), `Decision` grammar, `DomainEvent`s, and JSON Schema golden vectors.
 - [x] **Milestone 1.2 (`vyapaar-risk`)**: Migrate synchronous SEBI pre-trade risk gate (`RiskEngine`, `OtrTracker`, `AlgoIdRegistry`, price band checks, sizing risk gate) with `< 15 µs` p99.99 latency and `proptest` coverage.
-- [ ] **Milestone 1.3 (`vyapaar-ledger`)**: Migrate and refactor `oms`, `portfolio`, and `journal` with 100% `vyapaar-core` types, zero `tokio` dependencies, aggregate-owned FIFO tax-lot matching, and double-entry balance proptests.
+- [x] **Milestone 1.3 (`vyapaar-ledger`)**: Migrate and refactor `oms`, `portfolio`, and `journal` with 100% `vyapaar-core` types, zero `tokio` dependencies, aggregate-owned FIFO tax-lot matching, and double-entry balance proptests.
 
 ## Phase 2: Market Connectivity & Execution Gateways (Tiers 2A, 2B)
 - [ ] **Milestone 2.1 (`vyapaar-market`)**: Migrate `core`, `finance` (Indian market rules & cost model), `normalizer`, `indicators`, `signals`, `feed` (streaming & coalescing), `store` (Arrow/Parquet lakehouse), `loaders`, and 4 broker WebSocket feeds (`zerodha`, `upstox`, `fyers`, `angelone`).
