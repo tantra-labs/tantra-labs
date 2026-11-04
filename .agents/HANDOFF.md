@@ -1,29 +1,30 @@
-# HANDOFF — honba-kao Screener & Design System Components Alignment Batch
+# HANDOFF — vyapaar-labs Bottom-Up Migration Batch (Tier 0 → Tier 6)
 
-**Status: COMPLETE — Screener aligned with `honba-fe` & `honba-kao-ui-core` / `components.html`; Components showcase route added; All CI gates green.**
-Date: 2026-11-04 · Crate: `honba-kao/crates/honba-kao-app`, `honba-kao/crates/honba-kao-ui-core`, `honba-kao/crates/honba-kao-assets`
+**Status: PRE-FLIGHT COMPLETE — AGENTS.md vocabulary unified to `vyapaar-*`, standardized repo-root Makefiles installed across all 9 Rust repositories. Tier 0 (`vyapaar-core`) migration in progress.**
+Date: 2026-11-04 · Workspace: `/home/pmallapp/Devel/Finance/vyapaar-labs` · Source: `/home/pmallapp/Devel/Finance/honba-workspace`
+Playbook: `docs/migration-guide.md` (canonical orchestration)
 
 ## Phase / Slice Status
 | Slice | Milestone | State |
 | :---: | :--- | :---: |
-| 1 | **NavRail Navigation Fix**: Replaced `<A>` wrapper with native `<a>` with active path comparison so Leptos 0.8 keeps CSS classes; `/` and empty route correctly highlight Screener. Added NavRail and footer links to Components Showcase (`/components`). | ✅ |
-| 2 | **Design System Tokens (`components.html`)**: Extracted all CSS tokens and atom/molecule classes from `components.html` into `crates/honba-kao-assets/assets/style/components.css`; imported into `main.css` and linked via Trunk in `index.html`. Added `data-theme="dark"` / `data-mode="dark"` attributes. | ✅ |
-| 3 | **Router Entry for `components.html`**: Added `pub const ROUTE_COMPONENTS: &str = "/components";` in `router/paths.rs`. Implemented `ComponentsPage` in `features/system/components_page.rs` embedding `components.html`. Registered `<Route path=path!("components") view=ComponentsPage />` (and aliases `/design-system`, `/showcase`) in `router/routes.rs`. | ✅ |
-| 4 | **Screener Popular Screens Bubbles (`honba-fe` parity)**: Integrated `builtin_screens()` as reactive `HfChip` bubble filters in Row A of `ScreenerFilterBar`. Clicking a screen chip dynamically applies the preset's criteria, active tab, and sorting, updating `active_screen_id`. | ✅ |
-| 5 | **AI Search & Signature Filter Pills (`honba-fe` parity)**: Added signature `✦ AI` toggle button with expandable natural language prompt input. Preserved and styled Market, Index, Price band, and P/E band flyout popovers (`.hf-menu-popover`, `.hf-menu-item`, `.hf-filter-pill`). | ✅ |
-| 6 | **Results Table & Drawer (`core-ui` atoms)**: Color-coded price changes and return metrics (`text-emerald-400` / `text-rose-400`). Wrapped analyst and technical ratings in `HfBadge` (`BadgeVariant::Success` / `Danger` / `Warning`). Polished 52W Range bar with tokenized indicators. Fixed `HfDrawer` in `detail_drawer.rs` to slide out from the right (`right=true`). | ✅ |
-| 7 | **Futuristic Neural AST Screener UI (`telemetry`, `signal_matrix`, `constellation`, `filter_bar`, `detail_drawer`)**: Added zero-float `Decimal` telemetry engine (`FunnelTelemetry`, `LaserGauge`, `ConstellationPoint`, `RadarAxes`), 4-way spatial view switcher (`⚡ Matrix`, `🌌 Constellation`, `🧬 Tape`, `☷ Heatmap`), Bento Signal Matrix cards with 5-gate AST badges and `INV → TRIG` laser bars, 2D Alpha Factor Constellation SVG view, and 5-axis Factor Pentagon Radar + Laser Gauge in the Target Inspector drawer. Covered by `tests/screener_futuristic.rs` (105 total tests passing). | ✅ |
-
-## Final Gate Report (all from `honba-kao/` crate root)
-```
-1  cargo check  -p honba-kao-app --all-targets                     PASS
-2  cargo fmt    -p honba-kao-app -- --check                       PASS
-3  cargo test   -p honba-kao-app                                  PASS (99 tests, 0 failed across 14 test suites)
-4  cargo check  -p honba-kao-app --target wasm32-unknown-unknown   PASS
-```
+| 0 | **Superproject baseline**: git-initialized `vyapaar-labs` superproject (`.gitmodules` sub-repos are plain dirs until their own tiers migrate). Baseline commit of pre-migration skeleton. | ✅ |
+| 0 | **Pre-flight hygiene**: `.agents/AGENTS.md` vocabulary — Rust-Core subgraph references now `vyapaar-core/ledger/risk/market/exec/runtime`, Python plane now `vyapaar SDK`; zero `honba*`/`kokoro`/`tamashii` strings remain. | ✅ |
+| 0 | **Pre-flight hygiene**: standardized repo-root `Makefile` (`prod`, `release`, `dev`, `check`, `test`, `fmt`, `clippy`, `clean`, plus `debug`/`check-dev` extras) installed in `vyapaar-{core,risk,ledger,market,exec,runtime,brain,ffi,ui}`. | ✅ |
+| T0 | **Tier 0 `vyapaar-core`**: port 15 honba-core modules verbatim with honba→vyapaar doc references; NEW `src/ids.rs` (`ClientOrderId`, `AlgoId`, `AccountId`, `TransactionId` promoted from the Domain Heart repository layer with `JsonSchema`); `Exchange::{Nfo,Cds}` unified; `Price::try_new`/`Quantity::try_new` + validated serde visitors rejecting negative wire values; deterministic `OrderRequest::with_id`; `CanonicalPositionSizer` intentionally NOT ported (concrete algorithm leaves the Shared Kernel per master-guide anti-pattern fix); schema/ copied with `honba`→`vyapaar` string pass; tests ported + placeholder `tests/unit_tests.rs` deleted. | 🚧 |
 
 ## Decisions & Discoveries
-- **Router & Link Classes in Leptos 0.8**: In Leptos 0.8 CSR, custom attribute forwarding on router `<A>` can drop dynamic CSS classes. Using native `<a href=... class=class>` with reactive location derivation guarantees that active styling (`border-l-2 border-emerald-600 bg-surface-elevated`) is rendered reliably.
-- **Trunk Copied File Assets**: Trunk copies `components.html` directly to the web dist root. Embedding via `<iframe src="/components.html">` inside `ComponentsPage` allows users to explore all 54 core UI atoms/molecules directly within the running workstation application shell without navigating away.
-- **Drawer Placement Invariant**: `HfDrawer` defaults to left slide-over unless explicitly passed `right=true`. Detail inspection drawers for market depth and screener symbols must pass `right=true` to preserve institutional split-workspace convention.
-- **Zero Floats Rule**: All screener numbers (prices, P/E ratios, market caps, RSI bounds, decimal bands) strictly use `rust_decimal::Decimal`. No floats leaked across domain models or components.
+- **Git topology**: `vyapaar-labs` is the git superproject (init'd on `main`); `.gitmodules` declares the 15 intended sub-repos but none have their own `.git` yet. Per-tier commits land on the superproject; sub-module extraction is a later concern, not in the Tier 0 scope.
+- **Kernel slimming**: tier-0 ports `screener.rs`/`portfolio.rs` as wire contracts and the `ports.rs` trait set, per the detailed tier-0 playbook file map — but the concrete `CanonicalPositionSizer` is dropped from the kernel (master-guide antipattern §1.1); the object-safe `PositionSizer` port remains and the port test uses a local adapter instead.
+- **Serde hardening**: `Price`/`Quantity` drop the derive-based `#[serde(transparent)]` in favor of manual `Serialize` (string form) + validating `Deserialize` visitors, so negative decimals can never enter the domain from JSON wire payloads; the `#[serde(transparent)]` attribute is kept so `schemars` emits the same transparent schema as the frozen `schema/domain/domain_schema.json` snapshot.
+- **rust_decimal 1.43**: `is_zero()`, `is_sign_negative()` are `const fn`, so `Price::new`/`Quantity::new` remain `const` while gaining `debug_assert!` guards; `try_new` enforces the invariant unconditionally.
+
+## Immediate Next Step
+1. Finish Tier 0: write `src/*.rs` (15 modules + `src/ids.rs`), port `tests/{core_tests,golden_test,proptest_invariants,schema_compatibility_test}.rs`, delete placeholder `tests/unit_tests.rs`, extend `Cargo.toml` with honba-core `[profile.*]` + full dependency set.
+2. Run the Tier 0 verification gate: `cd vyapaar-core && cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test`.
+3. Commit Tier 0, then proceed to Tier 1A (`vyapaar-risk` from `honba-mon`) and Tier 1B (`vyapaar-ledger` from `honba-kokoro`) in parallel.
+
+## Operating Invariants
+- Toolchain: `cargo 1.97.1` / `rustc 1.97.1`; edition 2024, `rust-version = "1.85"`.
+- Zero inline `#[test]` / `#[cfg(test)]` in `src/**/*.rs` (Parallel Test Directory Rule, AGENTS.md §3.2).
+- `SchemaVersion` stays `8`; schema snapshots are copied + string-replaced, never regenerated in Tier 0.
+- Wire compatibility: `Price`/`Quantity` remain string-encoded decimals (`serde-with-str`); `-0.00` parses to `Decimal::ZERO` semantics (not negative-strict), matching upstream rust_decimal behavior.

@@ -256,7 +256,7 @@ class NiftyMovingAverageCross(Strategy):
 
 ```mermaid
 flowchart TD
-    subgraph RustCore["Rust Core (vyapaar-core, kokoro, mon, me, te, ya)"]
+    subgraph RustCore["Rust Core (vyapaar-core, vyapaar-ledger, vyapaar-risk, vyapaar-market, vyapaar-exec, vyapaar-runtime)"]
         WS["High-Throughput WebSocket Ingestion"]
         Coalesce["Tick Coalescing & L2/L3 Depth"]
         RiskGate["Sub-15 µs Regulatory Risk Gate (vyapaar-risk)"]
@@ -269,7 +269,7 @@ flowchart TD
         PyO3["PyO3 FFI (Smart GIL Management: py.allow_threads)"]
     end
 
-    subgraph PythonLayer["Python User Plane (honba SDK, strategies, examples)"]
+    subgraph PythonLayer["Python User Plane (vyapaar SDK, strategies, examples)"]
         StrategyCode["Strategy Authoring (vyapaar.Strategy)"]
         MLAI["ML / AI Models (PyTorch, scikit-learn, LLMs)"]
         Research["Jupyter Notebooks, Polars & DuckDB Queries"]
