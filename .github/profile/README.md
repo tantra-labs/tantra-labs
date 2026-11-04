@@ -9,7 +9,7 @@
 Vyapaar Labs develops institutional-grade open-source quantitative trading infrastructure combining:
 - **Zero-I/O Rust Core** for deterministic order management, tax-lot accounting, and double-entry ledgers.
 - **Sub-15 µs Regulatory Risk Gating** strictly enforcing SEBI Algo IDs, Order-to-Trade Ratio (OTR) circuit breakers, and scrip price bands.
-- **AI Brain & Autonomous Agent Loop** integrating local/cloud LLMs with an MCP tool gateway and embedded Typst research report compiler.
+- **AI Agent & Autonomous Agent Loop** integrating local/cloud LLMs with an MCP tool gateway and embedded Typst research report compiler.
 - **Dual Workstation Experience**: Single static binary terminal chat/assistant (`vyapaar ask`, `vyapaar tui`) and high-density WASM studio (`vyapaar-ui`).
 
 ### 📦 Key Ecosystem Repositories
@@ -21,7 +21,7 @@ Vyapaar Labs develops institutional-grade open-source quantitative trading infra
   - [`vyapaar-market`](https://github.com/vyapaar-labs/vyapaar-market): High-throughput tick coalescing, 100+ indicators, multi-broker WebSockets.
   - [`vyapaar-exec`](https://github.com/vyapaar-labs/vyapaar-exec): First-party broker execution, smart router, headless TOTP auth.
   - [`vyapaar-runtime`](https://github.com/vyapaar-labs/vyapaar-runtime): Tokio actor pipeline, backtester, Axum REST/WS API, cron jobs.
-  - [`vyapaar-brain`](https://github.com/vyapaar-labs/vyapaar-brain): AI research loop, LLM providers, MCP server, Typst PDF generator.
+  - [`vyapaar-agent`](https://github.com/vyapaar-labs/vyapaar-agent): AI research loop, LLM providers, MCP server, Typst PDF generator.
   - [`vyapaar-ffi`](https://github.com/vyapaar-labs/vyapaar-ffi): PyO3 FFI compiling the `vyapaar` PyPI wheel.
 - **Workstations & Interfaces**:
   - [`vyapaar-ui`](https://github.com/vyapaar-labs/vyapaar-ui): WASM Strategy Studio, Institutional Screener, Ratatui TUI, and CLI binary.

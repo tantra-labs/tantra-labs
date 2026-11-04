@@ -39,7 +39,7 @@
 | **1B** | `honba-kokoro/` | `vyapaar-ledger/` | **Domain Heart (Zero-I/O)** | `honba-kokoro` → `vyapaar-ledger`<br>`honba-kokoro-oms` → `vyapaar-ledger-oms`<br>`honba-kokoro-portfolio` → `vyapaar-ledger-portfolio`<br>`honba-kokoro-ledger` → `vyapaar-ledger-journal` |
 | **2A** | `honba-me/` | `vyapaar-market/` | **Market Data & Signals** | `honba-me-core` → `vyapaar-market-core`<br>`honba-me-market` → `vyapaar-market-finance`<br>`honba-me-feed` → `vyapaar-market-feed` + `vyapaar-market-store` **[SPLIT]**<br>`honba-me-normalizer` → `vyapaar-market-normalizer`<br>`honba-me-indicators` → `vyapaar-market-indicators`<br>`honba-me-signals` → `vyapaar-market-signals`<br>`honba-me-loaders` → `vyapaar-market-loaders`<br>`honba-me-{zerodha,upstox,fyers,angelone}` → `vyapaar-market-{zerodha,upstox,fyers,angelone}` |
 | **2B** | `honba-te/` | `vyapaar-exec/` | **Execution Gateway** | `honba-te-core` → `vyapaar-exec-core`<br>`honba-te-auth` → `vyapaar-exec-auth`<br>`honba-te-router` → `vyapaar-exec-router`<br>`honba-te-slicer` → `vyapaar-exec-slicer`<br>`honba-te-audit` → `vyapaar-exec-audit`<br>`honba-te-{zerodha,upstox,angelone}` → `vyapaar-exec-{zerodha,upstox,angelone}` |
-| **3A** | `honba-nou/` | `vyapaar-brain/` | **AI Brain & Agent Engine** | `honba-nou-core` → `vyapaar-brain-core`<br>`honba-nou-llm` → `vyapaar-brain-llm`<br>`honba-nou-agent` → `vyapaar-brain-agent`<br>`honba-nou-prompt` → `vyapaar-brain-prompt`<br>`honba-nou-replay` → `vyapaar-brain-replay`<br>`honba-nou-trader-loop` → `vyapaar-brain-trader-loop`<br>`honba-nou-research` → `vyapaar-brain-research`<br>`honba-nou-analytics` → `vyapaar-brain-analytics`<br>`honba-nou-genetic-engine` → `vyapaar-brain-genetic`<br>`honba-nou-mcp` → `vyapaar-brain-mcp`<br>**[NEW]**: `vyapaar-brain-tools`, `vyapaar-brain-plugins`, `vyapaar-brain-report` |
+| **3A** | `honba-nou/` | `vyapaar-agent/` | **AI Agent & Agent Engine** | `honba-nou-core` → `vyapaar-agent-core`<br>`honba-nou-llm` → `vyapaar-agent-llm`<br>`honba-nou-agent` → `vyapaar-agent`<br>`honba-nou-prompt` → `vyapaar-agent-prompt`<br>`honba-nou-replay` → `vyapaar-agent-replay`<br>`honba-nou-trader-loop` → `vyapaar-agent-trader-loop`<br>`honba-nou-research` → `vyapaar-agent-research`<br>`honba-nou-analytics` → `vyapaar-agent-analytics`<br>`honba-nou-genetic-engine` → `vyapaar-agent-genetic`<br>`honba-nou-mcp` → `vyapaar-agent-mcp`<br>**[NEW]**: `vyapaar-agent-tools`, `vyapaar-agent-plugins`, `vyapaar-agent-report` |
 | **3B** | `honba-ya/` | `vyapaar-runtime/` | **Central Actor Runtime** | `honba-ya-actors` → `vyapaar-runtime-actors`<br>`honba-ya-api` → `vyapaar-runtime-api`<br>`honba-ya-api-rest` → `vyapaar-runtime-api-rest`<br>`honba-ya-backtest` → `vyapaar-runtime-backtest`<br>`honba-ya-config` → `vyapaar-runtime-config`<br>`honba-ya-enhancer` → `vyapaar-runtime-enhancer`<br>`honba-ya-persistence` → `vyapaar-runtime-persistence`<br>`honba-ya-strategy` → `vyapaar-runtime-strategy`<br>`honba-ya-testing` → `vyapaar-runtime-testing`<br>**[NEW]**: `vyapaar-runtime-jobs` |
 | **4** | `honba-tamashii/` | `vyapaar-ffi/` | **Python FFI Bridge** | `honba-tamashii-codegen` → `vyapaar-ffi-codegen`<br>`honba-tamashii-py` → `vyapaar-ffi-py`<br>`python/honba` → `python/vyapaar` (`vyapaar._vyapaar` ABI3 wheel) |
 | **5A** | `honba-kao/` | `vyapaar-ui/` | **WASM Studio & TUI/CLI** | `honba-kao-app` → `vyapaar-ui-app`<br>`honba-kao-ui-core` → `vyapaar-ui-core`<br>`honba-kao-client` → `vyapaar-ui-client`<br>`honba-kao-api-wasm` → `vyapaar-ui-api-wasm`<br>`honba-kao-assets` → `vyapaar-ui-assets`<br>`openalgo-charts-rs` → `vyapaar-ui-charts`<br>**[NEW]**: `vyapaar-cli`, `vyapaar-tui`, `vyapaar-highlight` |
@@ -63,7 +63,7 @@ flowchart BT
     T1B["Tier 1B: vyapaar-ledger (OMS, Portfolio, Journal)"]
     T2A["Tier 2A: vyapaar-market (Core, Finance, Indicators, Signals, Feed, Store, Brokers)"]
     T2B["Tier 2B: vyapaar-exec (Core, Auth, Slicer, Router, Audit, Brokers)"]
-    T3A["Tier 3A: vyapaar-brain (Core, Prompt, Replay, LLM, Agent, Loop, Research, Analytics, Genetic, MCP, Tools, Plugins, Report)"]
+    T3A["Tier 3A: vyapaar-agent (Core, Prompt, Replay, LLM, Agent, Loop, Research, Analytics, Genetic, MCP, Tools, Plugins, Report)"]
     T3B["Tier 3B: vyapaar-runtime (Config, Testing, Strategy, Persistence, Actors, Backtest, Enhancer, Jobs, API, API-REST)"]
     T4["Tier 4: vyapaar-ffi (Codegen, PyO3 FFI, Python vyapaar SDK)"]
     T5A["Tier 5A: vyapaar-ui (UI-Core, Assets, Charts, Client, API-WASM, App, Highlight, TUI, CLI)"]
@@ -96,7 +96,7 @@ flowchart BT
 ### Pre-Flight Step (Workspace Hygiene)
 Before running Tier 0:
 1. Update `/home/pmallapp/Devel/Finance/vyapaar-labs/.agents/AGENTS.md` to reference `vyapaar-*` repositories and bounded contexts instead of `honba-*`.
-2. Ensure every Rust repository (`vyapaar-core`, `vyapaar-risk`, `vyapaar-ledger`, `vyapaar-market`, `vyapaar-exec`, `vyapaar-runtime`, `vyapaar-brain`, `vyapaar-ffi`, `vyapaar-ui`) has a standardized repo-root `Makefile` supporting `prod`, `release`, `dev`, `check`, `test`, `fmt`, `clippy`, `clean`.
+2. Ensure every Rust repository (`vyapaar-core`, `vyapaar-risk`, `vyapaar-ledger`, `vyapaar-market`, `vyapaar-exec`, `vyapaar-runtime`, `vyapaar-agent`, `vyapaar-ffi`, `vyapaar-ui`) has a standardized repo-root `Makefile` supporting `prod`, `release`, `dev`, `check`, `test`, `fmt`, `clippy`, `clean`.
 
 ---
 
@@ -197,19 +197,19 @@ Before running Tier 0:
 
 ---
 
-### Tier 3A: `vyapaar-brain` (AI Brain, LLM, Replay, Trader Loop, Genetic, MCP, Tools, Plugins, Report)
-* **Detailed Playbook**: [`vyapaar-brain/docs/migration-guide.md`](./vyapaar-brain/docs/migration-guide.md)
+### Tier 3A: `vyapaar-agent` (AI Agent, LLM, Replay, Trader Loop, Genetic, MCP, Tools, Plugins, Report)
+* **Detailed Playbook**: [`vyapaar-agent/docs/migration-guide.md`](./vyapaar-agent/docs/migration-guide.md)
 * **Source**: `/home/pmallapp/Devel/Finance/honba-workspace/honba-nou`
 * **DDD Fixes to Apply During Migration**:
-  1. Port the 10 existing crates from `honba-nou/crates/honba-nou-*` to `vyapaar-brain/crates/vyapaar-brain-*` (`honba-nou-genetic-engine` → `vyapaar-brain-genetic`).
+  1. Port the 10 existing crates from `honba-nou/crates/honba-nou-*` to `vyapaar-agent/crates/vyapaar-agent-*` (`honba-nou-genetic-engine` → `vyapaar-agent-genetic`).
   2. Implement the 3 new bounded sub-crates cleanly:
-     - `vyapaar-brain-tools`: Pure domain & agent tool registry (`AgentTool` trait, market/portfolio/screener query tools).
-     - `vyapaar-brain-plugins`: Plugin manifest & capability loader (`PluginManifest`, sandboxed skill/tool discovery).
-     - `vyapaar-brain-report`: Embedded Typst / Markdown tearsheet & research report compiler consuming `vyapaar-brain-analytics` and `vyapaar-brain-research`.
-  3. Decouple `vyapaar-brain` from upward `vyapaar-runtime` dependencies: `vyapaar-brain-trader-loop` should depend on `vyapaar-core` ports and `vyapaar-risk`, not concrete `vyapaar-runtime` actors.
+     - `vyapaar-agent-tools`: Pure domain & agent tool registry (`AgentTool` trait, market/portfolio/screener query tools).
+     - `vyapaar-agent-plugins`: Plugin manifest & capability loader (`PluginManifest`, sandboxed skill/tool discovery).
+     - `vyapaar-agent-report`: Embedded Typst / Markdown tearsheet & research report compiler consuming `vyapaar-agent-analytics` and `vyapaar-agent-research`.
+  3. Decouple `vyapaar-agent` from upward `vyapaar-runtime` dependencies: `vyapaar-agent-trader-loop` should depend on `vyapaar-core` ports and `vyapaar-risk`, not concrete `vyapaar-runtime` actors.
 * **Verification Gate**:
   ```bash
-  cd /home/pmallapp/Devel/Finance/vyapaar-labs/vyapaar-brain
+  cd /home/pmallapp/Devel/Finance/vyapaar-labs/vyapaar-agent
   cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test --workspace
   ```
 
@@ -285,7 +285,7 @@ You can delegate individual tiers or repositories in parallel within the same ti
 | :--- | :--- | :--- |
 | **Batch 1** | Agent A: `vyapaar-core` (Tier 0) | None |
 | **Batch 2** | Agent A: `vyapaar-risk` (Tier 1A)<br>Agent B: `vyapaar-ledger` (Tier 1B) | Batch 1 Green |
-| **Batch 3** | Agent A: `vyapaar-market` (Tier 2A)<br>Agent B: `vyapaar-exec` (Tier 2B)<br>Agent C: `vyapaar-brain` (Tier 3A) | Batch 2 Green |
+| **Batch 3** | Agent A: `vyapaar-market` (Tier 2A)<br>Agent B: `vyapaar-exec` (Tier 2B)<br>Agent C: `vyapaar-agent` (Tier 3A) | Batch 2 Green |
 | **Batch 4** | Agent A: `vyapaar-runtime` (Tier 3B)<br>Agent B: `vyapaar-ui` (Tier 5A)<br>Agent C: `vyapaar-fe` (Tier 5B) | Batch 3 Green |
 | **Batch 5** | Agent A: `vyapaar-ffi` (Tier 4) | Batch 4 Green |
 | **Batch 6** | Agent A: `vyapaar-data` & `vyapaar-adapters`<br>Agent B: `vyapaar-strategies` & `vyapaar-examples`<br>Agent C: `vyapaar-docs` | Batch 5 Green |

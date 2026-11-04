@@ -16,9 +16,9 @@
 [submodule "vyapaar-runtime"]
 	path = vyapaar-runtime
 	url = https://github.com/vyapaar-labs/vyapaar-runtime.git
-[submodule "vyapaar-brain"]
-	path = vyapaar-brain
-	url = https://github.com/vyapaar-labs/vyapaar-brain.git
+[submodule "vyapaar-agent"]
+	path = vyapaar-agent
+	url = https://github.com/vyapaar-labs/vyapaar-agent.git
 [submodule "vyapaar-ffi"]
 	path = vyapaar-ffi
 	url = https://github.com/vyapaar-labs/vyapaar-ffi.git

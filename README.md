@@ -16,7 +16,7 @@
 | [`vyapaar-market`](./vyapaar-market) | Rust | **Market Data**: Multi-broker binary WebSockets (Zerodha, Upstox, Angel One, Fyers), tick coalescing, 100+ indicators, Parquet loaders, macro/finance series. |
 | [`vyapaar-exec`](./vyapaar-exec) | Rust | **Execution Gateway**: First-party broker executors, headless TOTP auth, freeze slicer, Smart Order Router (SOR), SQLite WAL audit journal. |
 | [`vyapaar-runtime`](./vyapaar-runtime) | Rust | **Central Runtime & Automation**: Tokio actor pipeline, event-driven backtester, strategy enhancer (GA/WFO), Axum REST/WS API, cron/background jobs, SQLite & git2 snapshots. |
-| [`vyapaar-brain`](./vyapaar-brain) | Rust | **AI Brain & Agent Engine**: Local/cloud LLMs (Anthropic/OpenAI), trader loop, prompt replay, genetic synthesizer, MCP (`rmcp`), agent tools, plugin marketplace, embedded Typst reports. |
+| [`vyapaar-agent`](./vyapaar-agent) | Rust | **AI Agent & Agent Engine**: Local/cloud LLMs (Anthropic/OpenAI), trader loop, prompt replay, genetic synthesizer, MCP (`rmcp`), agent tools, plugin marketplace, embedded Typst reports. |
 | [`vyapaar-ffi`](./vyapaar-ffi) | Rust (PyO3) | **Python FFI Bridge**: Apache Arrow zero-copy memory bridge and smart GIL management. Builds the `vyapaar` PyPI wheel. |
 | [`vyapaar-ui`](./vyapaar-ui) | Rust (WASM + TUI) | **Unified Workstations**: WASM/Native Shell Strategy Studio & Screener (`ui-app`), `openalgo-charts-rs`, Ratatui Terminal UI (`vyapaar-tui`), CLI binary (`vyapaar-cli`), tree-sitter highlighter. |
 | [`vyapaar-strategies`](./vyapaar-strategies) | Python | **Production Strategies**: Catalog of institutional strategies (Quoting, Arbitrage, TWAP/VWAP slicers, Turtle breakout, Risk Parity). |

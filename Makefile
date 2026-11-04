@@ -1,4 +1,4 @@
-REPOS := vyapaar-core vyapaar-risk vyapaar-ledger vyapaar-market vyapaar-exec vyapaar-runtime vyapaar-brain vyapaar-ffi vyapaar-ui
+REPOS := vyapaar-core vyapaar-risk vyapaar-ledger vyapaar-market vyapaar-exec vyapaar-runtime vyapaar-agent vyapaar-ffi vyapaar-ui
 
 .PHONY: default build build-dev build-prod build-release prod release dev check test fmt clippy clean push
 

@@ -16,7 +16,7 @@
    - `honba-me` → `vyapaar-market`
    - `honba-te` → `vyapaar-exec`
    - `honba-ya` → `vyapaar-runtime`
-   - `honba-nou` → `vyapaar-brain`
+   - `honba-nou` → `vyapaar-agent`
    - `honba-tamashii` → `vyapaar-ffi`
    - `honba-kao` → `vyapaar-ui`
    - `honba-fe` → `vyapaar-fe`

@@ -51,7 +51,7 @@ Vyapaar adopts a strict DDD bounded-context taxonomy, separating distinct bounde
 | **Eye** | `vyapaar-market/` | Rust | **Market Data**: Multi-broker binary WebSockets (Kite, Upstox, Fyers, Angel One), tick coalescing, 100+ StockSharp indicators, Parquet Lakehouse. |
 | **Hand** | `vyapaar-exec/` | Rust | **Execution**: Token-bucket rate limiter, freeze slicer, headless TOTP auth, Smart Order Router (SOR), SQLite WAL audit journal. |
 | **House** | `vyapaar-runtime/` | Rust (Tokio) | **Central Actor Runtime**: Multi-threaded actor pipeline, Strategy Tester (`backtest`), and Automatic Strategy Enhancer (GA, Bayesian, WFO, DSR). |
-| **Brain** | `vyapaar-brain/` | Rust + Python | **AI Brain**: Autonomous research loop, MCP server, prompt replayer, and StockSharp Odysseus genetic strategy synthesizer. |
+| **Agent** | `vyapaar-agent/` | Rust + Python | **AI Agent**: Autonomous research loop, MCP server, prompt replayer, and StockSharp Odysseus genetic strategy synthesizer. |
 | **Soul** | `vyapaar-ffi/`| Rust (PyO3) | **Python FFI Bridge**: Compiles `vyapaar` PyPI wheel, Arrow zero-copy memory bridge, and smart GIL management. |
 | **Face** | `vyapaar-ui/` | Rust (Leptos) | **Web Dashboard (WASM)**: Strategy Studio visual node canvas, backtest simulator workbench, and openalgo-charts bridge. |
 | **Frontend** | `vyapaar-fe/` | TypeScript | **Web Desktop UI**: Dockview modular workspace, trading terminal, real-time depth, screener, and portfolio management. |
@@ -67,7 +67,7 @@ Vyapaar enforces a strict unidirectional event pipeline for all trading activity
 flowchart LR
     MarketEvent["MarketEvent (Ticks / Bars)"] --> Feed["vyapaar-market (Feed)"]
     Feed --> SignalEvent["SignalEvent (Indicators / Alpha)"]
-    SignalEvent --> Strategy["Strategy / AI (vyapaar-brain)"]
+    SignalEvent --> Strategy["Strategy / AI (vyapaar-agent)"]
     Strategy --> OrderEvent["OrderEvent (Order Request)"]
     OrderEvent --> Risk["vyapaar-risk (Pre-Trade Gate)"]
     Risk --> Router["vyapaar-exec (Execution Router)"]
@@ -320,7 +320,7 @@ flowchart TD
 Every repository in the Vyapaar workspace must adhere to a standardized GitHub CI/CD and pull-request workflow:
 
 ### 7.1 CI Pipeline Matrix by Repository Type
-* **Rust Repositories** (`vyapaar-core`, `vyapaar-ledger`, `vyapaar-risk`, `vyapaar-market`, `vyapaar-exec`, `vyapaar-runtime`, `vyapaar-brain`, `vyapaar-ui`):
+* **Rust Repositories** (`vyapaar-core`, `vyapaar-ledger`, `vyapaar-risk`, `vyapaar-market`, `vyapaar-exec`, `vyapaar-runtime`, `vyapaar-agent`, `vyapaar-ui`):
   - `.github/workflows/ci.yml`:
     1. Formatting: `cargo fmt --check`
     2. Linting: `cargo clippy --all-targets -- -D warnings`

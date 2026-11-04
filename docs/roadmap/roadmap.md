@@ -9,8 +9,8 @@
 - [ ] **Milestone 2.1 (`vyapaar-market`)**: Migrate `core`, `finance` (Indian market rules & cost model), `normalizer`, `indicators`, `signals`, `feed` (streaming & coalescing), `store` (Arrow/Parquet lakehouse), `loaders`, and 4 broker WebSocket feeds (`zerodha`, `upstox`, `fyers`, `angelone`).
 - [ ] **Milestone 2.2 (`vyapaar-exec`)**: Migrate `core` (token-bucket rate limiter & `BrokerExecutor`), `auth` (headless TOTP & eDIS), `slicer` (SEBI freeze-quantity & TWAP/VWAP), `router` (Smart Order Router v2), `audit` (SQLite WAL hash-chained journal), and broker REST executors.
 
-## Phase 3: AI Brain & Central Actor Runtime (Tiers 3A, 3B)
-- [ ] **Milestone 3.1 (`vyapaar-brain`)**: Migrate 10 AI crates from `honba-nou` plus implement `vyapaar-brain-tools`, `vyapaar-brain-plugins`, and `vyapaar-brain-report` (Typst tearsheet compiler).
+## Phase 3: AI Agent & Central Actor Runtime (Tiers 3A, 3B)
+- [ ] **Milestone 3.1 (`vyapaar-agent`)**: Migrate 10 AI crates from `honba-nou` plus implement `vyapaar-agent-tools`, `vyapaar-agent-plugins`, and `vyapaar-agent-report` (Typst tearsheet compiler).
 - [ ] **Milestone 3.2 (`vyapaar-runtime`)**: Migrate 9 runtime crates from `honba-ya` (`actors`, `api`, `api-rest`, `backtest`, `config`, `enhancer`, `persistence`, `strategy`, `testing`) plus implement `vyapaar-runtime-jobs`.
 
 ## Phase 4: FFI Bridge, Workstations & Python Ecosystem (Tiers 4, 5, 6)
