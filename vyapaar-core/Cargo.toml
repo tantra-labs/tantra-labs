@@ -16,5 +16,32 @@ uuid = { version = "1", features = ["v4", "serde"] }
 schemars = { version = "0.8", features = ["derive", "chrono", "uuid1", "rust_decimal"] }
 
 [dev-dependencies]
+serde_json = "1"
 proptest = "1"
 rand = "0.8"
+
+[profile.dev]
+opt-level = 1
+debug = false
+strip = "debuginfo"
+
+[profile.test]
+opt-level = 1
+debug = false
+strip = "debuginfo"
+
+[profile.dbg]
+inherits = "dev"
+debug = 2
+strip = "none"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+
+[profile.prod]
+inherits = "release"
+lto = true
+codegen-units = 1
+panic = "abort"
