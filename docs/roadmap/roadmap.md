@@ -1,7 +1,7 @@
 # Vyapaar Labs (`vyapaar-labs`) — Platform Engineering Roadmap
 
 ## Phase 1: Foundation & Pure Domain Core (Tiers 0, 1A, 1B)
-- [ ] **Milestone 1.1 (`vyapaar-core`)**: Migrate and harden Shared Kernel value objects (`Price`, `Quantity`, `Money`, `InstrumentId`, `ClientOrderId`, `AlgoId`, `AccountId`), `Decision` grammar, `DomainEvent`s, and JSON Schema golden vectors.
+- [x] **Milestone 1.1 (`vyapaar-core`)**: Migrate and harden Shared Kernel value objects (`Price`, `Quantity`, `Money`, `InstrumentId`, `ClientOrderId`, `AlgoId`, `AccountId`), `Decision` grammar, `DomainEvent`s, and JSON Schema golden vectors.
 - [ ] **Milestone 1.2 (`vyapaar-risk`)**: Migrate synchronous SEBI pre-trade risk gate (`RiskEngine`, `OtrTracker`, `AlgoIdRegistry`, price band checks, sizing risk gate) with `< 15 µs` p99.99 latency and `proptest` coverage.
 - [ ] **Milestone 1.3 (`vyapaar-ledger`)**: Migrate and refactor `oms`, `portfolio`, and `journal` with 100% `vyapaar-core` types, zero `tokio` dependencies, aggregate-owned FIFO tax-lot matching, and double-entry balance proptests.
 

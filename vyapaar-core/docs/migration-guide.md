@@ -34,9 +34,9 @@
 ---
 
 ## 2. Strict Invariants Checklist
-- [ ] **Zero-I/O**: No `tokio`, `std::fs`, `std::net`, or `Utc::now()` in `src/` (except optional helper constructors if explicitly documented; prefer explicit `timestamp: DateTime<Utc>`).
-- [ ] **Zero-Floats**: Zero `f32` or `f64` fields in any financial struct.
-- [ ] **Zero Inline Tests**: `grep -rn "#\[cfg(test)\]" src/` and `grep -rn "#\[test\]" src/` must return 0 matches.
+- [x] **Zero-I/O**: No `tokio`, `std::fs`, `std::net`, or `Utc::now()` in `src/` (except optional helper constructors if explicitly documented; prefer explicit `timestamp: DateTime<Utc>`).
+- [x] **Zero-Floats**: Zero `f32` or `f64` fields in any financial struct.
+- [x] **Zero Inline Tests**: `grep -rn "#\[cfg(test)\]" src/` and `grep -rn "#\[test\]" src/` must return 0 matches.
 
 ## 3. Verification Commands
 ```bash
