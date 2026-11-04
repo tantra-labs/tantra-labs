@@ -354,3 +354,13 @@ Every repository in the Vyapaar workspace must adhere to a standardized GitHub C
   - `fix(<subsystem>): correct tax-lot FIFO order allocation`
   - `test(<subsystem>): add proptest vectors for price quantization`
   - `refactor(<subsystem>): decouple ExecutionGateway into trait`
+
+---
+
+## 8. Subagent Discipline Rule (binding)
+
+Every orchestrator session and spawned subagent obeys `.agents/rules/subagent-discipline.md`:
+1. **Utmost 2 subagents alive at any point of time** (a wave of at most 2; verify; then the next wave).
+2. **Zero recon for subagents**: every subagent prompt is self-contained (exact files, verified API signatures, designs, verify commands); subagents do not spend steps discovering the codebase — returning with a precise question is the correct failure mode.
+3. **Zero-recon enforcement on the subagent side**: every spawned subagent must obey `.agents/rules/no-recon.md` — write-first (edits before any read), no orienting `ls`/`glob`/grep, no re-reading facts the prompt inlines, at most the 2 verification reads the prompt budgets; missing fact ⇒ stop and return one precise question.
+4. Resumes go through `sessionID` with an "execute now" list; the orchestrator preserves verified facts and re-inlines them.
