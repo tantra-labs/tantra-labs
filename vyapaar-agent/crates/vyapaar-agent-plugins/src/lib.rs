@@ -1,1 +1,0 @@
-//! vyapaar-agent-plugins implementation.
