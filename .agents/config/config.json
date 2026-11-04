@@ -1,0 +1,28 @@
+{
+  "userSettings": {
+    "enableTerminalSandbox": true,
+    "globalPermissionGrants": {
+      "allow": [
+        "command(git status)",
+        "command(git diff)",
+        "command(git log)",
+        "command(regex:git (add|commit|fetch|pull|branch|checkout).* )",
+        "command(regex:cargo (build|run|test|check|fmt|clippy).* )",
+        "command(regex:python(3)? (.*\\.py) )",
+        "command(regex:(pytest|black|flake8) .* )",
+        "command(regex:pip(3)? install (-r .*requirements\\.txt|\\w+) )",
+        "command(regex:npm (--prefix [\\w\\-\\/]+ )?(run (build|start|test|lint|dev)|install|ci) )",
+        "command(regex:make( \\w+)? )",
+        "command(regex:(ls|cat|grep|pwd|echo) .* )"
+      ],
+      "ask": [
+        "command(*)"
+      ],
+      "deny": [
+        "command(rm -rf)",
+        "command(sudo)",
+        "command(regex:.*(--force|-f|drop|delete).*)"
+      ]
+    }
+  }
+}

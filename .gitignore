@@ -1,0 +1,24 @@
+# Rust build artifacts
+target/
+**/target/
+
+# Node / TypeScript build artifacts
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.venv/
+**/.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+
+# OS / editor noise
+.DS_Store
+*.swp

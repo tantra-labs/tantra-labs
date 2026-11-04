@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo test *)",
+      "Bash(podman ps *)",
+      "Bash(git fetch *)",
+      "Bash(cargo check *)",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "mcp__claude-in-chrome__read_console_messages",
+      "Bash(cargo clippy *)",
+      "mcp__claude-in-chrome__get_page_text",
+      "Bash(ssh-add -l*)"
+    ]
+  }
+}
