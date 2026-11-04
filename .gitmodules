@@ -37,9 +37,6 @@
 [submodule "vyapaar-examples"]
 	path = vyapaar-examples
 	url = git@github.com-dev:vyapaar-labs/vyapaar-examples.git
-[submodule "vyapaar-fe"]
-	path = vyapaar-fe
-	url = git@github.com-dev:vyapaar-labs/vyapaar-fe.git
 [submodule "vyapaar-docs"]
 	path = vyapaar-docs
 	url = git@github.com-dev:vyapaar-labs/vyapaar-docs.git

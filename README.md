@@ -23,7 +23,6 @@
 | [`vyapaar-adapters`](./vyapaar-adapters) | Python | **Broker SDK**: Pluggable Python community broker connectors (Dhan, Zerodha, Upstox, Angel One, Fyers, Kotak, IIFL). |
 | [`vyapaar-data`](./vyapaar-data) | Python + DuckDB | **Data Lakehouse**: Point-in-time corporate actions, splits, dividends, coverage ledgers, Parquet catalog, data ingestion sidecars. |
 | [`vyapaar-examples`](./vyapaar-examples) | Python | **Learning Path**: Runnable reference scripts for Indian equities, options, factor models, and backtesting. |
-| [`vyapaar-fe`](./vyapaar-fe) | TypeScript | **Web Desktop UI**: Dockview modular workspace, trading terminal, real-time depth, screener, and portfolio management. |
 | [`vyapaar-docs`](./vyapaar-docs) | Markdown | **Documentation**: Comprehensive architecture, API references, tutorials, and user guides built via MkDocs Material. |
 
 ---

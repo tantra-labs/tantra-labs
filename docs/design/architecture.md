@@ -15,7 +15,6 @@
 | **L3** | `vyapaar-runtime` | **Central House**: Supervised Tokio actor pipeline (`actors`), event-driven backtester (`backtest`), strategy runner (`strategy`), GA/WFO enhancer (`enhancer`), SQLite/Postgres repositories (`persistence`), cron jobs (`jobs`), and Axum OpenAPI 3.1 server (`api-rest`). | Async I/O |
 | **L4** | `vyapaar-ffi` | **Python FFI Bridge**: Schema codegen (`codegen`) and PyO3 + Apache Arrow PyCapsule zero-copy extension (`py`) compiling the `vyapaar` wheel. | FFI Bridge |
 | **L5** | `vyapaar-ui` | **Unified Workstations**: Leptos 0.8 WASM Strategy Studio & Screener (`ui-app`), HTML5 canvas charts (`ui-charts`), Ratatui TUI (`tui`), and native CLI (`cli`). | WASM / TUI |
-| **L5** | `vyapaar-fe` | **Web Desktop UI**: TypeScript Dockview multi-pane institutional workspace. | Browser UI |
 | **L6** | `vyapaar-data` | **Financial Lakehouse**: DuckDB point-in-time fundamentals, corporate actions, and Parquet catalog management. | Python + DuckDB |
 | **L6** | `vyapaar-adapters` | **Community Broker SDK**: Pluggable Python broker adapters (Dhan, Zerodha, Upstox, Angel One, Fyers, Kotak, IIFL). | Python I/O |
 | **L6** | `vyapaar-strategies`| **Strategy Catalog**: Production Python strategies & declarative `step.toml` catalog chains. | Python Pure |

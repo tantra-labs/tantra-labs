@@ -15,5 +15,5 @@
 
 ## Phase 4: FFI Bridge, Workstations & Python Ecosystem (Tiers 4, 5, 6)
 - [ ] **Milestone 4.1 (`vyapaar-ffi`)**: Migrate codegen and PyO3/Arrow zero-copy bridge producing `vyapaar` Python wheel and `.pyi` stubs.
-- [ ] **Milestone 4.2 (`vyapaar-ui` & `vyapaar-fe`)**: Migrate Leptos 0.8 WASM Strategy Studio & Futuristic Screener (`vyapaar-ui-app`), implement native Ratatui TUI (`vyapaar-tui`) & CLI (`vyapaar-cli`), and migrate TypeScript Dockview frontend (`vyapaar-fe`).
+- [ ] **Milestone 4.2 (`vyapaar-ui`)**: Migrate Leptos 0.8 WASM Strategy Studio & Futuristic Screener (`vyapaar-ui-app`), implement native Ratatui TUI (`vyapaar-tui`) & CLI (`vyapaar-cli`). *(Retired vyapaar-fe: web UI consolidated under vyapaar-ui WASM & TUI)*
 - [ ] **Milestone 4.3 (`vyapaar-{data,adapters,strategies,examples,docs}`)**: Migrate Python packages under PEP 621 clean layout and validate MkDocs Material documentation in `vyapaar-docs`.

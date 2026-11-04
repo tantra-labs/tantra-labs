@@ -54,7 +54,6 @@ Vyapaar adopts a strict DDD bounded-context taxonomy, separating distinct bounde
 | **Agent** | `vyapaar-agent/` | Rust + Python | **AI Agent**: Autonomous research loop, MCP server, prompt replayer, and StockSharp Odysseus genetic strategy synthesizer. |
 | **Soul** | `vyapaar-ffi/`| Rust (PyO3) | **Python FFI Bridge**: Compiles `vyapaar` PyPI wheel, Arrow zero-copy memory bridge, and smart GIL management. |
 | **Face** | `vyapaar-ui/` | Rust (Leptos) | **Web Dashboard (WASM)**: Strategy Studio visual node canvas, backtest simulator workbench, and openalgo-charts bridge. |
-| **Frontend** | `vyapaar-fe/` | TypeScript | **Web Desktop UI**: Dockview modular workspace, trading terminal, real-time depth, screener, and portfolio management. |
 | **Strategies**| `vyapaar-strategies/`| Python | **Production Strategies**: Ported StockSharp strategies (Quoting, Arbitrage, TWAP/VWAP slicers, Turtle breakout, Risk Parity). |
 | **Examples** | `vyapaar-examples/` | Python | **Learning Path**: Runnable Python reference scripts for Indian equities, options, factor models, and backtesting. |
 | **Data** | `vyapaar-data/` | Python + DuckDB| **Data Lakehouse**: Point-in-time corporate actions, splits, dividends, coverage ledgers, and Parquet catalog. |
@@ -215,7 +214,6 @@ Vyapaar deliberately adopts and synthesizes proven architectural patterns from t
 ### 5.4 StockSharp: Comprehensive Indicator Library & Algorithmic Orders
 * **100+ Indicators Library**: Extensive ported catalog of technical, statistical, and mathematical indicators in `vyapaar-market`, optimized for streaming tick updates.
 * **Algorithmic Slicers & Order Types**: Pre-built execution algorithms including TWAP, VWAP, Pegged Orders, Icebergs, and Quoting/Arbitrage engines.
-* **Visual Strategy Designer (Odysseus / Studio)**: Visual node-graph strategy authoring in `vyapaar-ui` and `vyapaar-fe`, allowing visual graph-to-code round-tripping.
 
 ### 5.5 NoFX: AI-Native Runtime Safety & Guardrails
 * **Untrusted AI Principle**: Large Language Models and AI agents are treated as untrusted signal generators. An AI model can never execute arbitrary commands or bypass risk limits.
@@ -334,7 +332,6 @@ Every repository in the Vyapaar workspace must adhere to a standardized GitHub C
   - Multi-platform test matrix (`linux-x86_64`, `linux-aarch64`):
     1. Maturin build: `maturin develop`
     2. Python test suite: `pytest -q`
-* **Frontend Repository** (`vyapaar-fe`):
   - `.github/workflows/ci.yml`:
     1. Type Check: `tsc --noEmit`
     2. Linting: `eslint .`

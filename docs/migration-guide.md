@@ -43,7 +43,6 @@
 | **3B** | `honba-ya/` | `vyapaar-runtime/` | **Central Actor Runtime** | `honba-ya-actors` → `vyapaar-runtime-actors`<br>`honba-ya-api` → `vyapaar-runtime-api`<br>`honba-ya-api-rest` → `vyapaar-runtime-api-rest`<br>`honba-ya-backtest` → `vyapaar-runtime-backtest`<br>`honba-ya-config` → `vyapaar-runtime-config`<br>`honba-ya-enhancer` → `vyapaar-runtime-enhancer`<br>`honba-ya-persistence` → `vyapaar-runtime-persistence`<br>`honba-ya-strategy` → `vyapaar-runtime-strategy`<br>`honba-ya-testing` → `vyapaar-runtime-testing`<br>**[NEW]**: `vyapaar-runtime-jobs` |
 | **4** | `honba-tamashii/` | `vyapaar-ffi/` | **Python FFI Bridge** | `honba-tamashii-codegen` → `vyapaar-ffi-codegen`<br>`honba-tamashii-py` → `vyapaar-ffi-py`<br>`python/honba` → `python/vyapaar` (`vyapaar._vyapaar` ABI3 wheel) |
 | **5A** | `honba-kao/` | `vyapaar-ui/` | **WASM Studio & TUI/CLI** | `honba-kao-app` → `vyapaar-ui-app`<br>`honba-kao-ui-core` → `vyapaar-ui-core`<br>`honba-kao-client` → `vyapaar-ui-client`<br>`honba-kao-api-wasm` → `vyapaar-ui-api-wasm`<br>`honba-kao-assets` → `vyapaar-ui-assets`<br>`openalgo-charts-rs` → `vyapaar-ui-charts`<br>**[NEW]**: `vyapaar-cli`, `vyapaar-tui`, `vyapaar-highlight` |
-| **5B** | `honba-fe/` | `vyapaar-fe/` | **Web Desktop UI (TS)** | `@honba/*` → `@vyapaar/*` |
 | **6A** | `honba-data/` | `vyapaar-data/` | **Data Lakehouse (Py)** | `src/honba_data` → `vyapaar_data` |
 | **6B** | `honba-adapters/` | `vyapaar-adapters/` | **Python Broker SDK** | `src/honba_adapters` → `vyapaar_adapters` |
 | **6C** | `honba-strategies/` | `vyapaar-strategies/` | **Strategy Catalog (Py)** | `src/honba_strategies` → `vyapaar_strategies` |
@@ -67,7 +66,6 @@ flowchart BT
     T3B["Tier 3B: vyapaar-runtime (Config, Testing, Strategy, Persistence, Actors, Backtest, Enhancer, Jobs, API, API-REST)"]
     T4["Tier 4: vyapaar-ffi (Codegen, PyO3 FFI, Python vyapaar SDK)"]
     T5A["Tier 5A: vyapaar-ui (UI-Core, Assets, Charts, Client, API-WASM, App, Highlight, TUI, CLI)"]
-    T5B["Tier 5B: vyapaar-fe (TypeScript Dockview Desktop)"]
     T6["Tier 6: Python & Docs (vyapaar-data, vyapaar-adapters, vyapaar-strategies, vyapaar-examples, vyapaar-docs)"]
 
     T0 --> T1A
@@ -247,10 +245,9 @@ Before running Tier 0:
 
 ---
 
-### Tier 5A & 5B: Workstations (`vyapaar-ui` & `vyapaar-fe`)
+### Tier 5A & 5B: Workstations (`vyapaar-ui` )
 * **Detailed Playbooks**:
   - [`vyapaar-ui/docs/migration-guide.md`](./vyapaar-ui/docs/migration-guide.md) (Source: `honba-workspace/honba-kao`)
-  - [`vyapaar-fe/docs/migration-guide.md`](./vyapaar-fe/docs/migration-guide.md) (Source: `honba-workspace/honba-fe`)
 * **DDD Fixes to Apply During Migration**:
   1. In `vyapaar-ui`: Remove unconditional `tokio` dependencies from WASM crates (`vyapaar-ui-core`, `vyapaar-ui-assets`, `vyapaar-ui-charts`, `vyapaar-ui-client`, `vyapaar-ui-api-wasm`, `vyapaar-ui-app`).
   2. Implement `vyapaar-highlight` (tree-sitter syntax highlighter), `vyapaar-tui` (Ratatui terminal workstation), and `vyapaar-cli` (`vyapaar` static binary with `vyapaar tui`, `vyapaar ask`, `vyapaar backtest`, `vyapaar serve` subcommands).
@@ -286,6 +283,6 @@ You can delegate individual tiers or repositories in parallel within the same ti
 | **Batch 1** | Agent A: `vyapaar-core` (Tier 0) | None |
 | **Batch 2** | Agent A: `vyapaar-risk` (Tier 1A)<br>Agent B: `vyapaar-ledger` (Tier 1B) | Batch 1 Green |
 | **Batch 3** | Agent A: `vyapaar-market` (Tier 2A)<br>Agent B: `vyapaar-exec` (Tier 2B)<br>Agent C: `vyapaar-agent` (Tier 3A) | Batch 2 Green |
-| **Batch 4** | Agent A: `vyapaar-runtime` (Tier 3B)<br>Agent B: `vyapaar-ui` (Tier 5A)<br>Agent C: `vyapaar-fe` (Tier 5B) | Batch 3 Green |
+| **Batch 4** | Agent A: `vyapaar-runtime` (Tier 3B)<br>Agent B: `vyapaar-ui` (Tier 5A) | Batch 3 Green |
 | **Batch 5** | Agent A: `vyapaar-ffi` (Tier 4) | Batch 4 Green |
 | **Batch 6** | Agent A: `vyapaar-data` & `vyapaar-adapters`<br>Agent B: `vyapaar-strategies` & `vyapaar-examples`<br>Agent C: `vyapaar-docs` | Batch 5 Green |
