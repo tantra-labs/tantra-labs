@@ -1,5 +1,9 @@
 REPOS := vyapaar-core vyapaar-risk vyapaar-ledger vyapaar-market vyapaar-exec vyapaar-runtime vyapaar-agent vyapaar-ffi vyapaar-ui
 
+# Default to the user's persistent agent socket if SSH_AUTH_SOCK is not set in environment
+SSH_SOCK := $(if $(XDG_RUNTIME_DIR),$(XDG_RUNTIME_DIR),/run/user/$(shell id -u))/ssh-agent.sock
+export SSH_AUTH_SOCK ?= $(SSH_SOCK)
+
 .PHONY: default build build-dev build-prod build-release build-debug dev prod release debug check check-dev check-prod test fmt clippy clean
 
 # Default build is 'prod' (no debug build unless asked for specifically)
@@ -97,25 +101,44 @@ docs-clean:
 	(cd vyapaar-docs && $(MAKE) clean)
 
 # ---- ssh agent + push all repos ------------------------------------------
-.PHONY: push
+.PHONY: ssh-agent agent push
 
 SSH_DEV_KEY := $(HOME)/.ssh/remotes/github.com-dev/id_ed25519_dev_pmallapp_github_gmail
 ALL_REPOS := $(shell find . -maxdepth 2 -name .git -printf '%h\n' | sed 's#^\./##' | sort)
 
-# Adds the dev github key to an ssh-agent and pushes every repo in the
-# workspace. If no agent is already reachable via $SSH_AUTH_SOCK, a
-# throwaway one is started just for this run and killed on exit.
-push:
-	@ssh-add -l >/dev/null 2>&1; rc=$$?; \
+# Starts persistent ssh-agent if not already running, and loads the dev key
+ssh-agent agent:
+	@SOCK="$${SSH_AUTH_SOCK:-$(SSH_SOCK)}"; \
+	ssh-add -l >/dev/null 2>&1; rc=$$?; \
 	if [ $$rc -eq 2 ]; then \
-	  echo "starting a throwaway ssh-agent for this run"; \
-	  eval "$$(ssh-agent -s)" >/dev/null; \
-	  trap 'ssh-agent -k >/dev/null 2>&1' EXIT; \
-	fi; \
-	if [ -f "$(SSH_DEV_KEY)" ]; then \
-	  ssh-add $(SSH_DEV_KEY); \
-	fi; \
-	for r in $(ALL_REPOS); do \
+	  echo "==> Starting persistent ssh-agent at $$SOCK"; \
+	  rm -f "$$SOCK"; \
+	  eval "$$(ssh-agent -a "$$SOCK")" >/dev/null; \
+	  if [ -f "$(SSH_DEV_KEY)" ]; then \
+	    ssh-add "$(SSH_DEV_KEY)"; \
+	  fi; \
+	elif [ $$rc -eq 1 ]; then \
+	  echo "==> ssh-agent running at $$SOCK (loading key)"; \
+	  if [ -f "$(SSH_DEV_KEY)" ]; then \
+	    ssh-add "$(SSH_DEV_KEY)"; \
+	  fi; \
+	else \
+	  if [ -f "$(SSH_DEV_KEY)" ]; then \
+	    FP="$$(ssh-keygen -lf "$(SSH_DEV_KEY)" 2>/dev/null | awk '{print $$2}')"; \
+	    if ! ssh-add -l 2>/dev/null | grep -q "$$FP"; then \
+	      echo "==> Loading $(SSH_DEV_KEY) into running agent"; \
+	      ssh-add "$(SSH_DEV_KEY)"; \
+	    else \
+	      echo "==> ssh-agent running at $$SOCK with dev key loaded"; \
+	    fi; \
+	  else \
+	    echo "==> ssh-agent running at $$SOCK"; \
+	  fi; \
+	fi
+
+# Pushes every repo in the workspace, ensuring ssh-agent is running with the dev key
+push: ssh-agent
+	@for r in $(ALL_REPOS); do \
 	  echo "==> pushing $$r"; \
 	  (cd $$r && git push) || echo "!! push failed: $$r"; \
 	done
