@@ -142,3 +142,10 @@ push: ssh-agent
 	  echo "==> pushing $$r"; \
 	  (cd $$r && git push) || echo "!! push failed: $$r"; \
 	done
+
+# Pushes every repo in the workspace, ensuring ssh-agent is running with the dev key
+pull: ssh-agent
+	@for r in $(ALL_REPOS); do \
+	  echo "==> pulling $$r"; \
+	  (cd $$r && git pull) || echo "!! pull failed: $$r"; \
+	done
