@@ -12,6 +12,7 @@ Per workspace rule `.agents/rules/gap-tracking.md`:
 |---|-------|--------------|--------|
 | [0001](0001-fincept-quantcepts-gap-closure-and-feature-roadmap.md) | Fincept & Quantcepts Feature Parity, Gap Closure, and Platform Expansion Master Plan | Platform-wide | Approved Architecture & Implementation Roadmap |
 | [0003](0003-crate-topology-consolidation.md) | Crate Topology Consolidation: remove stub/duplicate crates and pin the facade convention | `vyapaar-market`, `vyapaar-exec`, `vyapaar-runtime` (+ facade convention, all Rust workspaces) | Proposed (covers `docs/gaps/0001`–`0008`) |
+| [0004](0004-rename-vyapaar-to-tantra.md) | Rename the entire platform from `Vyapaar`/`vyapaar` to `Tantra`/`tantra` (org, repos, crates, Python packages, docs) | Platform-wide (all repos + org `vyapaar-labs`) | Proposed (4 phases: Rust crates → Python packages → repos/org/submodules → sweep) |
 
 ## Implemented Plans
 
