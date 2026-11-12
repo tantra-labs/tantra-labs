@@ -1,42 +1,42 @@
-[submodule "vyapaar-core"]
-	path = vyapaar-core
-	url = git@github.com-dev:vyapaar-labs/vyapaar-core.git
-[submodule "vyapaar-ledger"]
-	path = vyapaar-ledger
-	url = git@github.com-dev:vyapaar-labs/vyapaar-ledger.git
-[submodule "vyapaar-risk"]
-	path = vyapaar-risk
-	url = git@github.com-dev:vyapaar-labs/vyapaar-risk.git
-[submodule "vyapaar-market"]
-	path = vyapaar-market
-	url = git@github.com-dev:vyapaar-labs/vyapaar-market.git
-[submodule "vyapaar-exec"]
-	path = vyapaar-exec
-	url = git@github.com-dev:vyapaar-labs/vyapaar-exec.git
-[submodule "vyapaar-runtime"]
-	path = vyapaar-runtime
-	url = git@github.com-dev:vyapaar-labs/vyapaar-runtime.git
-[submodule "vyapaar-agent"]
-	path = vyapaar-agent
-	url = git@github.com-dev:vyapaar-labs/vyapaar-agent.git
-[submodule "vyapaar-ffi"]
-	path = vyapaar-ffi
-	url = git@github.com-dev:vyapaar-labs/vyapaar-ffi.git
-[submodule "vyapaar-ui"]
-	path = vyapaar-ui
-	url = git@github.com-dev:vyapaar-labs/vyapaar-ui.git
-[submodule "vyapaar-strategies"]
-	path = vyapaar-strategies
-	url = git@github.com-dev:vyapaar-labs/vyapaar-strategies.git
-[submodule "vyapaar-adapters"]
-	path = vyapaar-adapters
-	url = git@github.com-dev:vyapaar-labs/vyapaar-adapters.git
-[submodule "vyapaar-data"]
-	path = vyapaar-data
-	url = git@github.com-dev:vyapaar-labs/vyapaar-data.git
-[submodule "vyapaar-examples"]
-	path = vyapaar-examples
-	url = git@github.com-dev:vyapaar-labs/vyapaar-examples.git
-[submodule "vyapaar-docs"]
-	path = vyapaar-docs
-	url = git@github.com-dev:vyapaar-labs/vyapaar-docs.git
+[submodule "tantra-core"]
+	path = tantra-core
+	url = git@github.com-dev:tantra-labs/tantra-core.git
+[submodule "tantra-ledger"]
+	path = tantra-ledger
+	url = git@github.com-dev:tantra-labs/tantra-ledger.git
+[submodule "tantra-risk"]
+	path = tantra-risk
+	url = git@github.com-dev:tantra-labs/tantra-risk.git
+[submodule "tantra-market"]
+	path = tantra-market
+	url = git@github.com-dev:tantra-labs/tantra-market.git
+[submodule "tantra-exec"]
+	path = tantra-exec
+	url = git@github.com-dev:tantra-labs/tantra-exec.git
+[submodule "tantra-runtime"]
+	path = tantra-runtime
+	url = git@github.com-dev:tantra-labs/tantra-runtime.git
+[submodule "tantra-agent"]
+	path = tantra-agent
+	url = git@github.com-dev:tantra-labs/tantra-agent.git
+[submodule "tantra-ffi"]
+	path = tantra-ffi
+	url = git@github.com-dev:tantra-labs/tantra-ffi.git
+[submodule "tantra-ui"]
+	path = tantra-ui
+	url = git@github.com-dev:tantra-labs/tantra-ui.git
+[submodule "tantra-strategies"]
+	path = tantra-strategies
+	url = git@github.com-dev:tantra-labs/tantra-strategies.git
+[submodule "tantra-adapters"]
+	path = tantra-adapters
+	url = git@github.com-dev:tantra-labs/tantra-adapters.git
+[submodule "tantra-data"]
+	path = tantra-data
+	url = git@github.com-dev:tantra-labs/tantra-data.git
+[submodule "tantra-examples"]
+	path = tantra-examples
+	url = git@github.com-dev:tantra-labs/tantra-examples.git
+[submodule "tantra-docs"]
+	path = tantra-docs
+	url = git@github.com-dev:tantra-labs/tantra-docs.git

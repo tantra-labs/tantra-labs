@@ -2,11 +2,11 @@
 # ==============================================================================
 # scripts/create-remote-repos.sh
 # 
-# Provision all remote GitHub repositories under the org: vyapaar-labs
+# Provision all remote GitHub repositories under the org: tantra-labs
 # using GitHub CLI (gh).
 #
 # Prerequisite:
-#   The GitHub Organization 'vyapaar-labs' must first be created via GitHub Web:
+#   The GitHub Organization 'tantra-labs' must first be created via GitHub Web:
 #   https://github.com/account/organizations/new
 #
 # Usage:
@@ -15,7 +15,7 @@
 
 set -euo pipefail
 
-ORG="vyapaar-labs"
+ORG="tantra-labs"
 VISIBILITY="public"
 DRY_RUN=false
 
@@ -42,7 +42,7 @@ for arg in "$@"; do
 done
 
 echo "=================================================================="
-echo "Vyapaar Labs — Remote Repository Provisioner"
+echo "Tantra Labs — Remote Repository Provisioner"
 echo "Target Organization: $ORG"
 echo "Repository Visibility: $VISIBILITY"
 echo "Dry Run Mode: $DRY_RUN"
@@ -71,22 +71,22 @@ echo "✓ Organization '$ORG' verified on GitHub."
 
 # Repository definition list: NAME|DESCRIPTION
 REPOS=(
-    "vyapaar-labs|Vyapaar Labs superproject workspace: autonomous, high-throughput, AI-native algorithmic trading platform for Indian markets (NSE/BSE)"
-    "vyapaar-core|Shared Kernel: Canonical Decimal value objects (Price, Quantity, Money), InstrumentId, Order, Decision, OpenAPI schemas"
-    "vyapaar-ledger|Domain Heart: Order Management System (OMS), FIFO tax-lot tracking, double-entry general ledger"
-    "vyapaar-risk|Regulatory Risk Gate: Sub-15 µs pre-trade risk engine (SEBI algo ID, OTR circuit breakers, price bands, freeze limits)"
-    "vyapaar-market|Market Data: Multi-broker binary WebSockets, tick coalescing, 100+ indicators, Parquet Lakehouse"
-    "vyapaar-exec|Execution Gateway: Broker executors, headless TOTP auth, freeze slicer, Smart Order Router (SOR)"
-    "vyapaar-runtime|Central Runtime & Automation: Tokio actor pipeline, backtester, strategy enhancer, Axum REST/WS API"
-    "vyapaar-agent|AI Agent Engine: LLM providers, trader loop, prompt replay, genetic synthesizer, MCP server"
-    "vyapaar-ffi|Python FFI Bridge: Apache Arrow zero-copy memory bridge, PyO3 bindings for vyapaar wheel"
-    "vyapaar-ui|Unified Workstations: WASM Strategy Studio, openalgo-charts, Ratatui TUI, CLI binary"
-    "vyapaar-strategies|Production Strategies: Institutional trading strategies (Quoting, Arbitrage, TWAP/VWAP, Turtle, Risk Parity)"
-    "vyapaar-adapters|Broker SDK: Python community broker connectors (Dhan, Zerodha, Upstox, Angel One, Fyers, Kotak)"
-    "vyapaar-data|Data Lakehouse: Point-in-time corporate actions, splits, dividends, coverage ledgers, DuckDB/Parquet catalog"
-    "vyapaar-examples|Learning Path: Runnable Python reference scripts for Indian equities, options, and factor models"
-    "vyapaar-fe|Web Desktop UI: Dockview modular workspace, trading terminal, real-time depth, screener"
-    "vyapaar-docs|Documentation: Comprehensive architecture, API references, tutorials, and user guides"
+    "tantra-labs|Tantra Labs superproject workspace: autonomous, high-throughput, AI-native algorithmic trading platform for Indian markets (NSE/BSE)"
+    "tantra-core|Shared Kernel: Canonical Decimal value objects (Price, Quantity, Money), InstrumentId, Order, Decision, OpenAPI schemas"
+    "tantra-ledger|Domain Heart: Order Management System (OMS), FIFO tax-lot tracking, double-entry general ledger"
+    "tantra-risk|Regulatory Risk Gate: Sub-15 µs pre-trade risk engine (SEBI algo ID, OTR circuit breakers, price bands, freeze limits)"
+    "tantra-market|Market Data: Multi-broker binary WebSockets, tick coalescing, 100+ indicators, Parquet Lakehouse"
+    "tantra-exec|Execution Gateway: Broker executors, headless TOTP auth, freeze slicer, Smart Order Router (SOR)"
+    "tantra-runtime|Central Runtime & Automation: Tokio actor pipeline, backtester, strategy enhancer, Axum REST/WS API"
+    "tantra-agent|AI Agent Engine: LLM providers, trader loop, prompt replay, genetic synthesizer, MCP server"
+    "tantra-ffi|Python FFI Bridge: Apache Arrow zero-copy memory bridge, PyO3 bindings for tantra wheel"
+    "tantra-ui|Unified Workstations: WASM Strategy Studio, openalgo-charts, Ratatui TUI, CLI binary"
+    "tantra-strategies|Production Strategies: Institutional trading strategies (Quoting, Arbitrage, TWAP/VWAP, Turtle, Risk Parity)"
+    "tantra-adapters|Broker SDK: Python community broker connectors (Dhan, Zerodha, Upstox, Angel One, Fyers, Kotak)"
+    "tantra-data|Data Lakehouse: Point-in-time corporate actions, splits, dividends, coverage ledgers, DuckDB/Parquet catalog"
+    "tantra-examples|Learning Path: Runnable Python reference scripts for Indian equities, options, and factor models"
+    "tantra-fe|Web Desktop UI: Dockview modular workspace, trading terminal, real-time depth, screener"
+    "tantra-docs|Documentation: Comprehensive architecture, API references, tutorials, and user guides"
     ".github|Organization health files, profile README, and shared GitHub Actions workflows"
 )
 

@@ -1,4 +1,4 @@
-REPOS := vyapaar-core vyapaar-risk vyapaar-ledger vyapaar-market vyapaar-exec vyapaar-runtime vyapaar-agent vyapaar-ffi vyapaar-ui
+REPOS := tantra-core tantra-risk tantra-ledger tantra-market tantra-exec tantra-runtime tantra-agent tantra-ffi tantra-ui
 
 # Default to the user's persistent agent socket if SSH_AUTH_SOCK is not set in environment
 SSH_SOCK := $(if $(XDG_RUNTIME_DIR),$(XDG_RUNTIME_DIR),/run/user/$(shell id -u))/ssh-agent.sock
@@ -48,39 +48,39 @@ clean:
 	@find . -type d -name target -prune -exec rm -rf {} +
 
 # ---- frontends & ui -------------------------------------------------------
-# `dev-ui` starts dev mode on vyapaar-ui (WASM Studio / CLI / TUI).
-# `dev-fe` starts dev mode on vyapaar-fe (React/Vite desktop UI when present).
+# `dev-ui` starts dev mode on tantra-ui (WASM Studio / CLI / TUI).
+# `dev-fe` starts dev mode on tantra-fe (React/Vite desktop UI when present).
 .PHONY: build-ui dev-ui dev-fe build-kao dev-kao
 
 build-ui:
-	@if [ -f vyapaar-ui/Trunk.toml ]; then \
+	@if [ -f tantra-ui/Trunk.toml ]; then \
 	  if command -v trunk >/dev/null 2>&1; then \
-	    echo "==> vyapaar-ui (trunk)"; \
-	    (cd vyapaar-ui && trunk build --release); \
+	    echo "==> tantra-ui (trunk)"; \
+	    (cd tantra-ui && trunk build --release); \
 	  else \
-	    echo "skip vyapaar-ui: install trunk with 'cargo install --locked trunk'"; \
+	    echo "skip tantra-ui: install trunk with 'cargo install --locked trunk'"; \
 	  fi; \
 	else \
-	  echo "==> vyapaar-ui (prod)"; \
-	  (cd vyapaar-ui && $(MAKE) prod); \
+	  echo "==> tantra-ui (prod)"; \
+	  (cd tantra-ui && $(MAKE) prod); \
 	fi
 
 dev-ui:
-	@if [ -f vyapaar-ui/Trunk.toml ]; then \
+	@if [ -f tantra-ui/Trunk.toml ]; then \
 	  if command -v trunk >/dev/null 2>&1; then \
-	    (cd vyapaar-ui && $(MAKE) serve); \
+	    (cd tantra-ui && $(MAKE) serve); \
 	  else \
 	    echo "trunk not installed"; exit 1; \
 	  fi; \
 	else \
-	  (cd vyapaar-ui && $(MAKE) dev); \
+	  (cd tantra-ui && $(MAKE) dev); \
 	fi
 
 dev-fe:
-	@if [ -d vyapaar-fe ]; then \
-	  (cd vyapaar-fe && $(MAKE) dev); \
+	@if [ -d tantra-fe ]; then \
+	  (cd tantra-fe && $(MAKE) dev); \
 	else \
-	  echo "vyapaar-fe directory not found"; exit 1; \
+	  echo "tantra-fe directory not found"; exit 1; \
 	fi
 
 # Backward-compatible aliases for honba migration muscle memory
@@ -92,13 +92,13 @@ dev-kao: dev-ui
 
 docs: docs-build
 docs-build:
-	(cd vyapaar-docs && $(MAKE) build)
+	(cd tantra-docs && $(MAKE) build)
 
 docs-serve:
-	(cd vyapaar-docs && $(MAKE) serve)
+	(cd tantra-docs && $(MAKE) serve)
 
 docs-clean:
-	(cd vyapaar-docs && $(MAKE) clean)
+	(cd tantra-docs && $(MAKE) clean)
 
 # ---- ssh agent + push all repos ------------------------------------------
 .PHONY: ssh-agent agent push

@@ -1,9 +1,9 @@
 # Rule: HANDOFF.md Hygiene (binding)
 
 **Status: binding for every orchestrator/parent session and every spawned subagent, in every
-repository, across the whole `vyapaar-labs` workspace.**
+repository, across the whole `tantra-labs` workspace.**
 
-**Origin**: written 2026-11-06, prompted by `vyapaar-labs/.agents/HANDOFF.md` itself already
+**Origin**: written 2026-11-06, prompted by `tantra-labs/.agents/HANDOFF.md` itself already
 showing the exact staleness pattern this rule targets — see §5.
 
 This rule complements `AGENTS.md` §1.2 (Inter-Agent Handoff Protocol), which defines *what* goes
@@ -15,7 +15,7 @@ Invariants). This rule is about *keeping it current and short* once it exists.
 - Every repo actively being worked on maintains `.agents/HANDOFF.md`, created lazily on first
   need — like `docs/gaps/`, not pre-scaffolded into every repo up front.
 - A **submodule's own** `HANDOFF.md` tracks that submodule's own in-flight slice/batch.
-- The **`vyapaar-labs` root's** `HANDOFF.md` tracks state that spans repo boundaries: which
+- The **`tantra-labs` root's** `HANDOFF.md` tracks state that spans repo boundaries: which
   tiers/repos are mid-migration, cross-cutting initiatives, the current "where are we in the
   bottom-up build order" picture. It summarizes and points at a submodule's own `HANDOFF.md`
   rather than duplicating that detail.
@@ -63,9 +63,9 @@ permanent record. Permanent records live elsewhere and get cited, not duplicated
 
 ## 5. Worked example (from this workspace)
 
-As of 2026-11-06, `vyapaar-labs/.agents/HANDOFF.md` is itself a live example of what this rule
+As of 2026-11-06, `tantra-labs/.agents/HANDOFF.md` is itself a live example of what this rule
 asks agents to clean up: it carries a full "Final Gate Report" and "Phase / Slice Status" table
-for Tier 0 (`vyapaar-core`) in complete detail, even though the file's own top Status line already
+for Tier 0 (`tantra-core`) in complete detail, even though the file's own top Status line already
 says Tier 4 is green and Tier 5A is next. By this rule's own §2 criterion, Tier 0's gate report
 and slice table are stale, superseded status snapshots. The next session that touches this file
 should fold Tiers 0–3's detail down to one line each (milestone + commit/PR pointer) before

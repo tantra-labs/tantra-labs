@@ -28,6 +28,6 @@ models/
 *.gguf
 
 # UI Web workspace (standalone repo)
-vyapaar-ui-web/
+tantra-ui-web/
 
 .vscode/

@@ -1,6 +1,6 @@
-# Plans Index — `vyapaar-labs`
+# Plans Index — `tantra-labs`
 
-Master architecture and cross-subsystem plans for the Vyapaar platform.
+Master architecture and cross-subsystem plans for the Tantra platform.
 Per workspace rule `.agents/rules/gap-tracking.md`:
 - Gaps are individual features (`docs/gaps/XXXX-*.md`).
 - Plans are collections of gaps (`docs/plans/XXXX-*.md`).
@@ -11,14 +11,14 @@ Per workspace rule `.agents/rules/gap-tracking.md`:
 | # | Title | Target Scope | Status |
 |---|-------|--------------|--------|
 | [0001](0001-fincept-quantcepts-gap-closure-and-feature-roadmap.md) | Fincept & Quantcepts Feature Parity, Gap Closure, and Platform Expansion Master Plan | Platform-wide | Approved Architecture & Implementation Roadmap |
-| [0003](0003-crate-topology-consolidation.md) | Crate Topology Consolidation: remove stub/duplicate crates and pin the facade convention | `vyapaar-market`, `vyapaar-exec`, `vyapaar-runtime` (+ facade convention, all Rust workspaces) | Proposed (covers `docs/gaps/0001`–`0008`) |
-| [0004](0004-rename-vyapaar-to-tantra.md) | Rename the entire platform from `Vyapaar`/`vyapaar` to `Tantra`/`tantra` (org, repos, crates, Python packages, docs) | Platform-wide (all repos + org `vyapaar-labs`) | Proposed (4 phases: Rust crates → Python packages → repos/org/submodules → sweep) |
+| [0003](0003-crate-topology-consolidation.md) | Crate Topology Consolidation: remove stub/duplicate crates and pin the facade convention | `tantra-market`, `tantra-exec`, `tantra-runtime` (+ facade convention, all Rust workspaces) | Proposed (covers `docs/gaps/0001`–`0008`) |
 
 ## Implemented Plans
 
 | # | Title | Target Scope | Implemented In |
 |---|-------|--------------|----------------|
-| 0002 | Strategy Execution, Hyperparameter Tuning, and Optimal Trade Suggestion Engine for CLI & TUI | `vyapaar-agent`, `vyapaar-ui`, `vyapaar-runtime` | Phases 1–5 Complete (`vyapaar-agent` 85d3c07, `vyapaar-ui` 1beb69f + 06940c5, `vyapaar-runtime` 60a5bd9) |
+| 0004 | Rename the entire platform to Tantra (org, repos, crates, Python packages, docs) | Platform-wide (all repos + org `tantra-labs`) | Complete 2026-11-12; per-repo commits `65c50a4`–`08a01c9` + root `docs(plans)` commit; identity rewrite to `dev-pmallapp` (`dev.prem.mallappa@gmail.com`) applied across history |
+| 0002 | Strategy Execution, Hyperparameter Tuning, and Optimal Trade Suggestion Engine for CLI & TUI | `tantra-agent`, `tantra-ui`, `tantra-runtime` | Phases 1–5 Complete (`tantra-agent` 85d3c07, `tantra-ui` 1beb69f + 06940c5, `tantra-runtime` 60a5bd9) |
 
 ### 1. Updated `.agents` Rules
 Updated [`.agents/rules/gap-tracking.md`](../../.agents/rules/gap-tracking.md) and [`.agents/AGENTS.md`](../../.agents/AGENTS.md) (§9) with the binding **Plan & Gap Tracking Rule**:
@@ -27,11 +27,11 @@ Updated [`.agents/rules/gap-tracking.md`](../../.agents/rules/gap-tracking.md) a
   - **Plans** (`docs/plans/XXXX-*.md`): Collections of gaps or multi-phase architectural features.
 - **Upstream Provider Filing**:
   - When implementing a plan/gap, if any hardcoded, stubbed, mock, or sample data is used, a `docs/{plans,gaps}/XXXX-*.md` document must be added to the **respective repository that is supposed to provide the functionality** (the upstream owning repo).
-  - In the consuming repo, the stub/workaround must cite the dependency with a code comment (e.g., `// stand-in for vyapaar-core/docs/gaps/0001-*.md`) and in the commit message.
+  - In the consuming repo, the stub/workaround must cite the dependency with a code comment (e.g., `// stand-in for tantra-core/docs/gaps/0001-*.md`) and in the commit message.
 - **Cleanup of Implemented Items**:
   - Once a plan or gap is implemented and verified, the document is cleaned up (removed from active `docs/{plans,gaps}/`).
   - The repository's index table (`docs/plans/README.md` or `docs/gaps/README.md`) and any referencing indices (such as [`docs/future-work-bottoms-up-build-order.md`](../../docs/future-work-bottoms-up-build-order.md)) are updated to record completion details and closing commits without broken file links.
-- Synced the rule across submodules (symlinked `.agents/rules` in `vyapaar-examples` and updated `vyapaar-ui-web/.agents`).
+- Synced the rule across submodules (symlinked `.agents/rules` in `tantra-examples` and updated `tantra-ui-web/.agents`).
 
 ---
 
@@ -41,19 +41,19 @@ Across all repositories, cleaned up completed plan/gap markdown documents from `
 
 | Repository | Active / Open | Implemented / Closed Cleaned Up | Index File |
 | :--- | :--- | :--- | :--- |
-| **`vyapaar-labs` (root)** | Plan `0001` (Master Roadmap) | Plan `0002` (Strategy Execution, Tuning & Suggestions) | [`docs/plans/README.md`](../../docs/plans/README.md) |
-| **`vyapaar-core`** | Plan `0001` (Phase 2 call-site consolidation open) | Plan `0001` Phase 1 landed in `9ce4880` + `43a11f0` | [`vyapaar-core/docs/plans/README.md`](../../vyapaar-core/docs/plans/README.md) |
-| **`vyapaar-ledger`** | Plan `0001` (Phases 2–4 open) | Plan `0001` Phase 1 landed in `b35a314` | [`vyapaar-ledger/docs/plans/README.md`](../../vyapaar-ledger/docs/plans/README.md) |
-| **`vyapaar-market`** | Plan `0001` (Phase 4 open) | Plan `0001` Phases 1–3 landed in `ddb5c3f` + `602a710` | [`vyapaar-market/docs/plans/README.md`](../../vyapaar-market/docs/plans/README.md) |
-| **`vyapaar-exec`** | *(None)* | Plan `0001` (Wire-mapping in `2675c07`, crypto resolved NO-GO in `d529bc9`) | [`vyapaar-exec/docs/plans/README.md`](../../vyapaar-exec/docs/plans/README.md) |
-| **`vyapaar-adapters`** | *(None)* | Plan `0001` (Python/Rust adapter boundary resolved in `4f497aa`) | [`vyapaar-adapters/docs/plans/README.md`](../../vyapaar-adapters/docs/plans/README.md) |
-| **`vyapaar-ffi`** | *(None)* | Plan `0001` (Python bridge policy adopted in `c7bc420`) | [`vyapaar-ffi/docs/plans/README.md`](../../vyapaar-ffi/docs/plans/README.md) |
-| **`vyapaar-strategies`**| *(None)* | Plan `0001` (Versioned manifests & baskets landed in `207a70c`) | [`vyapaar-strategies/docs/plans/README.md`](../../vyapaar-strategies/docs/plans/README.md) |
-| **`vyapaar-risk`** | *(None)* | Plan `0001` (Tool annotation hooks landed in `5b00cda`) | [`vyapaar-risk/docs/plans/README.md`](../../vyapaar-risk/docs/plans/README.md) |
-| **`vyapaar-examples`** | Gaps `0001`–`0008` (wheel mirrors) | Plans `0001` (in `552c873`) and `0002` (in `bbfa692`) | [`vyapaar-examples/docs/plans/README.md`](../../vyapaar-examples/docs/plans/README.md) |
-| **`vyapaar-agent`** | Plans `0001`, `0002`, `0004` (P4 deferred), `0005` | Plan `0003` (Forecast, panel, report engines in `51b024d` + `236f8eb`) | [`vyapaar-agent/docs/plans/README.md`](../../vyapaar-agent/docs/plans/README.md) |
-| **`vyapaar-ui`** | Plans `0001`–`0003`, Gap `0001` (scan open) | Plans `0004` (CLI/TUI ref) and `0005` (Screen inventory in `2cda245` + `acdc137`) | [`vyapaar-ui/docs/plans/README.md`](../../vyapaar-ui/docs/plans/README.md) |
-| **`vyapaar-docs`** | Plan `0001` | Plan `0002` (Fincept/Quantcept mapping & OmniRoute setup in `1267490`) | [`vyapaar-docs/docs/plans/README.md`](../../vyapaar-docs/docs/plans/README.md) |
-| **`vyapaar-data`** | Plans `0001`, `0002` | Gap `0001` (Catalog coverage verified in `56d8ba1`) | [`vyapaar-data/docs/plans/README.md`](../../vyapaar-data/docs/plans/README.md) |
-| **`vyapaar-runtime`** | Plans `0001`–`0002`, Gaps `0001`–`0002` | *(Active development in progress)* | [`vyapaar-runtime/docs/plans/README.md`](../../vyapaar-runtime/docs/plans/README.md), [`vyapaar-runtime/docs/gaps/README.md`](../../vyapaar-runtime/docs/gaps/README.md) |
-| **`vyapaar-ui-web`** | Plans `0001`–`0008`, 41 Open Gaps | Plans `0009` (Chart library choice) and `0010` (Unified workspace shell); recorded 17 closed gaps (`0003`, `0008`, `0011`, `0019`, `0025`, `0026`, `0031`, `0032`, `0034`, `0035`, `0036`, `0037`, `0041`, `0050`, `0052`, `0056`, `0058`) in Closed Gaps index | [`vyapaar-ui-web/docs/plans/README.md`](../../vyapaar-ui-web/docs/plans/README.md), [`vyapaar-ui-web/docs/gaps/README.md`](../../vyapaar-ui-web/docs/gaps/README.md) |
+| **`tantra-labs` (root)** | Plan `0001` (Master Roadmap) | Plan `0002` (Strategy Execution, Tuning & Suggestions) | [`docs/plans/README.md`](../../docs/plans/README.md) |
+| **`tantra-core`** | Plan `0001` (Phase 2 call-site consolidation open) | Plan `0001` Phase 1 landed in `9ce4880` + `43a11f0` | [`tantra-core/docs/plans/README.md`](../../tantra-core/docs/plans/README.md) |
+| **`tantra-ledger`** | Plan `0001` (Phases 2–4 open) | Plan `0001` Phase 1 landed in `b35a314` | [`tantra-ledger/docs/plans/README.md`](../../tantra-ledger/docs/plans/README.md) |
+| **`tantra-market`** | Plan `0001` (Phase 4 open) | Plan `0001` Phases 1–3 landed in `ddb5c3f` + `602a710` | [`tantra-market/docs/plans/README.md`](../../tantra-market/docs/plans/README.md) |
+| **`tantra-exec`** | *(None)* | Plan `0001` (Wire-mapping in `2675c07`, crypto resolved NO-GO in `d529bc9`) | [`tantra-exec/docs/plans/README.md`](../../tantra-exec/docs/plans/README.md) |
+| **`tantra-adapters`** | *(None)* | Plan `0001` (Python/Rust adapter boundary resolved in `4f497aa`) | [`tantra-adapters/docs/plans/README.md`](../../tantra-adapters/docs/plans/README.md) |
+| **`tantra-ffi`** | *(None)* | Plan `0001` (Python bridge policy adopted in `c7bc420`) | [`tantra-ffi/docs/plans/README.md`](../../tantra-ffi/docs/plans/README.md) |
+| **`tantra-strategies`**| *(None)* | Plan `0001` (Versioned manifests & baskets landed in `207a70c`) | [`tantra-strategies/docs/plans/README.md`](../../tantra-strategies/docs/plans/README.md) |
+| **`tantra-risk`** | *(None)* | Plan `0001` (Tool annotation hooks landed in `5b00cda`) | [`tantra-risk/docs/plans/README.md`](../../tantra-risk/docs/plans/README.md) |
+| **`tantra-examples`** | Gaps `0001`–`0008` (wheel mirrors) | Plans `0001` (in `552c873`) and `0002` (in `bbfa692`) | [`tantra-examples/docs/plans/README.md`](../../tantra-examples/docs/plans/README.md) |
+| **`tantra-agent`** | Plans `0001`, `0002`, `0004` (P4 deferred), `0005` | Plan `0003` (Forecast, panel, report engines in `51b024d` + `236f8eb`) | [`tantra-agent/docs/plans/README.md`](../../tantra-agent/docs/plans/README.md) |
+| **`tantra-ui`** | Plans `0001`–`0003`, Gap `0001` (scan open) | Plans `0004` (CLI/TUI ref) and `0005` (Screen inventory in `2cda245` + `acdc137`) | [`tantra-ui/docs/plans/README.md`](../../tantra-ui/docs/plans/README.md) |
+| **`tantra-docs`** | Plan `0001` | Plan `0002` (Fincept/Quantcept mapping & OmniRoute setup in `1267490`) | [`tantra-docs/docs/plans/README.md`](../../tantra-docs/docs/plans/README.md) |
+| **`tantra-data`** | Plans `0001`, `0002` | Gap `0001` (Catalog coverage verified in `56d8ba1`) | [`tantra-data/docs/plans/README.md`](../../tantra-data/docs/plans/README.md) |
+| **`tantra-runtime`** | Plans `0001`–`0002`, Gaps `0001`–`0002` | *(Active development in progress)* | [`tantra-runtime/docs/plans/README.md`](../../tantra-runtime/docs/plans/README.md), [`tantra-runtime/docs/gaps/README.md`](../../tantra-runtime/docs/gaps/README.md) |
+| **`tantra-ui-web`** | Plans `0001`–`0008`, 41 Open Gaps | Plans `0009` (Chart library choice) and `0010` (Unified workspace shell); recorded 17 closed gaps (`0003`, `0008`, `0011`, `0019`, `0025`, `0026`, `0031`, `0032`, `0034`, `0035`, `0036`, `0037`, `0041`, `0050`, `0052`, `0056`, `0058`) in Closed Gaps index | [`tantra-ui-web/docs/plans/README.md`](../../tantra-ui-web/docs/plans/README.md), [`tantra-ui-web/docs/gaps/README.md`](../../tantra-ui-web/docs/gaps/README.md) |

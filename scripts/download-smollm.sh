@@ -3,7 +3,7 @@
 # scripts/download-smollm.sh
 #
 # Download SmolLM2 quantized GGUF models for local in-process inference in
-# vyapaar CLI & TUI tools.
+# tantra CLI & TUI tools.
 #
 # Usage:
 #   ./scripts/download-smollm.sh [360m|1.7b] [output_dir]
@@ -57,11 +57,11 @@ else
 fi
 
 echo ""
-echo "=== How to run with vyapaar ==="
+echo "=== How to run with tantra ==="
 echo "1. Set environment variable:"
-echo "   export VYAPAAR_GGUF_PATH=\"$DEST_PATH\""
+echo "   export TANTRA_GGUF_PATH=\"$DEST_PATH\""
 echo ""
 echo "2. Or pass --model-path explicitly:"
-echo "   cargo run -p vyapaar-cli -- ask \"What is a stop loss?\" --model-path \"$DEST_PATH\""
-echo "   cargo run -p vyapaar-cli -- chat --model-path \"$DEST_PATH\""
-echo "   cargo run -p vyapaar-cli -- tui --model-path \"$DEST_PATH\""
+echo "   cargo run -p tantra-cli -- ask \"What is a stop loss?\" --model-path \"$DEST_PATH\""
+echo "   cargo run -p tantra-cli -- chat --model-path \"$DEST_PATH\""
+echo "   cargo run -p tantra-cli -- tui --model-path \"$DEST_PATH\""

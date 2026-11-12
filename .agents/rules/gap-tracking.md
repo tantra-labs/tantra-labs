@@ -1,7 +1,7 @@
 # Rule: Plan & Gap Tracking (binding)
 
 **Status: binding for every orchestrator/parent session and every spawned subagent, in every
-repository, across the whole `vyapaar-labs` workspace.**
+repository, across the whole `tantra-labs` workspace.**
 
 ## 1. Plans vs. Gaps Definitions
 
@@ -21,7 +21,7 @@ Whenever implementing a plan or gap:
    - Use `docs/plans/XXXX-*.md` when the missing functionality represents a collection of gaps or multi-step subsystem.
 2. **Cite the dependency in the consuming repo**: Any change that depends on, works around, or is
    temporarily stubbed against an existing or newly filed gap/plan must cite it:
-   - Add a code comment at the workaround pointing directly to the gap/plan (e.g. `// stand-in for vyapaar-core/docs/gaps/0001-quant-transforms.md`).
+   - Add a code comment at the workaround pointing directly to the gap/plan (e.g. `// stand-in for tantra-core/docs/gaps/0001-quant-transforms.md`).
    - Cite the gap/plan number in the commit message.
    - Never implement an uncited workaround or leave stubbed/sample data silent.
 
@@ -76,10 +76,10 @@ When a plan or gap is implemented:
 
 ## 5. Identifying Upstream Provider Repositories
 
-In this multi-repo workspace (`vyapaar-labs/` submodules), a stub's root cause frequently lives in a
+In this multi-repo workspace (`tantra-labs/` submodules), a stub's root cause frequently lives in a
 different repository than where the symptom appears (e.g., a UI component needing an endpoint in
-`vyapaar-runtime`, an indicator calculation needing math in `vyapaar-core`, or a broker feed needing an adapter
-in `vyapaar-adapters`).
+`tantra-runtime`, an indicator calculation needing math in `tantra-core`, or a broker feed needing an adapter
+in `tantra-adapters`).
 1. **Diagnose root cause**: Identify the actual repo responsible for providing the functionality.
 2. **File in the provider repo**: Add the gap or plan document directly in that respective provider repo's
    `docs/{plans,gaps}/` directory, and update that repo's `README.md` index.

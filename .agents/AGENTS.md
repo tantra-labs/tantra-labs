@@ -1,6 +1,6 @@
-# Vyapaar Labs Ecosystem Instructions & Generic Agent Guidelines (`.agents/AGENTS.md`)
+# Tantra Labs Ecosystem Instructions & Generic Agent Guidelines (`.agents/AGENTS.md`)
 
-This is the canonical instruction file for AI coding agents, autonomous researchers, and software engineers working across the **Vyapaar Labs (व्यापार)** ecosystem. All autonomous agents (Claude, Gemini, Antigravity, OpenCode, Cursor, Codex) and subagents must strictly adhere to the architecture, coding standards, testing standards, and invariants defined in this document.
+This is the canonical instruction file for AI coding agents, autonomous researchers, and software engineers working across the **Tantra Labs (व्यापार)** ecosystem. All autonomous agents (Claude, Gemini, Antigravity, OpenCode, Cursor, Codex) and subagents must strictly adhere to the architecture, coding standards, testing standards, and invariants defined in this document.
 
 ---
 
@@ -43,43 +43,43 @@ This is the canonical instruction file for AI coding agents, autonomous research
 ## 2. Comprehensive Architectural Hints & Subsystem Map
 
 ### 2.1 Workspace Taxonomy (Bounded Contexts)
-Vyapaar adopts a strict DDD bounded-context taxonomy, separating distinct bounded contexts into dedicated repositories:
+Tantra adopts a strict DDD bounded-context taxonomy, separating distinct bounded contexts into dedicated repositories:
 
 | Subsystem | Directory | Language | Bounded Context & Responsibility |
 | :--- | :--- | :--- | :--- |
-| **Kernel** | `vyapaar-core/` | Rust | **Shared Kernel**: Canonical value objects (`Price`, `Quantity`, `Money`), wire contracts, OpenAPI 3.1 schemas, and `Decision` enum. |
-| **Heart** | `vyapaar-ledger/` | Rust | **Domain Heart**: Order Management System (`oms`), FIFO tax-lot tracking (`portfolio`), and double-entry general ledger. |
-| **Gate** | `vyapaar-risk/` | Rust | **Regulatory Risk Gate**: Sub-15 µs pre-trade risk engine (SEBI algo ID, OTR circuit breakers, price bands, freeze limits). |
-| **Eye** | `vyapaar-market/` | Rust | **Market Data**: Multi-broker binary WebSockets (Kite, Upstox, Fyers, Angel One), tick coalescing, 100+ StockSharp indicators, Parquet Lakehouse. |
-| **Hand** | `vyapaar-exec/` | Rust | **Execution**: Token-bucket rate limiter, freeze slicer, headless TOTP auth, Smart Order Router (SOR), hash-chained fsynced audit journal (JSONL segment WAL). |
-| **House** | `vyapaar-runtime/` | Rust (Tokio) | **Central Actor Runtime**: Multi-threaded actor pipeline, Strategy Tester (`backtest`), and Automatic Strategy Enhancer (GA, Bayesian, WFO, DSR). |
-| **Agent** | `vyapaar-agent/` | Rust + Python | **AI Agent**: Autonomous research loop, MCP server, prompt replayer, and StockSharp Odysseus genetic strategy synthesizer. |
-| **Soul** | `vyapaar-ffi/`| Rust (PyO3) | **Python FFI Bridge**: Compiles `vyapaar` PyPI wheel, Arrow zero-copy memory bridge, and smart GIL management. |
-| **Face** | `vyapaar-ui/` | Rust (Leptos) | **Web Dashboard (WASM)**: Strategy Studio visual node canvas, backtest simulator workbench, and openalgo-charts bridge. |
-| **Strategies**| `vyapaar-strategies/`| Python | **Production Strategies**: Ported StockSharp strategies (Quoting, Arbitrage, TWAP/VWAP slicers, Turtle breakout, Risk Parity). |
-| **Examples** | `vyapaar-examples/` | Python | **Learning Path**: Runnable Python reference scripts for Indian equities, options, factor models, and backtesting. |
-| **Data** | `vyapaar-data/` | Python + DuckDB| **Data Lakehouse**: Point-in-time corporate actions, splits, dividends, coverage ledgers, and Parquet catalog. |
-| **Docs** | `vyapaar-docs/` | Markdown | **Documentation**: Comprehensive architecture, API references, tutorials, and user guides built via MkDocs Material. |
-| **Adapters** | `vyapaar-adapters/` | Python | **Broker Connectors**: Pluggable Python adapters for Dhan, Zerodha, Upstox, Angel One, Fyers, Kotak, IIFL. |
+| **Kernel** | `tantra-core/` | Rust | **Shared Kernel**: Canonical value objects (`Price`, `Quantity`, `Money`), wire contracts, OpenAPI 3.1 schemas, and `Decision` enum. |
+| **Heart** | `tantra-ledger/` | Rust | **Domain Heart**: Order Management System (`oms`), FIFO tax-lot tracking (`portfolio`), and double-entry general ledger. |
+| **Gate** | `tantra-risk/` | Rust | **Regulatory Risk Gate**: Sub-15 µs pre-trade risk engine (SEBI algo ID, OTR circuit breakers, price bands, freeze limits). |
+| **Eye** | `tantra-market/` | Rust | **Market Data**: Multi-broker binary WebSockets (Kite, Upstox, Fyers, Angel One), tick coalescing, 100+ StockSharp indicators, Parquet Lakehouse. |
+| **Hand** | `tantra-exec/` | Rust | **Execution**: Token-bucket rate limiter, freeze slicer, headless TOTP auth, Smart Order Router (SOR), hash-chained fsynced audit journal (JSONL segment WAL). |
+| **House** | `tantra-runtime/` | Rust (Tokio) | **Central Actor Runtime**: Multi-threaded actor pipeline, Strategy Tester (`backtest`), and Automatic Strategy Enhancer (GA, Bayesian, WFO, DSR). |
+| **Agent** | `tantra-agent/` | Rust + Python | **AI Agent**: Autonomous research loop, MCP server, prompt replayer, and StockSharp Odysseus genetic strategy synthesizer. |
+| **Soul** | `tantra-ffi/`| Rust (PyO3) | **Python FFI Bridge**: Compiles `tantra` PyPI wheel, Arrow zero-copy memory bridge, and smart GIL management. |
+| **Face** | `tantra-ui/` | Rust (Leptos) | **Web Dashboard (WASM)**: Strategy Studio visual node canvas, backtest simulator workbench, and openalgo-charts bridge. |
+| **Strategies**| `tantra-strategies/`| Python | **Production Strategies**: Ported StockSharp strategies (Quoting, Arbitrage, TWAP/VWAP slicers, Turtle breakout, Risk Parity). |
+| **Examples** | `tantra-examples/` | Python | **Learning Path**: Runnable Python reference scripts for Indian equities, options, factor models, and backtesting. |
+| **Data** | `tantra-data/` | Python + DuckDB| **Data Lakehouse**: Point-in-time corporate actions, splits, dividends, coverage ledgers, and Parquet catalog. |
+| **Docs** | `tantra-docs/` | Markdown | **Documentation**: Comprehensive architecture, API references, tutorials, and user guides built via MkDocs Material. |
+| **Adapters** | `tantra-adapters/` | Python | **Broker Connectors**: Pluggable Python adapters for Dhan, Zerodha, Upstox, Angel One, Fyers, Kotak, IIFL. |
 
 ### 2.2 Event-Driven Architecture Pipeline
-Vyapaar enforces a strict unidirectional event pipeline for all trading activity:
+Tantra enforces a strict unidirectional event pipeline for all trading activity:
 ```mermaid
 flowchart LR
-    MarketEvent["MarketEvent (Ticks / Bars)"] --> Feed["vyapaar-market (Feed)"]
+    MarketEvent["MarketEvent (Ticks / Bars)"] --> Feed["tantra-market (Feed)"]
     Feed --> SignalEvent["SignalEvent (Indicators / Alpha)"]
-    SignalEvent --> Strategy["Strategy / AI (vyapaar-agent)"]
+    SignalEvent --> Strategy["Strategy / AI (tantra-agent)"]
     Strategy --> OrderEvent["OrderEvent (Order Request)"]
-    OrderEvent --> Risk["vyapaar-risk (Pre-Trade Gate)"]
-    Risk --> Router["vyapaar-exec (Execution Router)"]
+    OrderEvent --> Risk["tantra-risk (Pre-Trade Gate)"]
+    Risk --> Router["tantra-exec (Execution Router)"]
     Router --> FillEvent["FillEvent (Exchange Execution)"]
-    FillEvent --> OMS["vyapaar-ledger (OMS State Machine)"]
+    FillEvent --> OMS["tantra-ledger (OMS State Machine)"]
     OMS --> LedgerEvent["LedgerEvent (Double-Entry FIFO Ledger)"]
 ```
 
 ### 2.3 Zero-I/O Domain Purity & Temporal Determinism
 * **Pure Domain Logic**:
-  - The core domain crates (`vyapaar-core`, `vyapaar-ledger`, `vyapaar-risk`) must remain strictly zero-I/O:
+  - The core domain crates (`tantra-core`, `tantra-ledger`, `tantra-risk`) must remain strictly zero-I/O:
     - No network sockets, no filesystem I/O (`std::fs`, `tokio::fs`), no database calls.
     - No direct clock queries: Never call `SystemTime::now()` or `Instant::now()` in domain state machines.
   - All state transitions receive an explicit `DateTime<Utc>`.
@@ -108,7 +108,7 @@ flowchart LR
   - `FillReport`: Execution confirmation with explicit timestamp, executed price, quantity, exchange order ID, and transaction costs.
 * **Bounded Context Boundaries & Anti-Corruption Layers (ACL)**:
   - Never leak broker-specific data structures into core domain engines.
-  - Incoming raw WebSocket payloads from brokers (Kite, Upstox, Fyers) must be parsed inside `vyapaar-market` adapters and translated immediately to canonical `Tick` and `Bar` models.
+  - Incoming raw WebSocket payloads from brokers (Kite, Upstox, Fyers) must be parsed inside `tantra-market` adapters and translated immediately to canonical `Tick` and `Bar` models.
 * **Rich Domain Aggregates vs. Anemic Property Bags**:
   - Encapsulate business logic and validation rules inside Aggregate Roots and Entities (`OrderBook`, `Portfolio`, `RiskEngine`).
   - Never allow raw mutable property bags; all state transitions must be triggered via explicit, validated domain methods (`portfolio.apply_fill(&fill_report)?`).
@@ -138,7 +138,7 @@ flowchart LR
   - **Strictly Forbidden**: Do NOT write `#[test]` functions or `#[cfg(test)] mod tests { ... }` blocks inside production source files (`src/*.rs` or `src/**/*.rs`).
   - Production source files must remain strictly focused on production business logic, domain invariants, and public interfaces.
   - Test scaffolding, mocks, fixtures, and assertions must be decoupled into the external `tests/` directory.
-  - **Python Equivalent Rule**: In Python packages (`vyapaar-strategies`, `vyapaar-adapters`, `vyapaar-data`, `vyapaar-examples`), tests must reside in `tests/` (e.g. `tests/unit/`, `tests/integration/`), never inlined into library implementation files.
+  - **Python Equivalent Rule**: In Python packages (`tantra-strategies`, `tantra-adapters`, `tantra-data`, `tantra-examples`), tests must reside in `tests/` (e.g. `tests/unit/`, `tests/integration/`), never inlined into library implementation files.
 
 #### TDD Lifecycle (Red-Green-Refactor)
 1. **Red**: Write a failing test in `tests/` specifying the expected behavior, domain contract, edge case, or regulatory constraint *before* implementing or modifying code in `src/`. Run the test suite and confirm failure.
@@ -155,7 +155,7 @@ flowchart LR
 
 ### 4.1 Continuous Refactoring Culture
 * **The Boy Scout Rule**: Always leave the codebase cleaner than you found it. When touching an existing module, clean up unused imports, dead code, stale comments, and obsolete workarounds.
-* **Consolidation Over Duplication**: Never write duplicate logic across repositories. If a type or mathematical function is needed in multiple places, lift it into `vyapaar-core` or `vyapaar-ledger`.
+* **Consolidation Over Duplication**: Never write duplicate logic across repositories. If a type or mathematical function is needed in multiple places, lift it into `tantra-core` or `tantra-ledger`.
 * **Safe Refactoring Under Test Coverage**: Never attempt structural refactoring without existing comprehensive tests in `tests/`. If tests are missing, author tests first (Red), verify they pass against current behavior, and then refactor (Refactor).
 
 ### 4.2 Interface-First Design (Trait/Protocol Driven)
@@ -177,21 +177,21 @@ Design every library and domain component to be easily retargettable across mult
 1. **Platform Portability**:
    Native 64-bit support for `x86_64` and `aarch64` (Linux servers and Apple Silicon). Avoid architecture-specific assembly or platform-specific syscalls in core crates.
 2. **WebAssembly (WASM) Targetable**:
-   Compute crates (indicators in `vyapaar-market`, portfolio math in `vyapaar-ledger`, UI studio in `vyapaar-ui`) must compile cleanly to `wasm32-unknown-unknown`. Avoid blocking OS primitives, synchronous filesystem calls, or native thread spawns in portable crates.
+   Compute crates (indicators in `tantra-market`, portfolio math in `tantra-ledger`, UI studio in `tantra-ui`) must compile cleanly to `wasm32-unknown-unknown`. Avoid blocking OS primitives, synchronous filesystem calls, or native thread spawns in portable crates.
 3. **Dual Execution Target (Simulation vs. Live)**:
-   Strategies, risk checks, and indicator pipelines must run byte-for-byte identical in offline historical backtesting (`vyapaar-runtime`) and live low-latency exchange execution (`vyapaar-exec`/`vyapaar-market`) by retargeting the underlying adapter trait.
+   Strategies, risk checks, and indicator pipelines must run byte-for-byte identical in offline historical backtesting (`tantra-runtime`) and live low-latency exchange execution (`tantra-exec`/`tantra-market`) by retargeting the underlying adapter trait.
 4. **Broker / Exchange Agnostic**:
-   Business logic is completely isolated from broker-specific quirks (Zerodha Kite, Upstox, Fyers, Angel One). Adapters normalize incoming ticks and outgoing orders to Vyapaar canonical domain contracts.
+   Business logic is completely isolated from broker-specific quirks (Zerodha Kite, Upstox, Fyers, Angel One). Adapters normalize incoming ticks and outgoing orders to Tantra canonical domain contracts.
 
 ---
 
 ## 5. Idea Inheritance from Open-Source Quant Giants
 
-Vyapaar deliberately adopts and synthesizes proven architectural patterns from the world's leading open-source trading and quantitative research frameworks:
+Tantra deliberately adopts and synthesizes proven architectural patterns from the world's leading open-source trading and quantitative research frameworks:
 
 ### 5.1 Jesse: Pythonic Strategy Ergonomics & Metrics
 * **Declarative Strategy Authoring**:
-  Inspired by Jesse, Vyapaar strategy authors write intuitive, high-level Python code with direct primitives (`self.buy()`, `self.sell()`, `self.stop_loss`).
+  Inspired by Jesse, Tantra strategy authors write intuitive, high-level Python code with direct primitives (`self.buy()`, `self.sell()`, `self.stop_loss`).
 * **Hyperparameter Declarations & Routing**:
   Clear declarative parameters (`Parameter(min=..., max=..., step=...)`) and clean route definitions for multi-symbol, multi-timeframe strategies.
 * **Crisp Validation Metrics**:
@@ -214,13 +214,13 @@ Vyapaar deliberately adopts and synthesizes proven architectural patterns from t
 * **Double-Entry FIFO Ledger**: Multi-currency, tax-lot aware accounting guaranteeing ledger integrity down to the single paisa.
 
 ### 5.4 StockSharp: Comprehensive Indicator Library & Algorithmic Orders
-* **100+ Indicators Library**: Extensive ported catalog of technical, statistical, and mathematical indicators in `vyapaar-market`, optimized for streaming tick updates.
+* **100+ Indicators Library**: Extensive ported catalog of technical, statistical, and mathematical indicators in `tantra-market`, optimized for streaming tick updates.
 * **Algorithmic Slicers & Order Types**: Pre-built execution algorithms including TWAP, VWAP, Pegged Orders, Icebergs, and Quoting/Arbitrage engines.
 
 ### 5.5 NoFX: AI-Native Runtime Safety & Guardrails
 * **Untrusted AI Principle**: Large Language Models and AI agents are treated as untrusted signal generators. An AI model can never execute arbitrary commands or bypass risk limits.
-* **Closed Decision Grammar**: AI decisions must strictly conform to `vyapaar_core::Decision` parsed via `#[serde(deny_unknown_fields)]`.
-* **Deterministic Risk Gate Clamping**: A synchronous, non-bypassable pre-trade risk engine (`vyapaar-risk`) verifies and clamps every decision before it reaches execution buffers.
+* **Closed Decision Grammar**: AI decisions must strictly conform to `tantra_core::Decision` parsed via `#[serde(deny_unknown_fields)]`.
+* **Deterministic Risk Gate Clamping**: A synchronous, non-bypassable pre-trade risk engine (`tantra-risk`) verifies and clamps every decision before it reaches execution buffers.
 * **Cryptographic Replayability**: All prompts, completions, temperatures, and seeds are SHA-256 hashed and archived for deterministic replay in backtests.
 
 ---
@@ -228,11 +228,11 @@ Vyapaar deliberately adopts and synthesizes proven architectural patterns from t
 ## 6. Python-First SDK Architecture, Rust/Python Task Split & REST API
 
 ### 6.1 Python-First SDK Architecture
-Strategies in Vyapaar are authored in pure, modern Python (3.11+) using the `vyapaar` PyPI wheel (compiled from `vyapaar-ffi` via PyO3):
+Strategies in Tantra are authored in pure, modern Python (3.11+) using the `tantra` PyPI wheel (compiled from `tantra-ffi` via PyO3):
 
 ```python
-import vyapaar
-from vyapaar import Strategy, Parameter, Bar, OrderEvent, Decimal
+import tantra
+from tantra import Strategy, Parameter, Bar, OrderEvent, Decimal
 
 class NiftyMovingAverageCross(Strategy):
     fast_period = Parameter(default=10, min=5, max=50, step=5)
@@ -256,21 +256,21 @@ class NiftyMovingAverageCross(Strategy):
 
 ```mermaid
 flowchart TD
-    subgraph RustCore["Rust Core (vyapaar-core, vyapaar-ledger, vyapaar-risk, vyapaar-market, vyapaar-exec, vyapaar-runtime)"]
+    subgraph RustCore["Rust Core (tantra-core, tantra-ledger, tantra-risk, tantra-market, tantra-exec, tantra-runtime)"]
         WS["High-Throughput WebSocket Ingestion"]
         Coalesce["Tick Coalescing & L2/L3 Depth"]
-        RiskGate["Sub-15 µs Regulatory Risk Gate (vyapaar-risk)"]
+        RiskGate["Sub-15 µs Regulatory Risk Gate (tantra-risk)"]
         OMSEngine["OMS State Machine & Double-Entry Ledger"]
         ActorSystem["Tokio Actor Pipeline & Rate Limiting"]
     end
 
-    subgraph MemoryBridge["Zero-Copy Memory Bridge (vyapaar-ffi)"]
+    subgraph MemoryBridge["Zero-Copy Memory Bridge (tantra-ffi)"]
         Arrow["Apache Arrow RecordBatches / PyCapsule"]
         PyO3["PyO3 FFI (Smart GIL Management: py.allow_threads)"]
     end
 
-    subgraph PythonLayer["Python User Plane (vyapaar SDK, strategies, examples)"]
-        StrategyCode["Strategy Authoring (vyapaar.Strategy)"]
+    subgraph PythonLayer["Python User Plane (tantra SDK, strategies, examples)"]
+        StrategyCode["Strategy Authoring (tantra.Strategy)"]
         MLAI["ML / AI Models (PyTorch, scikit-learn, LLMs)"]
         Research["Jupyter Notebooks, Polars & DuckDB Queries"]
     end
@@ -280,11 +280,11 @@ flowchart TD
 ```
 
 * **Rust Core Responsibilities**:
-  1. High-frequency I/O and binary WebSocket connections to broker gateways (`vyapaar-market`).
+  1. High-frequency I/O and binary WebSocket connections to broker gateways (`tantra-market`).
   2. Nanosecond-to-microsecond tick parsing, coalescing, and order book depth maintenance.
-  3. Pre-trade regulatory risk gating (<15 µs in `vyapaar-risk`: SEBI algo ID, OTR counters, price bands, freeze limits).
-  4. OMS state machine transitions, execution routing, rate limiting (`vyapaar-exec`).
-  5. FIFO double-entry tax-lot accounting and ledger journaling (`vyapaar-ledger`).
+  3. Pre-trade regulatory risk gating (<15 µs in `tantra-risk`: SEBI algo ID, OTR counters, price bands, freeze limits).
+  4. OMS state machine transitions, execution routing, rate limiting (`tantra-exec`).
+  5. FIFO double-entry tax-lot accounting and ledger journaling (`tantra-ledger`).
   6. **GIL Independence**: Rust threads run freely without holding the Python GIL (`py.allow_threads`).
 * **Python Wrapper Responsibilities**:
   1. User-facing strategy authoring and parameter definitions.
@@ -296,8 +296,8 @@ flowchart TD
   - Zero heap allocation overhead on Python/Rust boundary.
 
 ### 6.3 Headless REST API & WebSocket Streaming Gateway
-* **Axum-Powered Headless Server (`vyapaar-runtime-api-rest`)**:
-  Vyapaar provides an industrial, headless HTTP/WebSocket API server exposing OpenAPI 3.1 endpoints generated directly from `vyapaar-core` types via `schemars`.
+* **Axum-Powered Headless Server (`tantra-runtime-api-rest`)**:
+  Tantra provides an industrial, headless HTTP/WebSocket API server exposing OpenAPI 3.1 endpoints generated directly from `tantra-core` types via `schemars`.
 * **Canonical Endpoints**:
   - `GET  /health` & `GET /version`: System health, runtime diagnostics, and API version.
   - `POST /orders`: Place validated order (returns `client_order_id` and exchange tracking status).
@@ -317,20 +317,20 @@ flowchart TD
 
 ## 7. GitHub Workflow Standards for All Repositories
 
-Every repository in the Vyapaar workspace must adhere to a standardized GitHub CI/CD and pull-request workflow:
+Every repository in the Tantra workspace must adhere to a standardized GitHub CI/CD and pull-request workflow:
 
 ### 7.1 CI Pipeline Matrix by Repository Type
-* **Rust Repositories** (`vyapaar-core`, `vyapaar-ledger`, `vyapaar-risk`, `vyapaar-market`, `vyapaar-exec`, `vyapaar-runtime`, `vyapaar-agent`, `vyapaar-ui`):
+* **Rust Repositories** (`tantra-core`, `tantra-ledger`, `tantra-risk`, `tantra-market`, `tantra-exec`, `tantra-runtime`, `tantra-agent`, `tantra-ui`):
   - `.github/workflows/ci.yml`:
     1. Formatting: `cargo fmt --check`
     2. Linting: `cargo clippy --all-targets -- -D warnings`
     3. Tests: `cargo test --workspace --profile prod` (or `make test`)
-* **Python Repositories** (`vyapaar-strategies`, `vyapaar-examples`, `vyapaar-adapters`, `vyapaar-data`):
+* **Python Repositories** (`tantra-strategies`, `tantra-examples`, `tantra-adapters`, `tantra-data`):
   - `.github/workflows/ci.yml`:
     1. Linting & Formatting: `ruff check . && ruff format --check .`
     2. Type Checking: `pyright` (or `mypy`)
     3. Test Suite: `pytest -v`
-* **Python FFI Bridge** (`vyapaar-ffi`):
+* **Python FFI Bridge** (`tantra-ffi`):
   - Multi-platform test matrix (`linux-x86_64`, `linux-aarch64`):
     1. Maturin build: `maturin develop`
     2. Python test suite: `pytest -q`
@@ -339,7 +339,7 @@ Every repository in the Vyapaar workspace must adhere to a standardized GitHub C
     2. Linting: `eslint .`
     3. Unit & Integration Tests: `vitest run`
     4. Production Build: `npm run build`
-* **Documentation Repository** (`vyapaar-docs`):
+* **Documentation Repository** (`tantra-docs`):
   - `.github/workflows/ci.yml`:
     1. Build Validation: `mkdocs build --strict`
 
@@ -382,7 +382,7 @@ Every orchestrator session and spawned subagent, in every repo in this workspace
      every repo with plans maintains `docs/plans/README.md`.
 3. **Cite the dependency when implementing**:
    - Any change that depends on, works around, or stubs against an existing or new gap/plan must cite it
-     via a code comment at the workaround (e.g. `// stand-in for vyapaar-core/docs/gaps/0001-*.md`) and
+     via a code comment at the workaround (e.g. `// stand-in for tantra-core/docs/gaps/0001-*.md`) and
      name the gap/plan in the commit message.
 4. **Cleanup already implemented plans/gaps**:
    - Once a plan or gap is implemented and verified, remove the completed document from active `docs/{plans,gaps}/`.
@@ -395,7 +395,7 @@ Every orchestrator session and spawned subagent, in every repo in this workspace
 `.agents/rules/handoff-hygiene.md`:
 1. **Update `HANDOFF.md` in the same change** that changes what's true about Phase/Slice Status,
    Decisions & Discoveries, Immediate Next Step, or Operating Invariants (§1.2). Per-repo
-   `HANDOFF.md` tracks that repo's own in-flight work; the `vyapaar-labs` root one tracks only
+   `HANDOFF.md` tracks that repo's own in-flight work; the `tantra-labs` root one tracks only
    what spans repo boundaries, and summarizes rather than duplicates a submodule's own file.
 2. **Trim stale content in the same edit that makes it stale**, not as a separate periodic chore:
    a noted problem that's no longer true/reproducible, a gap that's since been implemented
