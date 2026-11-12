@@ -20,12 +20,13 @@ Date: 2026-11-12. Completed the full platform rename to `tantra` (org/repos/crat
 Python packages/docs) per plan 0004 (now closed, recorded Implemented in
 `docs/plans/README.md`):
 - All 14 submodules renamed (`crates/*`, package dirs, docs) and committed
-  (`tantra-core` 65c50a4 → `tantra-examples` 08a01c9); root submodule paths, `.gitmodules`
+  (`tantra-core` 54da11d → `tantra-examples` 792e4b8); root submodule paths, `.gitmodules`
   (URLs → `tantra-labs/tantra-*`), Makefile `REPOS`, and `scripts/create-remote-repos.sh`
   updated. `origin` remotes point at `tantra-labs` (root included).
-- History identity rewritten: every commit authored/committed as `Premachandra.Mallappa@amd.com`
-  (the "pmallapp-amd" identity) is now `Prem Mallappa <dev.prem.mallappa@gmail.com>`; global
-  git `user.email` set to `dev.prem.mallappa@gmail.com`.
+- History identity rewritten: every commit authored/committed with the former AMD corporate
+  email (`Premachandra.Mallappa@amd.com`) is now `Prem Mallappa <dev.prem.mallappa@gmail.com>`;
+  root cause fixed — the `~/.config/git/config.amd` include previously overrode `user.email`
+  (its `[user]` block was removed); global git `user.email` is `dev.prem.mallappa@gmail.com`.
 - Gates: `make check` green on all 9 Rust workspaces; Rust/Python test suites NOT re-run to
   completion (env: `prod`-profile LTO test compiles OOM on 15 GiB box).
 - Pre-existing, non-rename failures observed: agent `test_architectural_dependency_rules` R4
