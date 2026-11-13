@@ -14,40 +14,51 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — T2 track complete (tantra-ledger plans 0003–0004, gaps 0001–0006)
+## Latest Batch — T2.7–T2.11 complete (tantra-ledger plan 0005)
 
-Date: 2026-11-13. Executed the full T2 track from `docs/task-list-tracks-and-phases.md`
-(`tantra-ledger` allocation engine phases 2–4 + performance journal hardening):
-- **T2.1** `Hrp` objective: correlation-distance single-linkage dendrogram,
-  quasi-diagonalization, recursive-bisection risk allocation — pure `Decimal`
-  (`rust_decimal` `maths` feature added to the ledger workspace dep).
-- **T2.2** `BlackLitterman` objective: `BlackLittermanViews`/`View` inputs,
-  reverse-optimized prior `τ·Σ·w_mkt`, posterior blend
-  `((τΣ)⁻¹ + PᵀΩ⁻¹P)⁻¹·((τΣ)⁻¹π + PᵀΩ⁻¹q)`, posterior tangency; no views → market
-  weights unchanged. Custom serde for `market_weights` (InstrumentId keys).
-- **T2.3** Exact bounded-simplex projection (`project_box_simplex` water-filling)
-  replaces clip-and-renormalize; mean-variance = projected-gradient Sharpe,
-  risk parity = projected fixed point. Exact golden [0.625, 0.2, 0.175] vs the
-  heuristic's [0.64, 0.2, 0.16].
-- **T2.4** `allocate_discrete`: iterative largest-remainder whole-lot rounding,
-  residual documented as cash.
-- **T2.5** `MetricsInput::new(closed_trades, as_of)` — `as_of` required; the
-  **only `Utc::now()` in the workspace's `crates/*/src/` is gone** (runtime
-  `tantra-runtime-api-rest::trade_journal` updated in lockstep — HTTP layer
-  keeps the wall clock).
-- **T2.6** Edge score v2: documented `EDGE_WEIGHT_*` blend
-  (`EDGE_SCORE_VERSION = 2`), `score_payoff_ratio` bracket 0.5/1/2 → 0/50/100,
-  consistency = 0.6·day-win-rate + 0.4·streak balance; golden vectors pinned.
-- **API change**: `MetricsInput::new` gains a required `as_of` argument — all
-  ledger tests + `tantra-runtime-api-rest` call sites updated; `tantra-agent-mcp`
-  (`hrp` tool) re-verified compiling against the new allocation API.
-- TDD: allocation 17 → 32 tests, performance 42 → 45; ledger workspace **200
-  tests green**, `fmt --check` + `clippy -D warnings` clean; `grep Utc::now
-  crates/*/src/` returns nothing. Pre-existing fmt diffs (repository.rs, oms,
-  journal) + two `collapsible_if` in store.rs fixed (Boy Scout). Commits:
-  `tantra-ledger` `9f8ec22` (impl) + `f90f192` (docs/indexes), `tantra-runtime`
-  `eee9d21`. Task list updated (phase-1 open 14 → 8, total 85 → 79). T2.7–T2.11
-  remain plan 0005 (Proposed — not approved).
+Date: 2026-11-13. Executed the remaining T2 rows from `docs/task-list-tracks-and-phases.md`
+(`tantra-ledger` settlement & statutory-fee consolidation; approved at the start of this
+session, plan 0005 → Ready → Implemented):
+- **T2.7** `ClearingCalendar::new()` is an empty weekend-only calendar — the hardcoded NSE
+  2024–26 holiday table is gone (gap 0007). Decision recorded: `tantra-data` **owns** the
+  NSE trading-holiday data (new upstream gap `tantra-data/docs/gaps/0015-*`, filed `5e873fe`);
+  `tantra-runtime-backtest::NseTradingCalendar` is the **consumer & provider of
+  `ClearingCalendar`** (injects via `with_holidays`).
+- **T2.8** Per-lot corporate actions: `adjust_lot_for_split/bonus/demerger` +
+  `reduce_lot_for_demerger` + `AccountState::apply_corporate_actions_to_lots` — positions are
+  rebuilt as projections over the lot book, so FIFO `match_lots` realizes the correct per-lot
+  cost basis after split/bonus/demerger (gap 0008).
+- **T2.9** Per-segment (NFO/MCX/CDS) exchange turnover tables in
+  `tantra-market-finance::india::costs::segments` (exact Decimal, from the researched
+  circulars: NSE/FA/73061 eff. 2026-03-01, MCX/F&A/631/2024, NSE/FA/64232). `compute_charges`
+  looks the segment rate up; the NSE cash-segment fallback is gone (gap 0009). `stt_charge`
+  updated to the Finance Act 2026 rates (futures sell 0.05%, options sell 0.15% of premium).
+  **Cross-repo dep added**: `tantra-ledger-journal` → `tantra-market-finance` (workspace dep).
+- **T2.10** Golden contract-note framework now validates the **canonical** track:
+  `GoldenTestRunner::compare_trade` calls `compute_charges`; the five sample fixtures were
+  re-based onto the canonical track and the report passes at the 1-paise tolerance (gap 0010).
+- **T2.11** OMS context canvas wired: `validate_order_against_context` (notional /
+  configured qty / price collar vs `MarketData` / daily loss vs `PortfolioRiskState`),
+  `OrderStateMachine::submit_order_with_context`, and a maintained `snapshot()` feeding
+  `OmsSnapshot` (gap 0011).
+- **Researched tariff data** (exchanges + top-5 discount-broker brokerage) captured in the
+  plan appendix; the ledger's per-segment implementation pulls the exchange rates from
+  `tantra-market-finance` instead of hardcoding them.
+- Verification: ledger workspace **250+ tests green** (portfolio 47, journal 50, oms 38,
+  allocation 32, performance 45, facade 4); `fmt --check` + `clippy -D warnings` clean on
+  ledger + market; runtime-backtest + agent workspaces re-checked green; `grep Utc::now
+  crates/*/src/` returns nothing; no production `src/` code calls the legacy fee track; no
+  hardcoded holiday table remains in the domain crate. Commits: `tantra-ledger` `437e6af`,
+  `tantra-market` `cbeb045`, `tantra-data` `5e873fe`. Gaps 0007–0011 + plan 0005 closed;
+  indexes + task list updated (phase-1 open 8 → 3, total 79 → 74).
+
+## Previous Batch — T2.1–T2.6 complete (tantra-ledger plans 0003–0004, gaps 0001–0006)
+
+Collapsed per `.agents/rules/handoff-hygiene.md` (full detail in git history):
+Date: 2026-11-13. HRP + Black-Litterman allocation objectives, exact bounded-simplex
+projection, discrete whole-lot allocation, zero-clock `MetricsInput`, edge-score v2. Ledger
+200 → 250 tests green; commits `tantra-ledger` `9f8ec22` + `f90f192`, `tantra-runtime`
+`eee9d21`.
 
 ## Latest Batch — T1 track complete (tantra-risk plan 0002, gaps 0001–0004)
 
@@ -254,10 +265,10 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
    and the runtime market-reference sample stores; `tantra-market/docs/gaps/0001` +
    `tantra-data/docs/gaps/0008`/`0009` similarly block the options-chain/corporate-actions tools
    from returning real data (both currently answer with honest `PortError::unavailable`).
-2. T2.1–T2.6 done (plans 0003–0004). The remaining ledger work is **plan 0005
-   (settlement & statutory-fee consolidation — Proposed)**: T2.7 external clearing calendar,
-   T2.8 per-lot corporate-action cost basis, T2.9 per-segment fee tables, T2.10 golden
-   contract-note framework, T2.11 OMS context wiring. Needs plan approval before implementation.
+2. T2.1–T2.11 done (plans 0003–0005). The ledger's remaining upstream follow-on is
+   `tantra-data/docs/gaps/0015-nse-trading-holiday-provider.md` (wire the runtime
+   `NseTradingCalendar` to tantra-data's holiday ingestion once it ships; the ledger's
+   calendar is already data-driven).
 3. Remaining per-repo follow-ups (non-blocking, tracked in each repo's HANDOFF / `docs/gaps/`):
    - **4B Phase 4 (local SLM)** — deferred by design; prerequisite is the Phase-3 golden fixture set accumulating via live OmniRoute runs (`TANTRA_WRITE_FIXTURES=1`), then model licensing/fine-tuning/quantization per `0005`.
    - **0001 Phase 1** (`tantra_search_tools`/`tantra_describe_tool` two-tier gateway) — the forecast engine is currently discoverable via `tools/list` only; once the gateway lands, add the `forecast` category to its category enum.

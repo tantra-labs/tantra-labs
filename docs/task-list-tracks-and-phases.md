@@ -21,13 +21,13 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | Phase | Focus | Tracks | Task count |
 | :--- | :--- | :--- | :--- |
 | **0 — Topology & Hygiene Foundations** ✅ | Remove stub/duplicate crates, pin facade convention, TDD cleanup, kernel call-site consolidation | T0 | 8 — **complete 2026-11-13** |
-| **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 8 |
+| **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 3 |
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds & loaders | T5, T3 (feeds) | 12 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 11 |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 20 |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 14 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **79** |
+| **Total** | | | **74** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -68,9 +68,9 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T2 — Portfolio, Allocation & Performance · Phase 1 — ✅ COMPLETE (T2.1–T2.6) 2026-11-13
+## T2 — Portfolio, Allocation & Performance · Phase 1 — ✅ COMPLETE (T2.1–T2.11) 2026-11-13
 
-**Source**: [`tantra-ledger/docs/plans/README.md`](../tantra-ledger/docs/plans/README.md) (plans 0003–0004 Implemented, 0005 Proposed) ·
+**Source**: [`tantra-ledger/docs/plans/README.md`](../tantra-ledger/docs/plans/README.md) (plans 0003–0005 Implemented) ·
 [`tantra-ledger/docs/gaps/README.md`](../tantra-ledger/docs/gaps/README.md)
 
 ### Allocation engine — plan 0003 (Implemented)
@@ -87,14 +87,14 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **T2.5** | ✅ Remove `Utc::now()` from `MetricsInput::new` (temporal determinism, zero-clock) | `tantra-ledger-performance` + `tantra-runtime-api-rest` | 1 | **Done** | 0005 (**High**, closed) |
 | **T2.6** | ✅ Replace v1 placeholder edge-score formula with the real metric | `tantra-ledger-performance` | 1 | **Done** | 0006 (Low, closed) |
 
-### Settlement, corporate actions & fees — plan 0005 (Proposed)
+### Settlement, corporate actions & fees — plan 0005 (Implemented)
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T2.7** | External clearing-calendar source (replace hardcoded NSE holidays 2024–26) | `tantra-ledger-portfolio` | 1 | Proposed | 0007 (Med) |
-| **T2.8** | Per-lot corporate-action cost-basis adjustment (not aggregate-level) | `tantra-ledger-portfolio` | 1 | Proposed | 0008 (Med) |
-| **T2.9** | Per-segment fee tables for NFO/MCX/CDS (drop NSE cash-segment fallback) | `tantra-ledger-journal` | 1 | Proposed | 0009 (Med) |
-| **T2.10** | Golden contract-note framework on the real fee track (not legacy floor-rounded) | `tantra-ledger-journal` | 1 | Proposed | 0010 (Low) |
-| **T2.11** | Wire OMS context types (`OmsConfig`, `MarketData`, `PortfolioRiskState`) into validation | `tantra-ledger-oms` | 1 | Proposed | 0011 (Med) |
+| **T2.7** | ✅ External clearing-calendar source — `ClearingCalendar::new()` is an empty weekend-only calendar (hardcoded NSE 2024–26 table removed); real holidays injected via `with_holidays` by `tantra-runtime-backtest::NseTradingCalendar` (data owner `tantra-data`, gap data 0015) | `tantra-ledger-portfolio` | 1 | **Done** | 0007 (Med, closed) |
+| **T2.8** | ✅ Per-lot corporate-action cost-basis adjustment — `adjust_lot_for_split/bonus/demerger` + `AccountState::apply_corporate_actions_to_lots` (positions rebuilt as projections over the lot book) | `tantra-ledger-portfolio` | 1 | **Done** | 0008 (Med, closed) |
+| **T2.9** | ✅ Per-segment fee tables for NFO/MCX/CDS — Decimal tables in `tantra-market-finance::india::costs::segments`; `compute_charges` looks the segment rate up (NSE fallback removed); STT updated to Finance Act 2026 rates | `tantra-ledger-journal` + `tantra-market-finance` | 1 | **Done** | 0009 (Med, closed) |
+| **T2.10** | ✅ Golden contract-note framework on the canonical track — `GoldenTestRunner` switched onto `compute_charges`; fixtures re-based (passes at 1 paise) | `tantra-ledger-journal` | 1 | **Done** | 0010 (Low, closed) |
+| **T2.11** | ✅ Wire OMS context types into validation — `validate_order_against_context` (notional / configured qty / price collar / daily loss), `submit_order_with_context`, maintained `OmsSnapshot` | `tantra-ledger-oms` | 1 | **Done** | 0011 (Med, closed) |
 
 ---
 
@@ -305,7 +305,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | :--- | :---: | :--- | :--- |
 | `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella) | T0.1–T0.6 ✅ |
 | `tantra-core` | 1 (0001, audit done) | 0002 (Phase A done) | T0.7 ⏸ |
-| `tantra-ledger` | 5 (0007–0011) | 0005 | T2.7–T2.11 |
+| `tantra-ledger` | 0 | — | T2.1–T2.11 ✅ |
 | `tantra-risk` | 0 | 0002 (Implemented) | T1.1–T1.4 ✅ |
 | `tantra-market` | 4 (0001–0004) | — | T3.1–T3.4 |
 | `tantra-exec` | 1 (0001) | 0002 | T0.3 ✅, T4.11 |
@@ -323,10 +323,11 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > added, convention pinned, aliases pruned, TDD cleanup done, all workspaces verified. T0.7
 > remains as an audit-recorded verify-on-future-work item (no 1:1 delegation sites exist).
 >
-> T2 track (T2.1–T2.6) complete 2026-11-13 (`tantra-ledger` plans 0003–0004 Implemented, commit
-> `9f8ec22` + docs `f90f192`; runtime `eee9d21`): HRP + Black-Litterman objectives, exact
-> bounded-simplex bound handling, discrete whole-lot allocation, zero-clock `MetricsInput`,
-> edge-score v2. Remaining T2 rows (T2.7–T2.11) are plan 0005 (Proposed, not approved).
+> T2 track complete 2026-11-13 (`tantra-ledger` plans 0003–0005 Implemented): T2.1–T2.6
+> (allocation + performance, commits `9f8ec22`/`f90f192`; runtime `eee9d21`) and T2.7–T2.11
+> (settlement & statutory-fee consolidation, ledger `437e6af`, market-finance `cbeb045`,
+> tantra-data gap 0015 filed `5e873fe`). `tantra-ledger` now has no open gaps or plans;
+> phase-1 open count is 3 (T3.1, T3.2, T0.7-audit).
 
 ## Related
 
