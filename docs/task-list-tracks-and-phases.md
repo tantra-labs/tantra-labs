@@ -56,7 +56,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ## T1 — Regulatory Risk Gate · Phase 1 — ✅ COMPLETE 2026-11-13
 
-**Source**: [`tantra-risk/docs/plans/0002`](../tantra-risk/docs/plans/0002-close-declared-unenforced-risk-controls.md) (Implemented) ·
+**Source**: [`tantra-risk/docs/plans/README.md`](../tantra-risk/docs/plans/README.md) (plan 0002, Implemented) ·
 [`tantra-risk/docs/gaps/README.md`](../tantra-risk/docs/gaps/README.md)
 
 | Task | Work | Repo / Scope | Phase | Status | Gap |
