@@ -1,6 +1,9 @@
 # 0006 — `tantra-exec-angelone` is a near-empty stub
 
-**Status**: open
+**Status**: open — **decision (root plan 0003 Phase 3, 2026-11-13): implement**, not remove.
+  Angel One execution is on the near-term roadmap (`tantra-exec/docs/plans/0002`
+  "Milestone 3 Adapter Completion", Phase 1 = `tantra-exec/docs/gaps/0001`); the stub crate is
+  kept as the home of the real SmartAPI 2.0 adapter and filled by that plan's implementation.
 
 **Provider repo**: `tantra-exec`
 

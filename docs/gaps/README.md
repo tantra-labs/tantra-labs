@@ -9,24 +9,23 @@ provider repo's own `docs/gaps/README.md` is the implementation tracker.
 
 | # | Title | Provider Repo / Scope | Filed |
 |---|-------|-----------------------|-------|
-| [0001](0001-market-broker-feed-stubs.md) | `tantra-market` broker WS feed crates (`zerodha`, `upstox`, `fyers`, `angelone`, `dhan`) are empty stubs | `tantra-market` | 2026-11-12 |
-| [0002](0002-market-feed-loaders-stubs.md) | `tantra-market-feed` and `tantra-market-loaders` are empty stubs; the real `MarketDataFeed` trait lives in `tantra-market-core` | `tantra-market` | 2026-11-12 |
-| [0003](0003-runtime-indicators-duplicate.md) | `tantra-runtime/tantra-indicators` is an exact duplicate of the real `tantra-market-indicators` and nothing imports it | `tantra-runtime` | 2026-11-12 |
-| [0004](0004-runtime-feed-shim.md) | `tantra-runtime/tantra-runtime-feed` is a 30-line re-export shim over `tantra-market-store` | `tantra-runtime` | 2026-11-12 |
-| [0005](0005-runtime-stub-crates.md) | `tantra-runtime-market` and `tantra-runtime-test-utils` are empty stubs (legacy `honba` names) | `tantra-runtime` | 2026-11-12 |
-| [0006](0006-exec-angelone-stub.md) | `tantra-exec-angelone` is a near-empty stub (9 lines, no broker logic) | `tantra-exec` | 2026-11-12 |
-| [0007](0007-facade-crate-convention.md) | Facade-crate convention is inconsistent across Rust repos (ledger/agent have facades; market/exec/runtime/ffi/ui do not) | all Rust workspaces | 2026-11-12 |
-| [0008](0008-legacy-alias-deps.md) | `tantra-runtime` `workspace.dependencies` still carries unused legacy honba aliases (`tantra-api`, `tantra-api-rest`, `tantra-backtest`, `tantra-actors`) | `tantra-runtime` | 2026-11-12 |
+| [0001](0001-market-broker-feed-stubs.md) | Real broker WS feed crates (`zerodha`, `upstox`, `fyers`, `angelone`, `dhan`) — **feature tracker**: the empty stub crates were removed 2026-11-13 (plan 0003); real feeds are re-added as real crates here when implemented (task T3.3) | `tantra-market` | 2026-11-12 |
+| [0002](0002-market-feed-loaders-stubs.md) | Real `tantra-market-feed` / `tantra-market-loaders` implementations — **feature tracker**: the empty stub crates were removed 2026-11-13 (plan 0003); `MarketDataFeed` stays in `core`, lakehouse in `store` (task T3.4) | `tantra-market` | 2026-11-12 |
+| [0006](0006-exec-angelone-stub.md) | `tantra-exec-angelone` is a 9-line stub — **decision taken 2026-11-13: implement** (kept as the home of the real SmartAPI 2.0 adapter, tracked by `tantra-exec` plan 0002, task T4.11) | `tantra-exec` | 2026-11-12 |
 
 ## Closed Gaps
 
 | # | Title | Closed In |
 |---|-------|-----------|
-| — | *(none yet)* | — |
+| 0003 | `tantra-runtime/tantra-indicators` exact duplicate of `tantra-market-indicators` | Deleted 2026-11-13 (plan 0003 Phase 2) — nothing imported it |
+| 0004 | `tantra-runtime/tantra-runtime-feed` re-export shim over `tantra-market-store` | Absorbed into `tantra-runtime-api-rest::market_feed` module 2026-11-13 (plan 0003 Phase 2); shim crate deleted, all 25 import sites re-pointed |
+| 0005 | `tantra-runtime-market` and `tantra-runtime-test-utils` empty stubs (legacy `honba` names) | Deleted 2026-11-13 (plan 0003 Phase 2) — declared-but-unused in `tantra-runtime-strategy` / `api-rest` |
+| 0007 | Facade-crate convention inconsistent across Rust repos | Pinned as ADR + facades added (`tantra-market`, `tantra-exec`, `tantra-runtime`, `tantra-ffi`, `tantra-ui`) 2026-11-13 (plan 0003 Phase 4); see `docs/design/0001-crate-topology-audit-and-target.md` §4.2 |
+| 0008 | `tantra-runtime` `workspace.dependencies` legacy honba aliases (`tantra-api`, `tantra-api-rest`, `tantra-backtest`, `tantra-actors`) | Removed 2026-11-13 (plan 0003 Phase 4) — nothing consumed them; `tantra-ffi` unused `tantra-market-*` deps removed in the same batch |
 
 ## Related
 
-- [`docs/plans/0003-crate-topology-consolidation.md`](../plans/0003-crate-topology-consolidation.md)
-  — the phased plan that executes these gaps.
+- [`docs/plans/README.md`](../plans/README.md) — the Implemented table records plan 0003
+  (crate-topology consolidation) with its closing batch.
 - [`docs/design/0001-crate-topology-audit-and-target.md`](../design/0001-crate-topology-audit-and-target.md)
-  — full audit and target arrangement.
+  — full audit and target arrangement (incl. the pinned facade convention, §4.2).

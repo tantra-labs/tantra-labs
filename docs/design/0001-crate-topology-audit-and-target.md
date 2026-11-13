@@ -124,6 +124,20 @@ facade convention, without touching any real implementation.
 | others | — | unchanged | — |
 | **Total** | **72** | **~60** | **−12 crates** |
 
+### 4.2 Pinned facade-crate convention (ADR, 2026-11-13 — plan 0003 Phase 4)
+
+Every multi-crate Rust workspace exposes a **repo-named facade crate** that contains only
+re-exports of the context's public API (member crates re-exported as short-named modules),
+matching the pre-existing `tantra-ledger` / `tantra-agent` facades. Facade crates land in
+`crates/<repo-name>` with `description = "Facade of the tantra-<context> bounded context…"`.
+
+- Conforming since plan 0001: `tantra-ledger`, `tantra-agent`.
+- Added by plan 0003 Phase 4 (2026-11-13): `tantra-market`, `tantra-exec`, `tantra-runtime`,
+  `tantra-ffi`, `tantra-ui`.
+- Consumers may keep importing member crates directly; the facade is the recommended
+  "import the whole context" path. A reverse decision (retire facades) would remove the
+  facades, not add member-crate imports.
+
 ---
 
 ## 5. Risks & guardrails
@@ -143,7 +157,10 @@ facade convention, without touching any real implementation.
 
 ## 6. Referenced docs
 
-- `docs/plans/0003-crate-topology-consolidation.md` — the phased plan (this audit's execution arm).
-- `docs/gaps/0001-*.md` … `0008-*.md` — individual stub/duplicate/shim items.
+- `docs/plans/README.md` — plan 0003 (the phased plan, this audit's execution arm) is
+  **implemented 2026-11-13** and recorded in the Implemented table; §4.2 pins the facade
+  convention it delivered.
+- `docs/gaps/README.md` — the gap index; stub/duplicate items 0003–0008 are **closed** (plan
+  0003, 2026-11-13) and 0001/0002 remain open as feature trackers.
 - `docs/design/architecture.md` — the bounded-context architecture this doc preserves.
 - `.agents/rules/gap-tracking.md` — the filing/cleanup discipline applied here.

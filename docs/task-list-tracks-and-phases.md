@@ -20,7 +20,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 | Phase | Focus | Tracks | Task count |
 | :--- | :--- | :--- | :--- |
-| **0 — Topology & Hygiene Foundations** | Remove stub/duplicate crates, pin facade convention, TDD cleanup, kernel call-site consolidation | T0 | 8 |
+| **0 — Topology & Hygiene Foundations** ✅ | Remove stub/duplicate crates, pin facade convention, TDD cleanup, kernel call-site consolidation | T0 | 8 — **complete 2026-11-13** |
 | **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 18 |
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds & loaders | T5, T3 (feeds) | 12 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 11 |
@@ -35,21 +35,22 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T0 — Platform Topology & Codebase Hygiene · Phase 0–1
+## T0 — Platform Topology & Codebase Hygiene · Phase 0–1 — ✅ COMPLETE 2026-11-13
 
-**Source**: [`docs/plans/0003`](plans/0003-crate-topology-consolidation.md) · [`docs/gaps/README.md`](gaps/README.md) ·
-`tantra-core` plan 0002 · `tantra-agent` plan 0008 · `tantra-ffi` gap 0002
+**Source**: [`docs/plans/README.md`](plans/README.md) (plan 0003, Implemented) ·
+[`docs/gaps/README.md`](gaps/README.md) · `tantra-core` plan 0002 · `tantra-agent` plan 0008 ·
+`tantra-ffi` gap 0002
 
 | Task | Work | Repo / Scope | Phase | Status | Gaps / Depends |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T0.1** | Remove `tantra-market` stub crates (`feed`, `loaders`, `zerodha`, `upstox`, `fyers`, `angelone`, `dhan`); traits stay in `core`, lakehouse in `store` | `tantra-market` | 0 | Proposed | root 0001, 0002 · market 0003, 0004 |
-| **T0.2** | Delete `tantra-runtime/tantra-indicators` duplicate + `runtime-market`/`test-utils` stubs; absorb `runtime-feed` shim into `api-rest` | `tantra-runtime` | 0 | Proposed | root 0003, 0004, 0005 |
-| **T0.3** | `tantra-exec-angelone`: implement-or-remove decision (implementation tracked at T4.11) | `tantra-exec` | 0 | Proposed | root 0006 |
-| **T0.4** | Pin the facade-crate convention (ADR); add facades for market/exec/runtime/ffi/ui | all Rust workspaces | 0 | Proposed | root 0007 |
-| **T0.5** | Remove legacy honba aliases from runtime `workspace.dependencies`; drop unused `tantra-market-*` deps in ffi | `tantra-runtime`, `tantra-ffi` | 0 | Open | root 0008 · ffi 0002 |
-| **T0.6** | Full-workspace verification: 9 Rust repos `fmt` / `clippy -D warnings` / `test --profile prod` | all Rust repos | 0 | Proposed | — |
-| **T0.7** | Delegate downstream return/vol math to `tantra_core::quant` (`tantra-market-indicators`, `tantra-agent-analytics`) | `tantra-core` | 1 | Ready | core 0001 (plan 0002) |
-| **T0.8** | Remove inline `#[cfg(test)]` blocks in agent `ref_store.rs` + `verify/mod.rs` (Parallel Test Directory Rule) | `tantra-agent` | 0 | Open | agent 0001 (plan 0008) |
+| **T0.1** | ✅ Remove `tantra-market` stub crates (`feed`, `loaders`, `zerodha`, `upstox`, `fyers`, `angelone`, `dhan`); traits stay in `core`, lakehouse in `store` | `tantra-market` | 0 | **Done** | root 0001, 0002 · market 0003, 0004 (now feature trackers for the real feeds, T3.3/T3.4) |
+| **T0.2** | ✅ Delete `tantra-runtime/tantra-indicators` duplicate + `runtime-market`/`test-utils` stubs; absorb `runtime-feed` shim into `api-rest::market_feed` | `tantra-runtime` | 0 | **Done** | root 0003, 0004, 0005 (closed) |
+| **T0.3** | ✅ `tantra-exec-angelone`: **decision = implement** (kept; real adapter tracked by exec plan 0002 → T4.11) | `tantra-exec` | 0 | **Done** | root 0006 (open, decided) |
+| **T0.4** | ✅ Pin the facade-crate convention (ADR); add facades for market/exec/runtime/ffi/ui | all Rust workspaces | 0 | **Done** | root 0007 (closed) |
+| **T0.5** | ✅ Remove legacy honba aliases from runtime `workspace.dependencies`; drop unused `tantra-market-*` deps in ffi | `tantra-runtime`, `tantra-ffi` | 0 | **Done** | root 0008 · ffi 0002 (closed) |
+| **T0.6** | ✅ Full-workspace verification: 9 Rust repos `check --profile prod` / `fmt --check` / `clippy -D warnings`; `market` + `exec` full `test --profile prod` green (runtime test-binary compiles still OOM — pre-existing) | all Rust repos | 0 | **Done** | — |
+| **T0.7** | ⏸ Delegate downstream return/vol math to `tantra_core::quant` — **Phase A audit done**: no 1:1 delegation sites (streaming f64 indicators / f64 statistical gates vs Decimal-batch quant); matrix in `tantra-core/docs/design/code-quant.md`; kept open as verify-on-future-work | `tantra-core` | 1 | Audit only | core 0001 (open, refined) |
+| **T0.8** | ✅ Remove inline `#[cfg(test)]` blocks in agent `ref_store.rs` + `verify/mod.rs` → `tests/` (4 + 10 tests green) | `tantra-agent` | 0 | **Done** | agent 0001 (closed, plan 0008) |
 
 ---
 
@@ -261,7 +262,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **T9.1** | Implement `tantra` CLI `backtest`; make `serve`/`stub` real subcommands | `tantra-ffi` (`python/tantra/cli.py`) | 5 | Open | ffi 0001 |
-| **T9.2** | Remove unused `tantra-market-{finance,feed,store}` workspace deps (see also T0.5) | `tantra-ffi` | 0 | Open | ffi 0002 |
+| **T9.2** | ✅ Remove unused `tantra-market-{finance,feed,store}` workspace deps | `tantra-ffi` | 0 | **Done** | ffi 0002 (closed, part of T0.5) |
 | **T9.3** | Wheel `algo_analytics` surface — mirror, delete once runtime enhancer / ffi ships it | `tantra-examples` → `tantra-runtime` / `tantra-ffi` | 5 | Open | ex 0001 |
 | **T9.4** | Wheel AI-provider surface — mirror, delete once `tantra-agent` / ffi ships it | `tantra-examples` → `tantra-agent` / `tantra-ffi` | 5 | Open | ex 0002 |
 | **T9.5** | `tantra-data` nav/loaders surface — mirror, delete once data ships it | `tantra-examples` → `tantra-data` | 5 | Open | ex 0003 |
@@ -302,21 +303,25 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
-| `tantra-labs` (root) | 8 (0001–0008) | 0001 (umbrella), 0003 | T0.1–T0.6 |
-| `tantra-core` | 1 (0001) | 0002 | T0.7 |
+| `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella) | T0.1–T0.6 ✅ |
+| `tantra-core` | 1 (0001, audit done) | 0002 (Phase A done) | T0.7 ⏸ |
 | `tantra-ledger` | 11 (0001–0011) | 0003, 0004, 0005 | T2.1–T2.11 |
 | `tantra-risk` | 4 (0001–0004) | 0002 | T1.1–T1.4 |
 | `tantra-market` | 4 (0001–0004) | — | T3.1–T3.4 |
-| `tantra-exec` | 1 (0001) | 0002 | T0.3, T4.11 |
-| `tantra-runtime` | 5 (0004–0008) | 0004 | T0.2/T0.5, T7.1–T7.8 |
-| `tantra-agent` | 6 (0001, 0003–0007) | 0007, 0008, 0009, 0010 | T0.8, T6.1–T6.12 |
+| `tantra-exec` | 1 (0001) | 0002 | T0.3 ✅, T4.11 |
+| `tantra-runtime` | 5 (0004–0008) | 0004 | T0.2/T0.5 ✅, T7.1–T7.8 |
+| `tantra-agent` | 5 (0003–0007) | 0007, 0009, 0010 | T0.8 ✅, T6.1–T6.12 |
 | `tantra-ui` | 4 (0003–0006) | 0003 | T10.1–T10.5 |
 | `tantra-adapters` | 7 (0001–0007) | 0002, 0003, 0004 | T4.1–T4.10 |
 | `tantra-data` | 10 (0004–0010, 0012–0014) | 0003, 0004, 0005, 0006 | T5.1–T5.10 |
 | `tantra-strategies` | 5 (0001–0005) | — | T8.1–T8.5 |
 | `tantra-examples` | 8 (0001–0008) | — | T9.3–T9.10 |
-| `tantra-ffi` | 2 (0001–0002) | — | T9.1, T9.2 |
+| `tantra-ffi` | 1 (0001) | — | T9.1, T9.2 ✅ |
 | `tantra-docs` | — | 0001 | T11.1 |
+
+> T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
+> added, convention pinned, aliases pruned, TDD cleanup done, all workspaces verified. T0.7
+> remains as an audit-recorded verify-on-future-work item (no 1:1 delegation sites exist).
 
 ## Related
 

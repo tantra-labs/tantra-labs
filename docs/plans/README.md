@@ -11,18 +11,18 @@ Per workspace rule `.agents/rules/gap-tracking.md`:
 | # | Title | Target Scope | Status |
 |---|-------|--------------|--------|
 | [0001](0001-fincept-quantcepts-gap-closure-and-feature-roadmap.md) | Fincept & Quantcepts Feature Parity, Gap Closure, and Platform Expansion Master Plan | Platform-wide | Approved Architecture & Implementation Roadmap |
-| [0003](0003-crate-topology-consolidation.md) | Crate Topology Consolidation: remove stub/duplicate crates and pin the facade convention | `tantra-market`, `tantra-exec`, `tantra-runtime` (+ facade convention, all Rust workspaces) | Proposed (covers `docs/gaps/0001`–`0008`) |
 
 ## Related
 
 - [`docs/task-list-tracks-and-phases.md`](../task-list-tracks-and-phases.md) — consolidated,
   track/phase-ordered task list generated from the per-repo `docs/{plans,gaps}` indexes
-  (89 open tasks across 15 repos; update it in the same change as any index cleanup).
+  (update it in the same change as any index cleanup).
 
 ## Implemented Plans
 
 | # | Title | Target Scope | Implemented In |
 |---|-------|--------------|----------------|
+| 0003 | Crate Topology Consolidation: remove stub/duplicate crates, absorb the feed shim, pin the facade convention, prune legacy aliases | `tantra-market` (14→8 crates), `tantra-runtime` (14→11), `tantra-exec` (+facade), `tantra-ffi` (+facade, deps pruned), `tantra-ui` (+facade) | Complete 2026-11-13. Ph 1: 7 market stub crates removed. Ph 2: `tantra-indicators` dup + `runtime-market`/`test-utils` stubs deleted; `tantra-runtime-feed` shim absorbed into `tantra-runtime-api-rest::market_feed` (25 files re-pointed). Ph 3: **decision — implement** `tantra-exec-angelone` (tracked by `tantra-exec` plan 0002). Ph 4: facade convention pinned (ADR, design doc §4.2) + facades added for market/exec/runtime/ffi/ui; legacy honba aliases + ffi unused `tantra-market-*` deps removed. Ph 5: all 9 Rust workspaces `check --profile prod` + `fmt --check` + `clippy -D warnings` green; `market`/`exec` full `test --profile prod` green. Gaps 0003/0004/0005/0007/0008 closed; 0001/0002 stay open as feature trackers (real feeds); 0006 stays open (implement decision). |
 | 0004 | Rename the entire platform to Tantra (org, repos, crates, Python packages, docs) | Platform-wide (all repos + org `tantra-labs`) | Complete 2026-11-12; per-repo commits `65c50a4`–`08a01c9` + root `docs(plans)` commit; identity rewrite to `dev-pmallapp` (`dev.prem.mallappa@gmail.com`) applied across history |
 | 0002 | Strategy Execution, Hyperparameter Tuning, and Optimal Trade Suggestion Engine for CLI & TUI | `tantra-agent`, `tantra-ui`, `tantra-runtime` | Phases 1–5 Complete (`tantra-agent` 85d3c07, `tantra-ui` 1beb69f + 06940c5, `tantra-runtime` 60a5bd9) |
 

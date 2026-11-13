@@ -1,6 +1,8 @@
-# 0001 — `tantra-market` broker WS feed crates are empty stubs
+# 0001 — Real broker WS feed crates for `tantra-market`
 
-**Status**: open
+**Status**: open — **feature tracker**. The empty stub crates were removed 2026-11-13
+(root plan 0003 Phase 1); this gap now tracks the **real** feed implementations (task T3.3).
+Re-added only as real crates with actual wire protocols.
 
 **Provider repo**: `tantra-market`
 

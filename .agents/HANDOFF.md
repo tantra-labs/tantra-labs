@@ -14,7 +14,43 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — consolidated track/phase task list
+## Latest Batch — T0 track complete (crate-topology consolidation, plan 0003)
+
+Date: 2026-11-13. Executed the full T0 track from `docs/task-list-tracks-and-phases.md`
+(= root plan 0003 + agent plan 0008 + ffi gap 0002 + core plan 0002 Phase A):
+- **T0.1** `tantra-market` 14→8 crates: deleted 7 stub crates (feed, loaders, zerodha, upstox,
+  fyers, angelone, dhan); pruned market/runtime/agent/ffi `workspace.dependencies`. Gaps 0001/0002
+  stay open as **feature trackers** for the real feeds (T3.3/T3.4).
+- **T0.2** `tantra-runtime` 14→11 crates: deleted `tantra-indicators` dup + `runtime-market` +
+  `test-utils` stubs; absorbed `tantra-runtime-feed` shim into new
+  `tantra-runtime-api-rest::market_feed` module (25 src+test files re-pointed; `tantra-market-store`
+  is now a direct dep of api-rest). `tantra-runtime-strategy` dev-deps pruned (unused).
+- **T0.3** `tantra-exec-angelone` **decision: implement** (kept; real SmartAPI adapter tracked by
+  exec plan 0002 / T4.11).
+- **T0.4** Pinned the facade-crate convention (ADR in `docs/design/0001` §4.2); added facades
+  `tantra-market`, `tantra-exec`, `tantra-runtime`, `tantra-ffi`, `tantra-ui` (thin re-export
+  crates; added to each workspace members + deps).
+- **T0.5** Removed runtime legacy honba aliases (`tantra-api(-rest)`, `tantra-backtest`,
+  `tantra-actors`) + ffi unused `tantra-market-*` deps.
+- **T0.6** All 9 Rust workspaces: `cargo check --workspace --profile prod` + `fmt --check` +
+  `clippy -- -D warnings` green; `market` (243 tests + doctests) and `exec` (200+ tests) full
+  `test --profile prod` green; agent `ref_store_tests` (4) + `verify_tests` (10) green; runtime
+  api-rest `market_data` test binary compiles. **Known env limits (pre-existing):** runtime
+  api-rest test-bin compile OOMs (SIGKILL) under the prod-LTO profile on this 15 GiB box —
+  `check` + one test binary is the practical verification; `tantra-ffi-py` cdylib **link** fails
+  with `rust-lld: unable to find library -lpython3.12` (only `libpython3.12.so.1.0` exists on
+  this box, no dev symlink) — untouched by this batch, `cargo check` for the workspace is green.
+- **T0.7** Phase A audit (plan 0002): **no 1:1 delegation sites** — `market-indicators` is
+  streaming f64, `agent-analytics` f64 statistical; quant is Decimal-batch. Delegation matrix +
+  verdict recorded in `tantra-core/docs/design/code-quant.md`; gap 0001 stays open as
+  verify-on-future-work.
+- **T0.8** Moved inline tests out of `ref_store.rs` + `verify/mod.rs` into
+  `tests/ref_store_tests.rs` (new) + `tests/verify_tests.rs` (existing) — plan 0008 implemented.
+- Cleanup per gap-tracking §4: deleted closed gap docs (root 0003/0004/0005/0007/0008,
+  ffi 0002, agent 0001) + plan docs (root 0003, agent 0008); updated all indexes + the task list.
+  Plan 0003 recorded in root `docs/plans/README.md` Implemented. No Python changes.
+
+## Previous Batch — consolidated track/phase task list
 
 Date: 2026-11-13. Created `docs/task-list-tracks-and-phases.md`: a single execution-ordered
 task list derived from the live per-repo `docs/{plans,gaps}/README.md` indexes — **89 open tasks
