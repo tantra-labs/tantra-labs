@@ -11,6 +11,7 @@ Per workspace rule `.agents/rules/gap-tracking.md`:
 | # | Title | Target Scope | Status |
 |---|-------|--------------|--------|
 | [0001](0001-fincept-quantcepts-gap-closure-and-feature-roadmap.md) | Fincept & Quantcepts Feature Parity, Gap Closure, and Platform Expansion Master Plan | Platform-wide | Approved Architecture & Implementation Roadmap |
+| [0005](0005-elephant-edge-strategy-platform.md) | Elephant Edge (EE+) Intraday Strategy Platform — level map, buy/sell signals, SL/TSL, positioning (with Order Blocks & OI/gamma confluence) | `tantra-strategies`, `tantra-core`, `tantra-market`, `tantra-data`, `tantra-exec`, `tantra-risk`, `tantra-ledger`, `tantra-ui`, `tantra-agent`, `tantra-docs` | Proposed — tracks per-repo gaps/plans in the §2 table; research basis `docs/research/elephant-edge-strategy.md` |
 
 ## Related
 

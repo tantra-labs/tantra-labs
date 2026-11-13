@@ -12,6 +12,38 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — Elephant Edge (EE+) strategy platform docs (research + plans/gaps)
+
+Date: 2026-11-13. Research + documentation batch (no code changes):
+- **Research**: `docs/research/elephant-edge-strategy.md` — Elephant Edge intraday strategy
+  (AlgoBing percentile-zone S/R + Velez "elephant bar" institutional footprint), the two-support/
+  two-resistance session-open-anchored levels, and the strengthening stack (OI walls, ΔOI
+  build-up, PCR, max pain, **gamma exposure / dealer positioning**, IV, futures flows) +
+  Order-Blocks fusion model.
+- **Master plan**: root `docs/plans/0005-elephant-edge-strategy-platform.md` (proposed) — 6
+  phases across 10 repos; strategy contract (level map → buy/sell signals → SL/TSL → positioning,
+  zero floats, regime gate, research-live parity).
+- **Per-repo filings** (all proposed/open): `tantra-strategies` plan 0001 (the EE+ strategy spec —
+  signals, SL/TSL, positioning, Order Blocks, declarative parameters) + gap 0006 (SDK lacks
+  stop-protection primitives & options/level-map context); `tantra-core` plan 0003 + gap 0002
+  (level-map/options/gamma/stop/signal kernel types); `tantra-market` gap 0005 (Elephant-zone /
+  OI-wall / gamma / Order-Block indicators — chain+OI plumbing gaps 0001/0002 already closed);
+  `tantra-data` gap 0016 (intraday option-chain snapshot lakehouse + point-in-time GEX);
+  `tantra-exec` gap 0003 (bracket-order SL/TSL execution — note: **exec gap 0001 Angel One is
+  CLOSED** per `2258bbb`, summary row updated); `tantra-risk` gap 0005 (stop-protection
+  validation, mandatory SL + no-widening TSL); `tantra-ledger` gap 0012 (bracket OMS lifecycle);
+  `tantra-agent` plan 0011 (`level_map`/`oi_walls` chat tools, cites plan 0010);
+  `tantra-ui` plan 0006 (EE+ Strategy Studio) + gap 0007 (chart level/zone/annotation
+  primitives); `tantra-docs` plan 0003 (user guide).
+- **Indexes updated in the same change**: per-repo `docs/{plans,gaps}/README.md` tables (root
+  plans 0001 + 0005 active; core 0002+0003; strategies 0001; agent 0011; ui 0006; docs 0003;
+  gaps core 0002, market 0005, data 0016, exec 0003, risk 0005, ledger 0012, ui 0007,
+  strategies 0006) and the derived `docs/task-list-tracks-and-phases.md` (**new T12 track**,
+  T12.1–T12.10 + per-repo summary refresh).
+- **No build needed** (docs-only batch; no Rust/Python code touched).
+
+## Immediate Next Step (EE+)
+
 ## Latest Batch — T4.1–T4.8 + T4.11 (broker adapters & execution)
 
 Date: 2026-11-13. Executed the T4 track from `docs/task-list-tracks-and-phases.md`:
@@ -321,6 +353,12 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
   - `tantra-ui`: **PLAN-0001 Stage 4 CLI half landed** — `tantra jobs run/tick/logs` on the runtime pool + per-run journals (`tantra jobs add ... -> tick -> journal verified` acceptance suite, 11 e2e tests) + agent tool-call journals + approvals gating (`0b9241d`); clippy-driven fixups (breach-first refusal for PendingApproval jobs) follow-up. Open: ui-core trade rows (`tantra-ui/docs/gaps/0002`).
 
 ## Immediate Next Step
+0. **EE+ (root plan 0005, proposed)** — implement in dependency order: T12.1 kernel domain
+   types (`tantra-core` plan 0003) → T12.2 indicators (`tantra-market` gap 0005) → T12.3
+   chain-snapshot lakehouse (`tantra-data` gap 0016) → T12.4 strategy + SDK
+   (`tantra-strategies` plan 0001/gap 0006) → T12.5–T12.7 execution/risk/OMS (exec 0003,
+   risk 0005, ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007,
+   docs 0003). See the T12 track in `docs/task-list-tracks-and-phases.md`.
 1. Plan 0006 is complete (Phases 1–4); agent plan 0007 is the active follow-on master guide for
    future chat-tool/MCP-gateway breadth. The `options_chain` chat tool now reads real data via
    the wired `FeedMarketReader` chain reader (T3.1). Still open: `tantra-data/docs/gaps/0007`

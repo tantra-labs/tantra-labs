@@ -296,6 +296,26 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | Task | Work | Repo / Scope | Phase | Status | Plan |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **T11.1** | MCP quantitative gateway & 15-engine reference (`docs/mcp/`) | `tantra-docs` | 6 | Ready | docs 0001 |
+| **T11.2** | EE+ strategy user guide (level map, signals, SL/TSL, positioning, studio) | `tantra-docs` | 6 | Proposed | docs 0003 |
+
+---
+
+## T12 — Elephant Edge (EE+) Intraday Strategy Platform · Phase 5–6
+
+**Source**: [`docs/plans/0005-elephant-edge-strategy-platform.md`](plans/0005-elephant-edge-strategy-platform.md) (master plan) · research basis [`docs/research/elephant-edge-strategy.md`](research/elephant-edge-strategy.md)
+
+| Task | Work | Repo / Scope | Phase | Status | Gap / Plan |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **T12.1** | Kernel domain types — level map, options positioning, gamma, stop protection, signals (zero-I/O, Decimal) | `tantra-core` | 5 | Proposed | core plan 0003 / gap 0002 |
+| **T12.2** | Elephant-zone / OI-wall / gamma / Order-Block streaming indicators | `tantra-market` | 5 | Proposed | market 0005 |
+| **T12.3** | Intraday option-chain snapshot lakehouse + point-in-time GEX series | `tantra-data` | 5 | Proposed | data 0016 |
+| **T12.4** | EE+ strategy: level-map fusion, confluence scoring, signals, SL/TSL, positioning (+ SDK stop-protection/options context) | `tantra-strategies` | 5 | Proposed | strategies plan 0001 / gap 0006 |
+| **T12.5** | Bracket-order (SL/target/TSL) execution contract + trailing runner | `tantra-exec` | 5 | Proposed | exec 0003 |
+| **T12.6** | Stop-protection risk validation (mandatory SL, SL band, no-widening TSL) | `tantra-risk` | 5 | Proposed | risk 0005 |
+| **T12.7** | Bracket-order OMS lifecycle (SL/TSL child orders, stop-trigger close) | `tantra-ledger` | 5 | Proposed | ledger 0012 |
+| **T12.8** | `level_map` / `oi_walls` ReadOnly chat tools | `tantra-agent` | 4–5 | Proposed | agent plan 0011 |
+| **T12.9** | EE+ Strategy Studio — level map, signal/SL/TSL lines, positioning (web/TUI/CLI) | `tantra-ui` | 6 | Proposed | ui plan 0006 / gap 0007 |
+| **T12.10** | EE+ user guide + worked example | `tantra-docs` | 6 | Proposed | docs 0003 |
 
 ---
 
@@ -303,21 +323,21 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
-| `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella) | T0.1–T0.6 ✅ |
-| `tantra-core` | 1 (0001, audit done) | 0002 (Phase A done) | T0.7 ⏸ |
-| `tantra-ledger` | 0 | — | T2.1–T2.11 ✅ |
-| `tantra-risk` | 0 | 0002 (Implemented) | T1.1–T1.4 ✅ |
-| `tantra-market` | 1 (0003, 2/5 broker feeds) | — | T3.1–T3.4 🔶 |
-| `tantra-exec` | 0 (0001 closed) | 0002 (Phase 1 done) | T0.3 ✅, T4.11 ✅ |
+| `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella), **0005 (EE+ platform, proposed)** | T0.1–T0.6 ✅, T12.1–T12.10 |
+| `tantra-core` | 2 (0001, 0002 EE+) | 0002, 0003 (EE+, proposed) | T0.7 ⏸, T12.1 |
+| `tantra-ledger` | 1 (0012 EE+) | — | T2.1–T2.11 ✅, T12.7 |
+| `tantra-risk` | 1 (0005 EE+) | 0002 (Implemented) | T1.1–T1.4 ✅, T12.6 |
+| `tantra-market` | 2 (0003, 0005 EE+) | — | T3.1–T3.4 🔶, T12.2 |
+| `tantra-exec` | 1 (0003 EE+) | 0002 (Phase 1 done) | T0.3 ✅, T4.11 ✅, T12.5 |
 | `tantra-runtime` | 5 (0004–0008) | 0004 | T0.2/T0.5 ✅, T7.1–T7.8 |
-| `tantra-agent` | 5 (0003–0007) | 0007, 0009, 0010 | T0.8 ✅, T6.1–T6.12 |
-| `tantra-ui` | 4 (0003–0006) | 0003 | T10.1–T10.5 |
+| `tantra-agent` | 5 (0003–0007) | 0007, 0009, 0010, 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.12, T12.8 |
+| `tantra-ui` | 5 (0003–0007 incl. EE+) | 0003, 0006 (EE+, proposed) | T10.1–T10.5, T12.9 |
 | `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
-| `tantra-data` | 10 (0004–0010, 0012–0014) | 0003, 0004, 0005, 0006 | T5.1–T5.10 |
-| `tantra-strategies` | 5 (0001–0005) | — | T8.1–T8.5 |
+| `tantra-data` | 11 (0004–0010, 0012–0016 incl. EE+) | 0003, 0004, 0005, 0006 | T5.1–T5.10, T12.3 |
+| `tantra-strategies` | 6 (0001–0006 incl. EE+) | 0001 (EE+, proposed) | T8.1–T8.5, T12.4 |
 | `tantra-examples` | 8 (0001–0008) | — | T9.3–T9.10 |
 | `tantra-ffi` | 1 (0001) | — | T9.1, T9.2 ✅ |
-| `tantra-docs` | — | 0001 | T11.1 |
+| `tantra-docs` | — | 0001, 0003 (EE+, proposed) | T11.1, T11.2 |
 
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
 > added, convention pinned, aliases pruned, TDD cleanup done, all workspaces verified. T0.7
