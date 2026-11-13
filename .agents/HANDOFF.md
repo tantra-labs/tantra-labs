@@ -14,6 +14,27 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — T1 track complete (tantra-risk plan 0002, gaps 0001–0004)
+
+Date: 2026-11-13. Executed the full T1 track from `docs/task-list-tracks-and-phases.md`
+(risk 0001–0004 → `tantra-risk/docs/plans/0002`):
+- **T1.2 (High)** reduce-only now enforced on **every** check path: order-opening BUYs refused
+  on `evaluate_core_checks` + `check_order_fast_checks` (`ReduceOnlyViolation`), modifies and
+  new position sizing refused, reducing SELLs + cancels pass. `check_decision` +
+  `validate_sizing_request` covered.
+- **T1.1** `price_collar_bps` enforced on both paths (new `RiskRefusal::PriceCollarViolation`):
+  market orders whose worst-case band-edge fill exceeds `reference ± collar` are refused.
+- **T1.3** `check_order_fast` brought to parity: per-scrip OTR record-and-check before approval,
+  warning-zone logging, cooldown auto-resume.
+- **T1.4** `window_otr_1min/5min` now read `OtrConfig::{window_1min_ms, window_5min_ms}`; the
+  engine enforces the configured short-term window (5-min stays analysis-only).
+- **API change**: `check_order_fast` gains required `side: OrderSide` — FFI updated in lockstep
+  (pyclass, codegen stub, `_tantra.pyi`, `test_risk.py` + new reduce-only test; `cargo check` green).
+- TDD: 15 new tests in `tantra-risk/tests/plan0002_tests.rs`; all 80 tests green, clippy `-D warnings`
+  clean, fmt clean. Commits: `tantra-risk` `9a0bc59` (impl), docs+indexes follow in the same repo.
+  Gap docs 0001–0004 + plan 0002 retired to Closed/Implemented; workspace task list updated
+  (phase-1 open count 18 → 14, total 89 → 85).
+
 ## Latest Batch — T0 track complete (crate-topology consolidation, plan 0003)
 
 Date: 2026-11-13. Executed the full T0 track from `docs/task-list-tracks-and-phases.md`

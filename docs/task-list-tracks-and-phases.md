@@ -21,13 +21,13 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | Phase | Focus | Tracks | Task count |
 | :--- | :--- | :--- | :--- |
 | **0 — Topology & Hygiene Foundations** ✅ | Remove stub/duplicate crates, pin facade convention, TDD cleanup, kernel call-site consolidation | T0 | 8 — **complete 2026-11-13** |
-| **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 18 |
+| **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 14 |
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds & loaders | T5, T3 (feeds) | 12 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 11 |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 20 |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 14 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **89** |
+| **Total** | | | **85** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -54,17 +54,17 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T1 — Regulatory Risk Gate · Phase 1
+## T1 — Regulatory Risk Gate · Phase 1 — ✅ COMPLETE 2026-11-13
 
-**Source**: [`tantra-risk/docs/plans/0002`](../tantra-risk/docs/plans/0002-close-declared-unenforced-risk-controls.md) ·
+**Source**: [`tantra-risk/docs/plans/0002`](../tantra-risk/docs/plans/0002-close-declared-unenforced-risk-controls.md) (Implemented) ·
 [`tantra-risk/docs/gaps/README.md`](../tantra-risk/docs/gaps/README.md)
 
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T1.1** | Enforce market-order price collar (`price_collar_bps`) | `tantra-risk` | 1 | Open | risk 0001 (Med) |
-| **T1.2** | Enforce reduce-only mode (`GlobalState::ReduceOnly`) in every check path | `tantra-risk` | 1 | Open | risk 0002 (**High**) |
-| **T1.3** | `check_order_fast`: per-scrip OTR check, warning zone, and cooldown auto-resume parity with `check_order` | `tantra-risk` | 1 | Open | risk 0003 (Med) |
-| **T1.4** | Consult OTR window config knobs (`window_1min_ms` / `window_5min_ms`) | `tantra-risk` | 1 | Open | risk 0004 (Low) |
+| **T1.1** | ✅ Enforce market-order price collar (`price_collar_bps`) — both check paths refuse when the worst-case band-edge fill exceeds `reference ± collar` (`RiskRefusal::PriceCollarViolation`) | `tantra-risk` | 1 | **Done** | risk 0001 (Med, closed) |
+| **T1.2** | ✅ Enforce reduce-only mode (`GlobalState::ReduceOnly`) in every check path — refuse order-opening BUYs / modifies / new sizing; allow reducing SELLs + cancels; `check_decision` + `validate_sizing_request` covered | `tantra-risk` | 1 | **Done** | risk 0002 (**High**, closed) |
+| **T1.3** | ✅ `check_order_fast`: per-scrip OTR check, warning zone, and cooldown auto-resume parity with `check_order` (record-and-check before approval) | `tantra-risk` | 1 | **Done** | risk 0003 (Med, closed) |
+| **T1.4** | ✅ Consult OTR window config knobs (`window_1min_ms` / `window_5min_ms`) — `window_otr_1min`/`5min` read `OtrConfig`; engine enforces the configured short-term window | `tantra-risk` | 1 | **Done** | risk 0004 (Low, closed) |
 
 ---
 
@@ -306,7 +306,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella) | T0.1–T0.6 ✅ |
 | `tantra-core` | 1 (0001, audit done) | 0002 (Phase A done) | T0.7 ⏸ |
 | `tantra-ledger` | 11 (0001–0011) | 0003, 0004, 0005 | T2.1–T2.11 |
-| `tantra-risk` | 4 (0001–0004) | 0002 | T1.1–T1.4 |
+| `tantra-risk` | 0 | 0002 (Implemented) | T1.1–T1.4 ✅ |
 | `tantra-market` | 4 (0001–0004) | — | T3.1–T3.4 |
 | `tantra-exec` | 1 (0001) | 0002 | T0.3 ✅, T4.11 |
 | `tantra-runtime` | 5 (0004–0008) | 0004 | T0.2/T0.5 ✅, T7.1–T7.8 |
