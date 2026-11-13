@@ -163,4 +163,6 @@ matching the pre-existing `tantra-ledger` / `tantra-agent` facades. Facade crate
 - `docs/gaps/README.md` — the gap index; stub/duplicate items 0003–0008 are **closed** (plan
   0003, 2026-11-13) and 0001/0002 remain open as feature trackers.
 - `docs/design/architecture.md` — the bounded-context architecture this doc preserves.
+- `docs/design/0002-reduce-only-contract.md` — cross-repo contract for reduce-only / price-collar
+  enforcement (risk gate ↔ runtime REST), recorded 2026-11-13.
 - `.agents/rules/gap-tracking.md` — the filing/cleanup discipline applied here.

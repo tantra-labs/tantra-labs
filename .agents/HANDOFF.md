@@ -30,6 +30,10 @@ Date: 2026-11-13. Executed the full T1 track from `docs/task-list-tracks-and-pha
   engine enforces the configured short-term window (5-min stays analysis-only).
 - **API change**: `check_order_fast` gains required `side: OrderSide` — FFI updated in lockstep
   (pyclass, codegen stub, `_tantra.pyi`, `test_risk.py` + new reduce-only test; `cargo check` green).
+- **Decision recorded**: the reduce-only position-free approximation (SELL=reduce) and the
+  two-layer contract with the runtime REST layer (ADR 0018 `state_refusal`) are documented in
+  `docs/design/0002-reduce-only-contract.md` (root) and
+  `tantra-risk/docs/design/code-reduce-only.md` — not just HANDOFF.
 - TDD: 15 new tests in `tantra-risk/tests/plan0002_tests.rs`; all 80 tests green, clippy `-D warnings`
   clean, fmt clean. Commits: `tantra-risk` `9a0bc59` (impl), docs+indexes follow in the same repo.
   Gap docs 0001–0004 + plan 0002 retired to Closed/Implemented; workspace task list updated
