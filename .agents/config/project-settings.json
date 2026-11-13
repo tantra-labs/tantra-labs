@@ -1,0 +1,175 @@
+{
+  "$schema": "https://tantra-labs.local/schemas/project-settings.v1.json",
+  "version": "2.0.0",
+  "updatedAt": "2026-11-13",
+  "toolchain": {
+    "rust": {
+      "version": "1.97.1",
+      "msrv": "1.85",
+      "edition": "2024",
+      "canonicalProfile": "prod",
+      "targetDir": "target/prod",
+      "forbiddenCommands": [
+        "cargo build",
+        "cargo build --release",
+        "cargo test --release"
+      ],
+      "mandatoryCommands": {
+        "build": "make prod",
+        "check": "make check",
+        "test": "make test",
+        "fmt": "cargo fmt --check",
+        "clippy": "cargo clippy --all-targets -- -D warnings"
+      },
+      "oomMitigationNote": "Full prod-LTO test binary link for tantra-runtime-api-rest can exceed 15 GiB RAM; run make check plus targeted test binaries when constrained."
+    },
+    "python": {
+      "minVersion": "3.11",
+      "lint": "ruff check .",
+      "formatCheck": "ruff format --check .",
+      "typeCheck": "mypy --strict",
+      "test": "pytest -v"
+    },
+    "typescript": {
+      "appDir": "vyapaar-ui-web",
+      "typeCheck": "npx tsc --noEmit",
+      "lint": "npm run lint",
+      "test": "npx vitest run",
+      "build": "npm run build"
+    },
+    "docs": {
+      "dir": "tantra-docs",
+      "build": "mkdocs build --strict"
+    }
+  },
+  "architecture": {
+    "tiers": {
+      "L0": ["tantra-core"],
+      "L1": ["tantra-risk", "tantra-ledger"],
+      "L2": ["tantra-market", "tantra-exec"],
+      "L3": ["tantra-agent", "tantra-runtime"],
+      "L4": ["tantra-ffi"],
+      "L5": ["tantra-ui", "vyapaar-ui-web"],
+      "L6": ["tantra-strategies", "tantra-adapters", "tantra-data", "tantra-examples", "tantra-docs"]
+    },
+    "dependencyRules": {
+      "dagOnly": true,
+      "forbidCrossRepoCycles": true,
+      "forbidUpwardDependencies": true,
+      "forbidConcreteBrokersInStrategy": true,
+      "facadeCrateConvention": "Each multi-crate workspace exposes one repo-named facade crate (e.g. tantra-market, tantra-exec, tantra-runtime, tantra-ffi, tantra-ui).",
+      "agentWorkspaceRules": {
+        "R1_noRuntimeExecMarketInAgent": true,
+        "R2_chatAndTraderLoopIsolated": true,
+        "R3_agentToolsPure": true,
+        "R4_onlyChatToolsDependsOnLedger": true
+      }
+    },
+    "wireContracts": {
+      "singleSourceOfTruth": "tantra-core",
+      "schemaDerivation": "schemars JsonSchema -> OpenAPI 3.1 / TypeScript / Python stubs",
+      "decimalWireEncoding": "string-encoded Decimal (serde-with-str) across canonical APIs"
+    }
+  },
+  "designAndModularity": {
+    "interfaceFirst": {
+      "rustPortsPattern": "Define object-safe traits in L0/L2/port crates; pass Arc<dyn Trait> or generics at composition roots.",
+      "pythonProtocolsPattern": "Use typing.Protocol (@runtime_checkable) or ABCs; forbid isinstance concrete-type branching on injected contexts.",
+      "typedErrorsRequired": true,
+      "forbidStringlyTypedAdapterErrors": true
+    },
+    "domainPurity": {
+      "zeroIoCrates": ["tantra-core", "tantra-ledger", "tantra-risk", "tantra-runtime-strategy", "tantra-agent-tools"],
+      "zeroClockCrates": ["tantra-core", "tantra-ledger", "tantra-risk", "tantra-exec-audit", "tantra-exec-router"],
+      "zeroFloatsFinancialPaths": {
+        "rustType": "rust_decimal::Decimal",
+        "pythonType": "decimal.Decimal",
+        "forbiddenTypes": ["f32", "f64", "float"]
+      },
+      "wasmTargetable": ["tantra-core", "tantra-market-indicators", "tantra-ledger-portfolio", "tantra-ui-core"]
+    },
+    "namingHygiene": {
+      "canonicalPrefix": "tantra",
+      "deprecatedPrefixes": ["honba", "vyapaar"],
+      "forbidNewLegacyAliases": true
+    }
+  },
+  "coding": {
+    "ddd": {
+      "preferRichAggregates": true,
+      "selfValidatingValueObjects": true,
+      "aclAtBrokerBoundaries": true,
+      "forbidDuplicateDomainDtos": true
+    },
+    "aiGuardrails": {
+      "untrustedAi": true,
+      "closedDecisionGrammar": "tantra_core::Decision (#[serde(deny_unknown_fields)])",
+      "mandatoryRiskGate": "tantra_risk::RiskEngine"
+    },
+    "errorHandling": {
+      "forbidSilentEmptyFallbackOnUnavailablePort": true,
+      "requireExplicitPortError": true,
+      "forbidUnwrapExpectInProductionSrc": true
+    }
+  },
+  "testing": {
+    "parallelTestDirectoryMandatory": true,
+    "forbidInlineTestsInSrc": true,
+    "inlineTestScanPaths": ["**/src/**/*.rs", "**/tantra_*/**/*.py"],
+    "methodology": "TDD (Red-Green-Refactor)",
+    "propertyBasedTesting": {
+      "rust": "proptest",
+      "python": "hypothesis"
+    },
+    "goldenVectorsRequiredFor": [
+      "broker wire protocol decoders",
+      "contract-note statutory charges",
+      "Rust/Python FFI parity",
+      "deterministic LLM prompt replay"
+    ],
+    "architecturalCiTests": [
+      "tantra-agent-chat/tests/dependency_rules.rs"
+    ]
+  },
+  "scalability": {
+    "forbidUnboundedChannels": true,
+    "forbidBlockingFsOnAsyncWorkers": true,
+    "forbidGlobalStdSyncMutexOnHotPaths": true,
+    "forbidNestedTokioBlockOn": true,
+    "requireBoundedHttpBodyReads": true,
+    "requireBoundedPerSocketCollections": true,
+    "requirePersistentOperationalState": ["OrderLedger", "ApprovalQueue", "TradingState"],
+    "pythonIsolation": "Dedicated OS thread + bounded mpsc + CancellationToken; py.detach around Rust batch work; Arrow PyCapsule for tabular exchange."
+  },
+  "security": {
+    "auth": {
+      "failClosed": true,
+      "mountAuthForBothTokensFileAndJwt": true,
+      "forbidUnauthenticatedNonLoopbackWithoutOverride": true,
+      "useJwtStandardClaimValidation": ["exp", "nbf", "aud", "iss", "leeway"]
+    },
+    "authorization": {
+      "scopeSessionsByAuthenticatedCaller": true,
+      "forwardAuthHeadersInBffProxies": true,
+      "trustedProxyAllowlistForForwardedHeaders": true
+    },
+    "idempotency": {
+      "forbidConstantOrderIdFallback": true,
+      "requireUniquePerRequestKeyWhenClientIdOmitted": true
+    },
+    "cryptographyAndSecrets": {
+      "forbidCustomCryptoPrimitives": true,
+      "approvedRustCrates": ["sha2", "hmac", "subtle", "jsonwebtoken", "zeroize"],
+      "requireConstantTimeSecretCompare": true,
+      "requireRedactedDebugAndZeroizeOnSecretStructs": true
+    },
+    "inputAndExecutionSafety": {
+      "forbidSqlStringInterpolation": true,
+      "requireParameterizedSql": true,
+      "forbidEvalOnUntrustedExpressions": true,
+      "forbidShellOrCodegenPromptInterpolation": true,
+      "corsAllowAuthorizationHeader": true,
+      "forbidWildcardCorsInProduction": true
+    }
+  }
+}

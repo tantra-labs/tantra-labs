@@ -7,13 +7,14 @@
         "command(git diff)",
         "command(git log)",
         "command(regex:git (add|commit|fetch|pull|branch|checkout).* )",
-        "command(regex:cargo (build|run|test|check|fmt|clippy).* )",
+        "command(regex:cargo (build|run|test|check|fmt|clippy|metadata).* )",
         "command(regex:python(3)? (.*\\.py) )",
-        "command(regex:(pytest|black|flake8) .* )",
+        "command(regex:(pytest|ruff|mypy|pyright|maturin) .* )",
         "command(regex:pip(3)? install (-r .*requirements\\.txt|\\w+) )",
-        "command(regex:npm (--prefix [\\w\\-\\/]+ )?(run (build|start|test|lint|dev)|install|ci) )",
-        "command(regex:make( \\w+)? )",
-        "command(regex:(ls|cat|grep|pwd|echo) .* )"
+        "command(regex:(npm|npx) (--prefix [\\w\\-\\/]+ )?(run (build|start|test|lint|dev)|install|ci|tsc --noEmit|vitest run) )",
+        "command(regex:mkdocs build.* )",
+        "command(regex:make( [\\w\\-]+)? )",
+        "command(regex:(ls|cat|grep|pwd|echo|find|diff) .* )"
       ],
       "ask": [
         "command(*)"

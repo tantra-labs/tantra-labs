@@ -893,7 +893,7 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
 
 ## Operating Invariants
 - Toolchain: `cargo 1.97.1` / `rustc 1.97.1`; edition 2024, `rust-version = "1.85"`.
-- Zero inline `#[test]` / `#[cfg(test)]` in `src/**/*.rs` (Parallel Test Directory Rule, AGENTS.md §3.2).
+- Zero inline `#[test]` / `#[cfg(test)]` in `src/**/*.rs` (Parallel Test Directory Rule, `.agents/rules/testing-and-verification.md` & `AGENTS.md` §4).
 - Wire compatibility: `Price`/`Quantity` remain string-encoded decimals (`serde-with-str`); `-0.00` parses to `Decimal::ZERO` semantics (not negative-strict), matching upstream rust_decimal behavior.
-- `.agents/rules/subagent-discipline.md`, `.agents/rules/no-recon.md`, `.agents/rules/gap-tracking.md`, `.agents/rules/handoff-hygiene.md` are binding workspace-wide — see `AGENTS.md` §8–§10.
+- All rules in `.agents/rules/` (`architecture-and-coupling`, `interface-first-and-modularity`, `coding-and-ddd`, `testing-and-verification`, `scalability-and-concurrency`, `security-and-secrets`, `build-discipline`, `gap-tracking`, `handoff-hygiene`, `no-recon`, `subagent-discipline`), `.agents/config/project-settings.json`, and `.agents/checklists/` are binding workspace-wide — see `AGENTS.md` §8.
 - Plan & Gap discipline: when implementing a plan or gap, any hardcoded/stubbed/sample data used requires filing a `docs/{plans,gaps}/XXXX-*.md` in the respective provider repo (gaps = individual features, plans = collections of gaps). When implemented, the document is cleaned up from active `docs/{plans,gaps}/` and recorded in the repo's index.
