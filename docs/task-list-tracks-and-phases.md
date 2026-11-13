@@ -23,11 +23,11 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **0 — Topology & Hygiene Foundations** ✅ | Remove stub/duplicate crates, pin facade convention, TDD cleanup, kernel call-site consolidation | T0 | 8 — **complete 2026-11-13** |
 | **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 1 |
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds & loaders | T5, T3 (feeds) | 11 |
-| **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 11 |
+| **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 2 |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 20 |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 14 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **71** |
+| **Total** | | | **67** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -45,7 +45,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **T0.1** | ✅ Remove `tantra-market` stub crates (`feed`, `loaders`, `zerodha`, `upstox`, `fyers`, `angelone`, `dhan`); traits stay in `core`, lakehouse in `store` | `tantra-market` | 0 | **Done** | root 0001, 0002 · market 0003, 0004 (now feature trackers for the real feeds, T3.3/T3.4) |
 | **T0.2** | ✅ Delete `tantra-runtime/tantra-indicators` duplicate + `runtime-market`/`test-utils` stubs; absorb `runtime-feed` shim into `api-rest::market_feed` | `tantra-runtime` | 0 | **Done** | root 0003, 0004, 0005 (closed) |
-| **T0.3** | ✅ `tantra-exec-angelone`: **decision = implement** (kept; real adapter tracked by exec plan 0002 → T4.11) | `tantra-exec` | 0 | **Done** | root 0006 (open, decided) |
+| **T0.3** | ✅ `tantra-exec-angelone`: **decision = implement** (kept; real adapter now shipped, task T4.11) | `tantra-exec` | 0 | **Done** | root 0006 (closed 2026-11-13) |
 | **T0.4** | ✅ Pin the facade-crate convention (ADR); add facades for market/exec/runtime/ffi/ui | all Rust workspaces | 0 | **Done** | root 0007 (closed) |
 | **T0.5** | ✅ Remove legacy honba aliases from runtime `workspace.dependencies`; drop unused `tantra-market-*` deps in ffi | `tantra-runtime`, `tantra-ffi` | 0 | **Done** | root 0008 · ffi 0002 (closed) |
 | **T0.6** | ✅ Full-workspace verification: 9 Rust repos `check --profile prod` / `fmt --check` / `clippy -D warnings`; `market` + `exec` full `test --profile prod` green (runtime test-binary compiles still OOM — pre-existing) | all Rust repos | 0 | **Done** | — |
@@ -111,35 +111,35 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T4 — Broker Adapters & Execution · Phase 3
+## T4 — Broker Adapters & Execution · Phase 3 — ✅ T4.1–T4.8, T4.11 DONE 2026-11-13; T4.9/T4.10 Proposed
 
-**Source**: [`tantra-adapters/docs/plans/0002`](../tantra-adapters/docs/plans/0002-complete-broker-contract-certification.md) ·
+**Source**: [`tantra-adapters/docs/plans/README.md`](../tantra-adapters/docs/plans/README.md) (plan 0002 Implemented) ·
 [`tantra-adapters/docs/gaps/README.md`](../tantra-adapters/docs/gaps/README.md) ·
 [`tantra-exec/docs/plans/README.md`](../tantra-exec/docs/plans/README.md)
 
 ### Phase A — Contract-test parity
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T4.1** | Broker contract tests for angelone/upstox/fyers/kotak/iifl (mirror `test_dhan.py`; `MockTransport` canned payloads) | `tantra-adapters` | 3 | Ready | 0001 (**High**) |
-| **T4.2** | `get_bars` returns real OHLCV history honoring `interval`/`days` (6 of 7 brokers) | `tantra-adapters` | 3 | Ready | 0002 (**High**) |
-| **T4.3** | `cancel_order` parses the broker response into canonical `Order` (all 7 brokers) | `tantra-adapters` | 3 | Ready | 0003 (Med) |
+| **T4.1** | ✅ Broker contract tests for angelone/upstox/fyers/kotak/iifl (mirror `test_dhan.py`; `MockTransport` canned payloads) | `tantra-adapters` | 3 | **Done** | 0001 (**High**, closed) |
+| **T4.2** | ✅ `get_bars` returns real OHLCV history honoring `interval`/`days` (all 7 brokers) | `tantra-adapters` | 3 | **Done** | 0002 (**High**, closed) |
+| **T4.3** | ✅ `cancel_order` parses the broker response into canonical `Order` (all 7 brokers) | `tantra-adapters` | 3 | **Done** | 0003 (Med, closed) |
 
 ### Phase B — Streaming & auth
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T4.4** | `WebSocketTransport` + `subscribe_ticks` per broker, token-refresh logic | `tantra-adapters` | 3 | Ready | 0004 (**High**) |
-| **T4.5** | TOTP headless auth (`auth.py`, per-broker `login()`/`authenticate()`) | `tantra-adapters` | 3 | Ready | 0005 (Med) |
+| **T4.4** | ✅ `WebSocketTransport` + `subscribe_ticks` per broker (canonical `Tick`, in-memory mock WS contract tests) | `tantra-adapters` | 3 | **Done** | 0004 (**High**, closed) |
+| **T4.5** | ✅ TOTP headless auth (`auth.py`, RFC 6238 + per-broker `login()` flows, `SessionState` expiry) | `tantra-adapters` | 3 | **Done** | 0005 (Med, closed) |
 
 ### Phase C — Paper broker & configs
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T4.6** | `PaperBroker` order-book depth, partial fills, slippage, rejection realism | `tantra-adapters` | 3 | Ready | 0006 (Low) |
-| **T4.7** | 5 missing `configs/*.toml` templates + `AdapterConfig.from_toml` loader + parse tests | `tantra-adapters` | 3 | Ready | 0007 (Low) |
+| **T4.6** | ✅ `PaperBroker` order-book depth, partial fills, slippage, latency, rejection realism (defaults stay deterministic) | `tantra-adapters` | 3 | **Done** | 0006 (Low, closed) |
+| **T4.7** | ✅ 5 missing `configs/*.toml` templates + `AdapterConfig.from_toml` loader + parse tests | `tantra-adapters` | 3 | **Done** | 0007 (Low, closed) |
 
 ### Phase D — Improvements (plan 0002)
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T4.8** | Public-API exports, typed `MockTransport` error, Protocol-typed `inner`, `client_order_id` idempotency, per-broker margin contract tests | `tantra-adapters` | 3 | Ready | plan 0002 Ph D |
+| **T4.8** | ✅ Public-API exports, typed `MockTransportError`, Protocol-typed `inner`, `client_order_id` idempotency, per-broker margin contract tests | `tantra-adapters` | 3 | **Done** | plan 0002 Ph D (implemented) |
 
 ### Proposed plans
 | Task | Work | Repo / Scope | Phase | Status | Plan |
@@ -150,7 +150,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 ### Execution gateway
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T4.11** | Angel One SmartAPI 2.0 execution adapter (real broker ACL, tests, clippy-clean) | `tantra-exec-angelone` | 3 | In progress (Ph 1 open) | exec 0001 = root 0006 |
+| **T4.11** | ✅ Angel One SmartAPI 2.0 execution adapter (real broker ACL, `BrokerExecutor` + SmartStream order feed + `BrokerEnumMap` tables + exact-decimal payloads, 40 tests, clippy-clean) | `tantra-exec-angelone` | 3 | **Done** | exec 0001 = root 0006 (`2258bbb`) |
 
 ---
 
@@ -308,11 +308,11 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-ledger` | 0 | — | T2.1–T2.11 ✅ |
 | `tantra-risk` | 0 | 0002 (Implemented) | T1.1–T1.4 ✅ |
 | `tantra-market` | 1 (0003, 2/5 broker feeds) | — | T3.1–T3.4 🔶 |
-| `tantra-exec` | 1 (0001) | 0002 | T0.3 ✅, T4.11 |
+| `tantra-exec` | 0 (0001 closed) | 0002 (Phase 1 done) | T0.3 ✅, T4.11 ✅ |
 | `tantra-runtime` | 5 (0004–0008) | 0004 | T0.2/T0.5 ✅, T7.1–T7.8 |
 | `tantra-agent` | 5 (0003–0007) | 0007, 0009, 0010 | T0.8 ✅, T6.1–T6.12 |
 | `tantra-ui` | 4 (0003–0006) | 0003 | T10.1–T10.5 |
-| `tantra-adapters` | 7 (0001–0007) | 0002, 0003, 0004 | T4.1–T4.10 |
+| `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
 | `tantra-data` | 10 (0004–0010, 0012–0014) | 0003, 0004, 0005, 0006 | T5.1–T5.10 |
 | `tantra-strategies` | 5 (0001–0005) | — | T8.1–T8.5 |
 | `tantra-examples` | 8 (0001–0008) | — | T9.3–T9.10 |
@@ -333,6 +333,12 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > `tantra-market` `b1b085e`, wired into the runtime chat adapter (`tantra-runtime` `39ff389`);
 > T3.3 2 of 5 broker feeds real (`dhan` `fb82571`, `zerodha` `ad79205`); T3.4 (feed/loaders)
 > closed. `tantra-market` open gaps 4 → 1 (0003).
+>
+> T4 track 2026-11-13: T4.1–T4.8 complete in `tantra-adapters` (`fcd94bc`, plan 0002
+> Implemented — gaps 0001–0007 closed; 134 tests, ruff + mypy strict clean); T4.11 complete
+> in `tantra-exec` (`2258bbb` — SmartAPI 2.0 `BrokerExecutor` + SmartStream order feed, 40
+> tests, clippy-clean; gap 0001 closed). T4.9/T4.10 remain Proposed (adapters plans
+> 0003/0004). `tantra-adapters` open gaps 7 → 0.
 
 ## Related
 

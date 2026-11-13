@@ -12,7 +12,41 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — T3.1–T3.4 (market data & options infrastructure)
+## Latest Batch — T4.1–T4.8 + T4.11 (broker adapters & execution)
+
+Date: 2026-11-13. Executed the T4 track from `docs/task-list-tracks-and-phases.md`:
+- **T4.1–T4.8 (plan 0002, Implemented)** in `tantra-adapters` (`fcd94bc`):
+  - Phase A (gaps 0001–0003): contract tests for all 7 brokers (5 new test
+    files mirroring `test_dhan.py`); real `get_bars` returning `list[Bar]`
+    honoring `interval`/`days` for all 7 (per-broker historical endpoints);
+    `cancel_order` parses the broker response into canonical `Order`.
+  - Phase B (gaps 0004–0005): `WebSocketTransport` protocol +
+    `MockWebSocketTransport` in-memory mock + per-broker
+    `subscribe_ticks(instruments, callback)` → new canonical `Tick` model;
+    `common/auth.py` with stdlib RFC 6238 TOTP + `login_zerodha`/
+    `login_angelone`/`login_upstox` + `SessionState` expiry.
+  - Phase C (gaps 0006–0007): `PaperBroker` order-book depth / partial fills /
+    slippage / latency / seeded risk-limit rejection (defaults stay
+    deterministic); `AdapterConfig.from_toml` (tomllib) + 5 missing
+    `configs/*.toml` templates + parse tests.
+  - Phase D: public exports from `common/__init__.py`, typed
+    `MockTransportError`, fully-typed `Adapter` protocol + Protocol-typed
+    `RecordingAdapter.inner`, `client_order_id` idempotency echo on
+    `Order.meta`.
+  - Verification: 44 → 134 tests green, `ruff check` + `ruff format --check`
+    clean (incl. pre-existing `code-public-api.md`), `mypy --strict` clean.
+- **T4.11 (gap 0001, closed)** in `tantra-exec` (`2258bbb`): SmartAPI 2.0
+  `BrokerExecutor` adapter — REST place/modify/cancel/order book/positions/
+  margins/health, SmartStream order feed → `ExecutionStream`, `BrokerEnumMap`
+  wire tables, error mapping, `rate_limited()` (10/s), `SessionTokens` expiry;
+  40 new tests, clippy `-D warnings` clean; gap/plan docs closed per repo
+  (`e36f64c`).
+- T4.9/T4.10 remain **Proposed** (adapters plans 0003/0004 — not approved).
+- Cleanup per gap-tracking §4: adapters gaps 0001–0007 + plan 0002 closed
+  (docs removed, indexes + task list updated); exec gap 0001 + plan 0002
+  retired. Workspace total 71 → 67, phase-3 open 11 → 2 (both Proposed).
+
+## Previous Batch — T3.1–T3.4 (market data & options infrastructure)
 
 Date: 2026-11-13. Executed the T3 track from `docs/task-list-tracks-and-phases.md`:
 - **T3.1 (gap 0001, closed)** options-chain enumeration/reader: `InstrumentMaster::list_chain`
@@ -300,7 +334,11 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
 3. `tantra-data/docs/gaps/0015-nse-trading-holiday-provider.md` — wire the runtime
    `NseTradingCalendar` to tantra-data's holiday ingestion once it ships (the ledger's
    calendar is already data-driven).
-4. Remaining per-repo follow-ups (non-blocking, tracked in each repo's HANDOFF / `docs/gaps/`):
+4. T4 follow-ons (both Proposed, not approved): `tantra-adapters` plan 0003 (cross-repo
+   integration Python ↔ Rust core) and plan 0004 (production hardening: rate limits, pooling,
+   token refresh). The Python `Tick`/`subscribe_ticks` surface is ready to align with the Rust
+   `tantra-market` feed contracts when 0003 is taken up.
+5. Remaining per-repo follow-ups (non-blocking, tracked in each repo's HANDOFF / `docs/gaps/`):
    - **4B Phase 4 (local SLM)** — deferred by design; prerequisite is the Phase-3 golden fixture set accumulating via live OmniRoute runs (`TANTRA_WRITE_FIXTURES=1`), then model licensing/fine-tuning/quantization per `0005`.
    - **0001 Phase 1** (`tantra_search_tools`/`tantra_describe_tool` two-tier gateway) — the forecast engine is currently discoverable via `tools/list` only; once the gateway lands, add the `forecast` category to its category enum.
    - **`tantra-ui`** — Leptos view layer for `tantra-ui-app`, wire CLI `ask`/`scan` (gap `tantra-ui/docs/gaps/0001`), TUI `run()` event loop.
