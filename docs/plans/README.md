@@ -13,6 +13,12 @@ Per workspace rule `.agents/rules/gap-tracking.md`:
 | [0001](0001-fincept-quantcepts-gap-closure-and-feature-roadmap.md) | Fincept & Quantcepts Feature Parity, Gap Closure, and Platform Expansion Master Plan | Platform-wide | Approved Architecture & Implementation Roadmap |
 | [0003](0003-crate-topology-consolidation.md) | Crate Topology Consolidation: remove stub/duplicate crates and pin the facade convention | `tantra-market`, `tantra-exec`, `tantra-runtime` (+ facade convention, all Rust workspaces) | Proposed (covers `docs/gaps/0001`–`0008`) |
 
+## Related
+
+- [`docs/task-list-tracks-and-phases.md`](../task-list-tracks-and-phases.md) — consolidated,
+  track/phase-ordered task list generated from the per-repo `docs/{plans,gaps}` indexes
+  (89 open tasks across 15 repos; update it in the same change as any index cleanup).
+
 ## Implemented Plans
 
 | # | Title | Target Scope | Implemented In |

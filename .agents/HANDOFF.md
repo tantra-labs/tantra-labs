@@ -14,7 +14,17 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — re-write `tantra-runtime`/`tantra-ui` docs (dismantle roadmap into design/gaps/plans)
+## Latest Batch — consolidated track/phase task list
+
+Date: 2026-11-13. Created `docs/task-list-tracks-and-phases.md`: a single execution-ordered
+task list derived from the live per-repo `docs/{plans,gaps}/README.md` indexes — **89 open tasks
+across 15 repos**, organized into 12 tracks (T0 topology/hygiene → T11 docs) and 7 phases
+(Phase 0 topology → Phase 6 UI/docs), with per-row links to the governing plan/gap, statuses,
+and dependency/blocking edges. Source of truth remains the per-repo indexes; the task list is a
+derived view that must be updated in the same change as any index cleanup. Linked from
+`docs/plans/README.md` (Related). No code changes.
+
+## Previous Batch — re-write `tantra-runtime`/`tantra-ui` docs (dismantle roadmap into design/gaps/plans)
 
 Date: 2026-11-13. Dismantled `docs/roadmap/` in both repos and re-wrote
 `docs/{design,gaps,plans}` to reflect the source code (same pattern as the
