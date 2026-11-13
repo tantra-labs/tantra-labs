@@ -21,13 +21,13 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | Phase | Focus | Tracks | Task count |
 | :--- | :--- | :--- | :--- |
 | **0 — Topology & Hygiene Foundations** ✅ | Remove stub/duplicate crates, pin facade convention, TDD cleanup, kernel call-site consolidation | T0 | 8 — **complete 2026-11-13** |
-| **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 14 |
+| **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 8 |
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds & loaders | T5, T3 (feeds) | 12 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 11 |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 20 |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 14 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **85** |
+| **Total** | | | **79** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -68,24 +68,24 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T2 — Portfolio, Allocation & Performance · Phase 1
+## T2 — Portfolio, Allocation & Performance · Phase 1 — ✅ COMPLETE (T2.1–T2.6) 2026-11-13
 
-**Source**: [`tantra-ledger/docs/plans/README.md`](../tantra-ledger/docs/plans/README.md) (plans 0003–0005) ·
+**Source**: [`tantra-ledger/docs/plans/README.md`](../tantra-ledger/docs/plans/README.md) (plans 0003–0004 Implemented, 0005 Proposed) ·
 [`tantra-ledger/docs/gaps/README.md`](../tantra-ledger/docs/gaps/README.md)
 
-### Allocation engine — plan 0003 (Ready)
+### Allocation engine — plan 0003 (Implemented)
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T2.1** | Implement `Hrp` allocation objective | `tantra-ledger-allocation` | 1 | Ready | 0001 (Med) |
-| **T2.2** | Implement `BlackLitterman` allocation objective | `tantra-ledger-allocation` | 1 | Ready | 0002 (Med) |
-| **T2.3** | Exact bound-constrained QP (replace clip-and-renormalize bound handling) | `tantra-ledger-allocation` | 1 | Ready | 0003 (Low) |
-| **T2.4** | Discrete / whole-share allocation | `tantra-ledger-allocation` | 1 | Ready | 0004 (Low) |
+| **T2.1** | ✅ Implement `Hrp` allocation objective | `tantra-ledger-allocation` | 1 | **Done** | 0001 (Med, closed) |
+| **T2.2** | ✅ Implement `BlackLitterman` allocation objective | `tantra-ledger-allocation` | 1 | **Done** | 0002 (Med, closed) |
+| **T2.3** | ✅ Exact bound-constrained solve (replace clip-and-renormalize bound handling) | `tantra-ledger-allocation` | 1 | **Done** | 0003 (Low, closed) |
+| **T2.4** | ✅ Discrete / whole-share allocation | `tantra-ledger-allocation` | 1 | **Done** | 0004 (Low, closed) |
 
-### Performance journal — plan 0004 (Ready)
+### Performance journal — plan 0004 (Implemented)
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T2.5** | Remove `Utc::now()` from `MetricsInput::new` (temporal determinism, zero-clock) | `tantra-ledger-performance` | 1 | Ready | 0005 (**High**) |
-| **T2.6** | Replace v1 placeholder edge-score formula with the real metric | `tantra-ledger-performance` | 1 | Ready | 0006 (Low) |
+| **T2.5** | ✅ Remove `Utc::now()` from `MetricsInput::new` (temporal determinism, zero-clock) | `tantra-ledger-performance` + `tantra-runtime-api-rest` | 1 | **Done** | 0005 (**High**, closed) |
+| **T2.6** | ✅ Replace v1 placeholder edge-score formula with the real metric | `tantra-ledger-performance` | 1 | **Done** | 0006 (Low, closed) |
 
 ### Settlement, corporate actions & fees — plan 0005 (Proposed)
 | Task | Work | Repo / Scope | Phase | Status | Gap |
@@ -305,7 +305,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | :--- | :---: | :--- | :--- |
 | `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella) | T0.1–T0.6 ✅ |
 | `tantra-core` | 1 (0001, audit done) | 0002 (Phase A done) | T0.7 ⏸ |
-| `tantra-ledger` | 11 (0001–0011) | 0003, 0004, 0005 | T2.1–T2.11 |
+| `tantra-ledger` | 5 (0007–0011) | 0005 | T2.7–T2.11 |
 | `tantra-risk` | 0 | 0002 (Implemented) | T1.1–T1.4 ✅ |
 | `tantra-market` | 4 (0001–0004) | — | T3.1–T3.4 |
 | `tantra-exec` | 1 (0001) | 0002 | T0.3 ✅, T4.11 |
@@ -322,6 +322,11 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
 > added, convention pinned, aliases pruned, TDD cleanup done, all workspaces verified. T0.7
 > remains as an audit-recorded verify-on-future-work item (no 1:1 delegation sites exist).
+>
+> T2 track (T2.1–T2.6) complete 2026-11-13 (`tantra-ledger` plans 0003–0004 Implemented, commit
+> `9f8ec22` + docs `f90f192`; runtime `eee9d21`): HRP + Black-Litterman objectives, exact
+> bounded-simplex bound handling, discrete whole-lot allocation, zero-clock `MetricsInput`,
+> edge-score v2. Remaining T2 rows (T2.7–T2.11) are plan 0005 (Proposed, not approved).
 
 ## Related
 
