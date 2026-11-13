@@ -4,17 +4,45 @@
 (`docs/future-work-bottoms-up-build-order.md`) — Layers 0, 1, 2, 2b, 3, 4, 5, 6 GREEN;
 Level 7 (`tantra-data/0002`, filings breadth) partially superseded: filings ingestion itself
 landed (closed gap `tantra-data/docs/gaps/0003`). Agent-side **plan 0006 (MCP/chat tool
-catalog expansion) is complete**; follow-on breadth tracked under agent plan 0007. Two
-upstream bridges remain open on the provider side:
-`tantra-data/docs/gaps/0007-filings-rust-bridge.md` (filings) and
-`tantra-market/docs/gaps/0001-options-chain-reader.md` +
-`tantra-data/docs/gaps/0008`/`0009` (options chain, corporate actions).
-Date: 2026-11-12 · Workspace: `tantra-labs`
+catalog expansion) is complete**; follow-on breadth tracked under agent plan 0007. Upstream
+bridges remaining: `tantra-data/docs/gaps/0007-filings-rust-bridge.md` (filings) and
+`tantra-data/docs/gaps/0008`/`0009` (corporate actions).
+Date: 2026-11-13 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crate dependency
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — T2.7–T2.11 complete (tantra-ledger plan 0005)
+## Latest Batch — T3.1–T3.4 (market data & options infrastructure)
+
+Date: 2026-11-13. Executed the T3 track from `docs/task-list-tracks-and-phases.md`:
+- **T3.1 (gap 0001, closed)** options-chain enumeration/reader: `InstrumentMaster::list_chain`
+  (by underlying, ordered expiry→strike→option type) on `CatalogInstrumentMaster`/`DatasetReader`,
+  `ChainReader` port + `InstrumentChainReader` joining quotes + optional OI, exact-Decimal
+  `ChainContract` (never f64). Wired into `tantra-runtime-api-rest::FeedMarketReader`:
+  `options_chain` now reads the real chain (midpoint last-price, calendar-day expiry filter,
+  500 cap); a master that cannot enumerate still maps to `PortError::unavailable`. Commits:
+  `tantra-market` `b1b085e`, `tantra-runtime` `39ff389`.
+- **T3.2 (gap 0002, closed)** OI time-series + four-quadrant buildup: `OpenInterestStore`
+  port, `InMemoryOpenInterestStore` + `ParquetOpenInterestStore` (`{root}/open_interest/YYYY-MM-DD.parquet`,
+  exact Decimal128 `Quantity`), `classify_buildup` (long/short buildup, short covering, long
+  unwinding) + `BuildupAnalyzer` over OI store + daily bars. Commit `b1b085e`.
+- **T3.3 (gap 0003, 2 of 5 shipped)** real broker WS feeds on `tantra-market-core`'s
+  `WsClient`/`SymbolMapper`/`ReconnectionManager`: `tantra-market-dhan` (DhanHQ v2: JSON
+  requests, LE binary ticker/quote/OI/prev-close/full/disconnect packets; REST LTP snapshot)
+  `fb82571`; `tantra-market-zerodha` (Kite Connect 3: binary frames, ltp 8/quote 44/full 184,
+  index 28/32; mode-per-token dispatch; REST LTP snapshot) `ad79205`. Both golden-byte tested
+  (18 tests across the two crates), prices rounded to exact Decimal at the adapter boundary.
+  **Remaining**: upstox, fyers, angelone re-added only when their wire protocols are real
+  (fyers' raw subscribe request must be captured from the official SDK).
+- **T3.4 (gap 0004 = root 0002, closed)**: feed traits in core, lakehouse/loaders in store,
+  real `MarketDataFeed` impls now exist on top of core.
+- Verification: market workspace check/fmt/clippy green; store 10 + dhan 10 + zerodha 8 new
+  tests green; runtime api-rest chat_market_reader_tests 12 green. Live verification against
+  Dhan credentials is the manual follow-on.
+- Cleanup per gap-tracking §4: market gaps 0001/0002/0004 + root 0002 closed (docs removed,
+  indexes + task list updated; total 74 → 71, market open gaps 4 → 1).
+
+## Previous Batch — T2.7–T2.11 complete (tantra-ledger plan 0005)
 
 Date: 2026-11-13. Executed the remaining T2 rows from `docs/task-list-tracks-and-phases.md`
 (`tantra-ledger` settlement & statutory-fee consolidation; approved at the start of this
@@ -260,20 +288,23 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
 
 ## Immediate Next Step
 1. Plan 0006 is complete (Phases 1–4); agent plan 0007 is the active follow-on master guide for
-   future chat-tool/MCP-gateway breadth. Closing `tantra-data/docs/gaps/0007-filings-rust-bridge.md`
-   (the standing `tantra-data` → Rust FFI bridge) unblocks both the chat `filings_search` tool
-   and the runtime market-reference sample stores; `tantra-market/docs/gaps/0001` +
-   `tantra-data/docs/gaps/0008`/`0009` similarly block the options-chain/corporate-actions tools
-   from returning real data (both currently answer with honest `PortError::unavailable`).
-2. T2.1–T2.11 done (plans 0003–0005). The ledger's remaining upstream follow-on is
-   `tantra-data/docs/gaps/0015-nse-trading-holiday-provider.md` (wire the runtime
-   `NseTradingCalendar` to tantra-data's holiday ingestion once it ships; the ledger's
+   future chat-tool/MCP-gateway breadth. The `options_chain` chat tool now reads real data via
+   the wired `FeedMarketReader` chain reader (T3.1). Still open: `tantra-data/docs/gaps/0007`
+   (filings Rust bridge) and `tantra-data/docs/gaps/0008`/`0009` (corporate actions) block the
+   `filings_search`/`corporate_actions` tools from returning real data (honest
+   `PortError::unavailable` today); `oi_buildup` (agent plan 0010) now has its data source
+   (T3.2's `OpenInterestStore`/`BuildupAnalyzer`) but needs the chat tool itself.
+2. T3.3 remaining: capture the Fyers v3 subscribe request from the official SDK and implement
+   the `upstox`/`fyers`/`angelone` feed crates mirroring `dhan`/`zerodha`; live-verify the Dhan
+   (and Kite) feeds against the Dhan credentials.
+3. `tantra-data/docs/gaps/0015-nse-trading-holiday-provider.md` — wire the runtime
+   `NseTradingCalendar` to tantra-data's holiday ingestion once it ships (the ledger's
    calendar is already data-driven).
-3. Remaining per-repo follow-ups (non-blocking, tracked in each repo's HANDOFF / `docs/gaps/`):
+4. Remaining per-repo follow-ups (non-blocking, tracked in each repo's HANDOFF / `docs/gaps/`):
    - **4B Phase 4 (local SLM)** — deferred by design; prerequisite is the Phase-3 golden fixture set accumulating via live OmniRoute runs (`TANTRA_WRITE_FIXTURES=1`), then model licensing/fine-tuning/quantization per `0005`.
    - **0001 Phase 1** (`tantra_search_tools`/`tantra_describe_tool` two-tier gateway) — the forecast engine is currently discoverable via `tools/list` only; once the gateway lands, add the `forecast` category to its category enum.
    - **`tantra-ui`** — Leptos view layer for `tantra-ui-app`, wire CLI `ask`/`scan` (gap `tantra-ui/docs/gaps/0001`), TUI `run()` event loop.
-3. Layer 3's `BasketManifest` consumption lands in `tantra-runtime-backtest` (catalog.rs/engine.rs) as a separate future slice, per the plan's scope note.
+5. Layer 3's `BasketManifest` consumption lands in `tantra-runtime-backtest` (catalog.rs/engine.rs) as a separate future slice, per the plan's scope note.
 
 ## Operating Invariants
 - Toolchain: `cargo 1.97.1` / `rustc 1.97.1`; edition 2024, `rust-version = "1.85"`.

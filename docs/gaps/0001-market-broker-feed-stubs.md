@@ -1,42 +1,36 @@
 # 0001 — Real broker WS feed crates for `tantra-market`
 
-**Status**: open — **feature tracker**. The empty stub crates were removed 2026-11-13
-(root plan 0003 Phase 1); this gap now tracks the **real** feed implementations (task T3.3).
-Re-added only as real crates with actual wire protocols.
+**Status**: open — **feature tracker, 2 of 5 shipped 2026-11-13 (T3.3)**.
 
 **Provider repo**: `tantra-market`
 
-## What's stubbed or hardcoded
+## What's real
 
-The following crates are registered in `tantra-market/Cargo.toml` `[workspace] members` and
-`[workspace.dependencies]`, but their `src/lib.rs` is a single doc-comment line with no
-implementation:
+Two broker adapters are real `MarketDataFeed` implementations on
+`tantra-market-core`'s `WsClient`/`SymbolMapper`/`ReconnectionManager`, each with
+golden-byte-tested wire decoders (see `tantra-market/docs/gaps/0003`):
 
-- `tantra-market-zerodha`
-- `tantra-market-upstox`
-- `tantra-market-fyers`
-- `tantra-market-angelone`
-- `tantra-market-dhan` (70 lines: defines a `DhanFeed` struct implementing `MarketDataFeed` but
-  returns an empty stream; no Dhan WebSocket wire protocol)
+- `tantra-market-dhan` — DhanHQ v2 Live Market Feed (JSON requests, little-endian
+  binary packets), commit `fb82571`.
+- `tantra-market-zerodha` — Kite Connect 3 ticker (JSON requests, binary frames),
+  commit `ad79205`.
 
-## Why
+Both convert every price/quantity to exact `Decimal` before entering a canonical
+`Tick`. Live verification against real credentials is a manual follow-on for each.
 
-The workspace was scaffolded with all planned broker adapters up front so the crate list would
-match the architecture doc. The real brokers (Zerodha Kite, Upstox, Fyers, Angel One, Dhan) have
-binary WebSocket wire formats that are non-trivial; the crates were never populated. Nothing in any
-workspace imports these crates (`grep -rl "tantra_market_zerodha\|..._upstox\|..._fyers\|..._angelone\|..._dhan"` across all repos returns only their own `Cargo.toml`).
+## What remains
 
-## How to close it
+The following crates are **not** present in the workspace and are re-added only
+as real crates with actual wire protocols implemented (per gap-tracking §4,
+re-adding an empty stub is forbidden):
 
-1. Remove `tantra-market-zerodha`, `-upstox`, `-fyers`, `-angelone`, `-dhan` from
-   `tantra-market/Cargo.toml` `members` and `workspace.dependencies` (one commit, atomic).
-2. Do **not** delete the plan to add real broker feeds — re-add each crate only when its WS
-   wire protocol is actually implemented (per gap-tracking §4, deleting a stub is not closing the
-   feature, but re-adding an empty stub is forbidden).
-3. Update `tantra-market/docs/gaps/README.md` index if a per-repo gap was filed there.
-4. Verify: `cd tantra-market && cargo check --workspace --profile prod` and `make test`.
+- `tantra-market-upstox` — binary WebSocket feed; protocol at upstox.com docs.
+- `tantra-market-fyers` — v3 Data Socket is JSON-text (responses documented; the
+  raw subscribe request must be captured from the official `fyers_apiv3` SDK).
+- `tantra-market-angelone` — SmartAPI 2.0 WebSocket; protocol at
+  smartapi.angelbroking.com.
 
 ## Verification
 
-`cargo check --workspace --profile prod` passes without the crates present; no other workspace
-declares a path dependency on the removed crates.
+`cargo check --workspace --profile prod` passes with the two real crates; no
+other workspace declares a path dependency on the remaining three.

@@ -9,14 +9,14 @@ provider repo's own `docs/gaps/README.md` is the implementation tracker.
 
 | # | Title | Provider Repo / Scope | Filed |
 |---|-------|-----------------------|-------|
-| [0001](0001-market-broker-feed-stubs.md) | Real broker WS feed crates (`zerodha`, `upstox`, `fyers`, `angelone`, `dhan`) — **feature tracker**: the empty stub crates were removed 2026-11-13 (plan 0003); real feeds are re-added as real crates here when implemented (task T3.3) | `tantra-market` | 2026-11-12 |
-| [0002](0002-market-feed-loaders-stubs.md) | Real `tantra-market-feed` / `tantra-market-loaders` implementations — **feature tracker**: the empty stub crates were removed 2026-11-13 (plan 0003); `MarketDataFeed` stays in `core`, lakehouse in `store` (task T3.4) | `tantra-market` | 2026-11-12 |
+| [0001](0001-market-broker-feed-stubs.md) | Real broker WS feed crates (`zerodha`, `upstox`, `fyers`, `angelone`, `dhan`) — **feature tracker, 2 of 5 shipped 2026-11-13**: `tantra-market-dhan` (DhanHQ v2) and `tantra-market-zerodha` (Kite Connect 3) are real; `upstox`, `fyers`, `angelone` are re-added as real crates when their wire protocols are implemented (task T3.3) | `tantra-market` | 2026-11-12 |
 | [0006](0006-exec-angelone-stub.md) | `tantra-exec-angelone` is a 9-line stub — **decision taken 2026-11-13: implement** (kept as the home of the real SmartAPI 2.0 adapter, tracked by `tantra-exec` plan 0002, task T4.11) | `tantra-exec` | 2026-11-12 |
 
 ## Closed Gaps
 
 | # | Title | Closed In |
 |---|-------|-----------|
+| 0002 | Real `tantra-market-feed` / `tantra-market-loaders` implementations — **feature tracker**: the empty stub crates were removed 2026-11-13 (plan 0003); `MarketDataFeed` stays in `core`, lakehouse in `store` (task T3.4) | Closed 2026-11-13 (T3.4): feed traits in `tantra-market-core`, lakehouse/loaders in `tantra-market-store`, and real `MarketDataFeed` implementations exist on top of core (`dhan` `fb82571`, `zerodha` `ad79205`) |
 | 0003 | `tantra-runtime/tantra-indicators` exact duplicate of `tantra-market-indicators` | Deleted 2026-11-13 (plan 0003 Phase 2) — nothing imported it |
 | 0004 | `tantra-runtime/tantra-runtime-feed` re-export shim over `tantra-market-store` | Absorbed into `tantra-runtime-api-rest::market_feed` module 2026-11-13 (plan 0003 Phase 2); shim crate deleted, all 25 import sites re-pointed |
 | 0005 | `tantra-runtime-market` and `tantra-runtime-test-utils` empty stubs (legacy `honba` names) | Deleted 2026-11-13 (plan 0003 Phase 2) — declared-but-unused in `tantra-runtime-strategy` / `api-rest` |

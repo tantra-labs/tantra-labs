@@ -21,13 +21,13 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | Phase | Focus | Tracks | Task count |
 | :--- | :--- | :--- | :--- |
 | **0 — Topology & Hygiene Foundations** ✅ | Remove stub/duplicate crates, pin facade convention, TDD cleanup, kernel call-site consolidation | T0 | 8 — **complete 2026-11-13** |
-| **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 3 |
-| **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds & loaders | T5, T3 (feeds) | 12 |
+| **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 1 |
+| **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds & loaders | T5, T3 (feeds) | 11 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 11 |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 20 |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 14 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **74** |
+| **Total** | | | **71** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -98,16 +98,16 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T3 — Market Data & Options Infrastructure · Phase 1–2
+## T3 — Market Data & Options Infrastructure · Phase 1–2 — 🔶 T3.1/T3.2/T3.4 DONE 2026-11-13; T3.3 2/5
 
 **Source**: [`tantra-market/docs/gaps/README.md`](../tantra-market/docs/gaps/README.md)
 
 | Task | Work | Repo / Scope | Phase | Status | Gap / Blocks |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T3.1** | Options-chain enumeration/reader (Greeks building blocks exist; nothing serves a chain) | `tantra-market-store` / `-pricing` + chat tools | 1 | Open | 0001 · blocks chat `options_chain` |
-| **T3.2** | OI time-series history & buildup classification | `tantra-market-store` | 1 | Open | 0002 · blocks chat `oi_buildup`; leg 4 of T6.12 |
-| **T3.3** | Real broker WS feeds (zerodha/upstox/fyers/angelone/dhan) — re-added as real crates after T0.1 | `tantra-market` | 2 | Open | 0003 = root 0001 |
-| **T3.4** | Real `feed` / `loaders` implementations (feed trait in `core`, lakehouse in `store`) | `tantra-market` | 2 | Open | 0004 = root 0002 |
+| **T3.1** | ✅ Options-chain enumeration/reader — `InstrumentMaster::list_chain` (by underlying, ordered expiry→strike→option type), `ChainReader` + `InstrumentChainReader` joining quotes + OI; wired into `FeedMarketReader::options_chain` | `tantra-market-store` / `-pricing` + runtime | 1 | **Done** | 0001 (closed) — unblocks chat `options_chain` |
+| **T3.2** | ✅ OI time-series history & buildup classification — `OpenInterestStore` (in-memory + Parquet `{root}/open_interest/`, exact Decimal128), `classify_buildup` four-quadrant + `BuildupAnalyzer` | `tantra-market-store` | 1 | **Done** | 0002 (closed) — leg 4 of T6.12 |
+| **T3.3** | 🔶 Real broker WS feeds — **2 of 5 shipped**: `tantra-market-dhan` (DhanHQ v2, `fb82571`) + `tantra-market-zerodha` (Kite 3, `ad79205`) real & tested; `upstox`/`fyers`/`angelone` re-added as real crates when their wire protocols are implemented | `tantra-market` | 2 | In progress | 0003 = root 0001 (2/5) |
+| **T3.4** | ✅ Real `feed` / `loaders` — feed traits in `core`, lakehouse in `store`, real `MarketDataFeed` impls on top of core | `tantra-market` | 2 | **Done** | 0004 = root 0002 (closed) |
 
 ---
 
@@ -307,7 +307,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-core` | 1 (0001, audit done) | 0002 (Phase A done) | T0.7 ⏸ |
 | `tantra-ledger` | 0 | — | T2.1–T2.11 ✅ |
 | `tantra-risk` | 0 | 0002 (Implemented) | T1.1–T1.4 ✅ |
-| `tantra-market` | 4 (0001–0004) | — | T3.1–T3.4 |
+| `tantra-market` | 1 (0003, 2/5 broker feeds) | — | T3.1–T3.4 🔶 |
 | `tantra-exec` | 1 (0001) | 0002 | T0.3 ✅, T4.11 |
 | `tantra-runtime` | 5 (0004–0008) | 0004 | T0.2/T0.5 ✅, T7.1–T7.8 |
 | `tantra-agent` | 5 (0003–0007) | 0007, 0009, 0010 | T0.8 ✅, T6.1–T6.12 |
@@ -327,7 +327,12 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > (allocation + performance, commits `9f8ec22`/`f90f192`; runtime `eee9d21`) and T2.7–T2.11
 > (settlement & statutory-fee consolidation, ledger `437e6af`, market-finance `cbeb045`,
 > tantra-data gap 0015 filed `5e873fe`). `tantra-ledger` now has no open gaps or plans;
-> phase-1 open count is 3 (T3.1, T3.2, T0.7-audit).
+> phase-1 open count is 1 (T0.7-audit).
+>
+> T3 track 2026-11-13: T3.1 (options-chain reader) + T3.2 (OI stores & buildup) closed in
+> `tantra-market` `b1b085e`, wired into the runtime chat adapter (`tantra-runtime` `39ff389`);
+> T3.3 2 of 5 broker feeds real (`dhan` `fb82571`, `zerodha` `ad79205`); T3.4 (feed/loaders)
+> closed. `tantra-market` open gaps 4 → 1 (0003).
 
 ## Related
 
