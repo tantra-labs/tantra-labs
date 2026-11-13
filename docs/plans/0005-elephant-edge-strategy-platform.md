@@ -13,13 +13,19 @@
 Build the **Elephant Edge (EE+)** intraday strategy platform: a price-action +
 smart-money support/resistance system for Indian indices and F&O scrips that
 
-1. builds a **session level map** (two support + two resistance **Elephant
-   percentile zones**, previous-day OHLC, option-chain **OI walls**, dealer
-   **gamma flip / GEX walls**, **max pain**, round-number **strike zones**, and
-   **Order Blocks**),
+1. builds a **session level map** anchored at the 09:16 IST first 1-minute candle
+   close (two support + two resistance **Elephant zones** — session-range
+   percentiles or 1.618×/2.618× range extensions — snapped to option-chain **OI
+   walls**, previous-day OHLC, dealer **gamma flip / GEX walls**, **max pain**,
+   round-number **strike zones**, and **Order Blocks**),
 2. generates **possible buy/sell signals** at high-confluence levels with
-   price-action confirmation (marubozu / hammer / engulfing + volume),
-3. attaches **stop-loss (SL)** and **trailing stop-loss (TSL)** to every signal,
+   price-action confirmation (Elephant marubozu / hammer / engulfing + volume +
+   Plus-Two breakout confirmation) gated by $\Delta\text{OI}$ (writing defense
+   for reversals vs short-covering unwinding for breakouts) and the **mid-month
+   (15th $\pm$ 1 day) institutional reversal cycle**,
+3. attaches **stop-loss (SL)** ($1R$ anchored beyond the zone cluster),
+   **asymmetric $3R$ / $4R\text{--}5R$ target milestones**, **trailing stop-loss
+   (TSL)**, and the **6-candle stagnation time-stop** to every signal,
 4. computes **positioning** (risk-based sizing, per-trade and portfolio caps,
    alternate-mode direction), and
 5. runs byte-for-byte identical in backtest (`tantra-runtime`) and live
@@ -115,21 +121,32 @@ The EE+ strategy MUST, for every valid setup:
 1. **Level map**: emit `LevelMap` with kinds
    `{ElephantSupport1..2, ElephantResistance1..2, PreviousDayOHLC, OiWallCall/Put,
    GammaFlip, MaxPain, StrikeRound, OrderBlock}`; each `Level` carries a band
-   and a 0–4 **confluence score** (alignment with OI wall / PDH-PDL / gamma
-   wall / building ΔOI / PCR-skew tilt / OB).
+   (with optional strike-wall snapping) and a 0–4 **confluence score**
+   (alignment with OI wall / PDH-PDL / gamma wall / $\Delta\text{OI}$ buildup or
+   short-covering / Local Range PCR-skew tilt / OB / mid-month 15th $\pm$ 1 day
+   reversal cycle).
 2. **Signal**: emit `StrategySignal { side: Buy|Sell, kind: Breakout|Reversal|Retest,
    ref_levels, confidence }` only on a confirmed trigger candle with volume at a
-   score ≥ 3 level, inside the entry window, max-trades/day respected.
-3. **Stop protection**: attach `StopProtection { initial_stop, trail: AtrTrail |
-   SwingTrail | Off, trail_distance, activation_after_r }` — `Decimal` only.
+   score ≥ 3 level (with optional Plus-Two candle confirmation for breakouts),
+   inside the entry window, max-trades/day respected.
+3. **Stop protection & R-multiples**: attach `StopProtection { initial_stop,
+   trail: AtrTrail | SwingTrail | Off, trail_distance, activation_after_r }` —
+   `Decimal` only — plus asymmetric **$3R$ partial-booking** and **$4R\text{--}5R$
+   runner target milestones**, and enforce the **6-candle time-stop** on stagnant
+   positions.
 4. **Positioning**: `PositionIntent` from risk-per-trade %, ATR-based stop
    distance, and `max_position_fraction`/`max_loss` risk budget; alternate-mode
    direction; mandatory intraday square-off.
 5. **Zero floats**: every price, stop, band, and quantity is `Decimal`; no
    `f32/f64/float` in financial paths.
-6. **Regime gate**: the dealer-gamma regime (long-gamma → prefer Reversal at
-   walls; short-gamma → prefer Breakout through walls) and PCR tilt modulate
-   which signal kinds are allowed.
+6. **Regime, $\Delta\text{OI}$ & Mid-Month Cycle gate**: the dealer-gamma regime
+   (long-gamma + positive $\Delta\text{OI}$ → prefer Reversal at walls capped at
+   $3R$; short-gamma + negative $\Delta\text{OI}$ short-covering → prefer
+   Breakout through walls targeting $4R\text{--}5R$), Local PCR tilt, and the
+   **15th $\pm$ 1 day Mid-Month Reversal Gate** (when first-half stretch $\ge
+   2.5\times\text{ATR}_{\text{D}}$, boost counter-trend reversals to $4R\text{--}5R$
+   and penalize late trend-exhaustion breakouts) modulate which signal kinds are
+   allowed.
 
 ## 5. Quality Gates
 
