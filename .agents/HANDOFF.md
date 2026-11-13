@@ -14,7 +14,31 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — platform rename to Tantra (plan 0004)
+## Latest Batch — re-write `tantra-runtime`/`tantra-ui` docs (dismantle roadmap into design/gaps/plans)
+
+Date: 2026-11-13. Dismantled `docs/roadmap/` in both repos and re-wrote
+`docs/{design,gaps,plans}` to reflect the source code (same pattern as the
+`tantra-risk`/`tantra-strategies`/`tantra-ledger`/`tantra-market`/`tantra-ffi` batches):
+- `tantra-runtime`: `roadmap.md` + `migration-verification.md` removed → new
+  `docs/design/implementation-record.md` (migration M1–M3 + subsequent landings table).
+  `architecture.md` §5 gaps/plans snapshot corrected to source: plan 0003 (trade-journal +
+  market-reference REST endpoints) is **implemented** (all routes registered in `v1.rs`;
+  market-reference handlers serve sample stores pending the `tantra-data` → Rust FFI bridge) —
+  moved to Implemented, doc removed per gap-tracking rule §4; gaps index gained previously-missing
+  gap 0005; gap 0007 item 7 corrected to `ContentReader::filings` method name (chat tool is
+  `filings_search`); gap 0005 corrected 10→9 report routes. No code changes.
+- `tantra-ui`: `roadmap.md` removed → `docs/design/implementation-record.md`; stale 20-line
+  `architecture.md` rewritten source-verified (9-crate map; corrected the false "Leptos 0.8
+  CSR app" / "REST+WS client" / "canvas rendering engine" claims — ui-app is feature-state
+  models only, ui-client is an in-memory push bus, ui-charts is geometry-only); new per-crate
+  `code-{cli,tui,highlight,ui-core,ui-app,ui-api-wasm,ui-charts,ui-client,ui-assets}.md` +
+  `code-migration-map.md`. First four open gaps filed (0003 canned CLI reports, 0004 no view
+  layer, 0005 TUI placeholder tabs/hardcoded watchlist, 0006 scan fixture universe). Plans
+  README corrected (plan 0005 SHAs `2cda245`/`acdc137` no longer exist after the rename history
+  rewrite; plan 0001 stale "blocked upstream" claim removed — Ask/Chat/Tui wired). No code
+  changes. Committed per-repo. All gap claims source-verified at filing time.
+
+## Previous Batch — platform rename to Tantra (plan 0004)
 
 Date: 2026-11-12. Completed the full platform rename to `tantra` (org/repos/crates/
 Python packages/docs) per plan 0004 (now closed, recorded Implemented in
