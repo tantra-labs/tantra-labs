@@ -2,11 +2,10 @@
 
 **Status**: Bottoms-up Fincept/Quantcept gap-closing build order
 (`docs/future-work-bottoms-up-build-order.md`) — Layers 0, 1, 2, 2b, 3, 4, 5, 6 GREEN;
-Level 7 (`tantra-data/0002`, filings breadth) partially superseded: filings ingestion itself
-landed (closed gap `tantra-data/docs/gaps/0003`). Agent-side **plan 0006 (MCP/chat tool
-catalog expansion) is complete**; follow-on breadth tracked under agent plan 0007. Upstream
-bridges remaining: `tantra-data/docs/gaps/0007-filings-rust-bridge.md` (filings) and
-`tantra-data/docs/gaps/0008`/`0009` (corporate actions).
+Level 7 (`tantra-data/0002`, filings breadth) superseded: filings ingestion + the
+`tantra-data` → Rust bridge for filings/corporate actions are both landed (T5 track,
+2026-11-13). Agent-side **plan 0006 (MCP/chat tool catalog expansion) is complete**;
+follow-on breadth tracked under agent plan 0007.
 Date: 2026-11-13 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crate dependency
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
@@ -43,6 +42,46 @@ Date: 2026-11-13. Research + documentation batch (no code changes):
 - **No build needed** (docs-only batch; no Rust/Python code touched).
 
 ## Immediate Next Step (EE+)
+
+## Latest Batch — T5 track complete (data lakehouse & ingestion)
+
+Date: 2026-11-13. Executed the full T5 track from `docs/task-list-tracks-and-phases.md` in
+`tantra-data` (plans 0003–0006 → Implemented) + the two cross-repo Rust bridges:
+- **T5.1/T5.2 (calendar)** — vendor decided & verified live: **Forex Factory weekly JSON**
+  (`nfs.faireconomy.media/ff_calendar_thisweek.json`, free, machine-readable). New
+  `providers/forex_factory.py` (parse/rows/fetch/ingest) + `cli/ingest_calendar.py`;
+  `providers/calendar.py::default_calendar_rows()` = live-with-stub-fallback. Gaps 0010/0012 closed.
+- **T5.3 (block/bulk deals)** — NSE archives `block.csv`/`bulk.csv` verified live;
+  `BlockDeal` domain + `providers/block_deals.py` + `DuckDbBlockDealsStore` +
+  `PythonBlockDealsReader`. Gap 0005 closed → unblocks runtime T7.2.
+- **T5.4 (news)** — Moneycontrol RSS verified live; `NewsArticle` domain +
+  `providers/news.py` (RFC 2822→UTC, ISO-8859-1) + `DuckDbNewsStore` + `PythonNewsReader`.
+  Gap 0006 closed → unblocks chat `news_search`.
+- **T5.5/T5.6 (Rust bridges, one bridge two datasets)** — `tantra-data` projection writers
+  (`service/bridge_exporter.py` → `{root}/catalog/filings|corporate_actions/*.parquet`,
+  exact Decimal128); `tantra-market-store` readers `FilingsProjectionReader` +
+  `CorporateActionsProjectionReader` (`b040f68`); `tantra-runtime` wiring
+  `FeedContentReader::with_filings` + `FeedMarketReader::with_corporate_actions` +
+  `ChatRuntime::from_env(data_root)` (`db60aaa`, 4 new tests, clippy all-targets clean).
+  Gaps 0007/0008 closed → chat `filings_search`/`corporate_actions` unblocked.
+- **T5.7 (catalog backfill)** — `cli/ingest_catalog.py`; **fixed `providers/bhavcopy.py` to
+  tolerate the live NSE header** (DATE1/AVG_PRICE/TTL_TRD_QNTY/DELIV_QTY/DELIV_PER,
+  whitespace-padded, `-` delivery) — the old parser raised KeyError on live files. Gap 0004 closed.
+- **T5.8 (corporate-actions ingestion)** — NSE `corporates-corporateActions` JSON provider →
+  `Split`/`Bonus`/`Dividend`/`Rights` through `DuckDbCorporateActionsStore` (face-value-aware
+  rights pricing). Gap 0009 closed.
+- **T5.9 (FII/DII)** — NSE `fiidiiTradeReact` verified live; `InstitutionalFlow` domain +
+  `providers/institutional_flow.py` (curl_cffi) + store + reader. Gap 0013 closed.
+- **T5.10 (delivery %)** — `DeliveryRecord` domain + `providers/delivery.py` (live + legacy
+  bhavcopy headers, exact Decimal pct). Gap 0014 closed.
+- **Verified**: 86 → 134 tests green (48 new), ruff + mypy clean; `tantra-market-store`
+  3 new tests; `tantra-runtime` check/fmt/clippy `--all-targets` clean + 4 new tests (no
+  OOM this time). **Pre-existing mypy errors fixed** along the way (protocol `interval`
+  param, `FilingType` type, screener/market-reader casts).
+- **Cleanup per gap-tracking §4**: 10 gap docs + 4 plan docs removed; indexes + task list
+  updated (`tantra-data` open gaps 11 → 2: 0015 holiday provider, 0016 EE+; total 67 → 56).
+  Commits: `tantra-data` `3a6b247` `7af9a81` `cd9fea6` `3245b3b` `a15ef31`;
+  `tantra-market` `b040f68`; `tantra-runtime` `db60aaa`; root `ace2e93`.
 
 ## Latest Batch — T4.1–T4.8 + T4.11 (broker adapters & execution)
 
@@ -360,23 +399,31 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
    risk 0005, ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007,
    docs 0003). See the T12 track in `docs/task-list-tracks-and-phases.md`.
 1. Plan 0006 is complete (Phases 1–4); agent plan 0007 is the active follow-on master guide for
-   future chat-tool/MCP-gateway breadth. The `options_chain` chat tool now reads real data via
-   the wired `FeedMarketReader` chain reader (T3.1). Still open: `tantra-data/docs/gaps/0007`
-   (filings Rust bridge) and `tantra-data/docs/gaps/0008`/`0009` (corporate actions) block the
-   `filings_search`/`corporate_actions` tools from returning real data (honest
-   `PortError::unavailable` today); `oi_buildup` (agent plan 0010) now has its data source
+   future chat-tool/MCP-gateway breadth. The `options_chain` chat tool reads real data via
+   the wired `FeedMarketReader` chain reader (T3.1), and the `filings_search`/`corporate_actions`
+   tools now read real data through the T5.5/T5.6 bridge (`tantra-runtime` `db60aaa` —
+   `FeedContentReader::with_filings` / `FeedMarketReader::with_corporate_actions` over the
+   `tantra-data` parquet projections). `news_search`/`block_deals` still answer
+   `PortError::unavailable` at the chat-adapter layer (runtime wiring of the T5.3 block-deal
+   and T5.4 news data is a follow-on); `oi_buildup` (agent plan 0010) now has its data source
    (T3.2's `OpenInterestStore`/`BuildupAnalyzer`) but needs the chat tool itself.
 2. T3.3 remaining: capture the Fyers v3 subscribe request from the official SDK and implement
    the `upstox`/`fyers`/`angelone` feed crates mirroring `dhan`/`zerodha`; live-verify the Dhan
    (and Kite) feeds against the Dhan credentials.
 3. `tantra-data/docs/gaps/0015-nse-trading-holiday-provider.md` — wire the runtime
    `NseTradingCalendar` to tantra-data's holiday ingestion once it ships (the ledger's
-   calendar is already data-driven).
-4. T4 follow-ons (both Proposed, not approved): `tantra-adapters` plan 0003 (cross-repo
+   calendar is already data-driven). This is `tantra-data`'s only remaining open gap besides
+   EE+ 0016.
+4. T5 follow-ons (small, not filed): wire the runtime chat adapters to the T5.3 block-deal and
+   T5.4 news data (`FeedMarketReader::block_deals`/`FeedContentReader::news_search` still cite
+   gaps 0005/0006 — both now closed upstream, so the adapters can read the new stores/
+   projections); T5.9 FII/DII and T5.10 delivery chat tools wait on the agent smart-money
+   suite (plan 0010).
+5. T4 follow-ons (both Proposed, not approved): `tantra-adapters` plan 0003 (cross-repo
    integration Python ↔ Rust core) and plan 0004 (production hardening: rate limits, pooling,
    token refresh). The Python `Tick`/`subscribe_ticks` surface is ready to align with the Rust
    `tantra-market` feed contracts when 0003 is taken up.
-5. Remaining per-repo follow-ups (non-blocking, tracked in each repo's HANDOFF / `docs/gaps/`):
+6. Remaining per-repo follow-ups (non-blocking, tracked in each repo's HANDOFF / `docs/gaps/`):
    - **4B Phase 4 (local SLM)** — deferred by design; prerequisite is the Phase-3 golden fixture set accumulating via live OmniRoute runs (`TANTRA_WRITE_FIXTURES=1`), then model licensing/fine-tuning/quantization per `0005`.
    - **0001 Phase 1** (`tantra_search_tools`/`tantra_describe_tool` two-tier gateway) — the forecast engine is currently discoverable via `tools/list` only; once the gateway lands, add the `forecast` category to its category enum.
    - **`tantra-ui`** — Leptos view layer for `tantra-ui-app`, wire CLI `ask`/`scan` (gap `tantra-ui/docs/gaps/0001`), TUI `run()` event loop.
