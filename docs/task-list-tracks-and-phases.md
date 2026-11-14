@@ -22,12 +22,12 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | :--- | :--- | :--- | :--- |
 | **0 — Topology & Hygiene Foundations** ✅ | Remove stub/duplicate crates, pin facade convention, TDD cleanup, kernel call-site consolidation | T0 | 8 — **complete 2026-11-13** |
 | **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 1 |
-| **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds & loaders | T5, T3 (feeds) | 11 |
+| **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds | T5, T3 (feeds) | 2 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 2 |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 20 |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 14 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **67** |
+| **Total** | | | **56** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -154,40 +154,40 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T5 — Data Lakehouse & Ingestion · Phase 2
+## T5 — Data Lakehouse & Ingestion · Phase 2 — ✅ COMPLETE 2026-11-13
 
-**Source**: [`tantra-data/docs/plans/README.md`](../tantra-data/docs/plans/README.md) (plans 0003–0006) ·
-[`tantra-data/docs/gaps/README.md`](../tantra-data/docs/gaps/README.md)
+**Source**: [`tantra-data/docs/plans/README.md`](../tantra-data/docs/plans/README.md) (plans 0003–0006, all Implemented) ·
+[`tantra-data/docs/gaps/README.md`](../tantra-data/docs/gaps/README.md) (gaps 0004–0010, 0012–0014 closed)
 
-### Calendar & reference data — plan 0003 (Open)
+### Calendar & reference data — plan 0003 (Implemented)
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T5.1** | Select the real economic-calendar vendor source (reader/port/store already exist) | `tantra-data` | 2 | Open | 0010 |
-| **T5.2** | Replace stubbed calendar data with the real ingestion pipeline | `tantra-data` | 2 | Open | 0012 |
+| **T5.1** | ✅ Vendor selected: Forex Factory weekly JSON feed (verified live `nfs.faireconomy.media/ff_calendar_thisweek.json`) | `tantra-data` | 2 | **Done** | 0010 (closed) |
+| **T5.2** | ✅ Real calendar ingestion: `providers/forex_factory.py` + `cli/ingest_calendar.py` + `default_calendar_rows()` live-with-stub-fallback | `tantra-data` | 2 | **Done** | 0012 (closed) |
 
-### Content & disclosure ingestion — plan 0004 (Open)
+### Content & disclosure ingestion — plan 0004 (Implemented)
 | Task | Work | Repo / Scope | Phase | Status | Gap / Blocks |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T5.3** | Block/bulk deal disclosure ingestion (source + port + reader) | `tantra-data` | 2 | Open | 0005 · blocks runtime T7.2, leg 3 of T6.12 |
-| **T5.4** | News article ingestion (source + port + reader) | `tantra-data` | 2 | Open | 0006 · blocks chat `news_search` |
+| **T5.3** | ✅ Block/bulk deal disclosure ingestion — `BlockDeal` domain, NSE `block.csv`/`bulk.csv` provider + fetcher, `DuckDbBlockDealsStore`, `PythonBlockDealsReader` | `tantra-data` | 2 | **Done** | 0005 (closed) — unblocks runtime T7.2 |
+| **T5.4** | ✅ News article ingestion — `NewsArticle` domain, Moneycontrol RSS provider + fetcher, `DuckDbNewsStore`, `PythonNewsReader` | `tantra-data` | 2 | **Done** | 0006 (closed) — unblocks chat `news_search` |
 
-### Rust data bridge — plan 0005 (Open)
+### Rust data bridge — plan 0005 (Implemented)
 | Task | Work | Repo / Scope | Phase | Status | Gap / Blocks |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T5.5** | Filings `tantra-data` → Rust consumer bridge | `tantra-data` + `tantra-runtime`/`tantra-ffi` | 2 | Open | 0007 · blocks chat `filings_search` |
-| **T5.6** | Corporate actions `tantra-data` → Rust consumer bridge | `tantra-data` + `tantra-runtime`/`tantra-ffi` | 2 | Open | 0008 · blocks chat `corporate_actions` |
+| **T5.5** | ✅ Filings bridge — `FilingsProjectionReader` (`tantra-market-store` `b040f68`) + `FeedContentReader::with_filings`/`ChatRuntime::from_env(data_root)` (`tantra-runtime` `db60aaa`) | `tantra-data` + `tantra-market-store` + `tantra-runtime` | 2 | **Done** | 0007 (closed) — unblocks chat `filings_search` |
+| **T5.6** | ✅ Corporate-actions bridge — `CorporateActionsProjectionReader` + `FeedMarketReader::with_corporate_actions` | `tantra-data` + `tantra-market-store` + `tantra-runtime` | 2 | **Done** | 0008 (closed) — unblocks chat `corporate_actions` |
 
-### Lakehouse ingestion completeness — plan 0006 (Open)
+### Lakehouse ingestion completeness — plan 0006 (Implemented)
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T5.7** | Seed `data/catalog/` via tantra-data's own ingestion pipeline (not ad-hoc copy) | `tantra-data` | 2 | Open | 0004 |
-| **T5.8** | Corporate-actions DuckDB store automatic ingestion (not manual/test-seeded) | `tantra-data` | 2 | Open | 0009 |
+| **T5.7** | ✅ Catalog seeded via own pipeline — `cli/ingest_catalog.py` bhavcopy backfill; `providers/bhavcopy.py` tolerates the live NSE header | `tantra-data` | 2 | **Done** | 0004 (closed) |
+| **T5.8** | ✅ Corporate-actions ingestion — NSE `corporates-corporateActions` JSON provider → `Split`/`Bonus`/`Dividend`/`Rights` through `DuckDbCorporateActionsStore` | `tantra-data` | 2 | **Done** | 0009 (closed) |
 
 ### Ungrouped (needed by the smart-money suite)
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T5.9** | FII/DII daily institutional net-flow ingestion (no plan yet) | `tantra-data` | 2 | Open | 0013 · leg of T6.12 |
-| **T5.10** | Delivery percentage / delivery-adjusted volume ingestion (no plan yet) | `tantra-data` | 2 | Open | 0014 · leg of T6.12 |
+| **T5.9** | ✅ FII/DII daily institutional net-flow ingestion — `InstitutionalFlow` domain, NSE `fiidiiTradeReact` provider, `DuckDbInstitutionalFlowStore`, `PythonInstitutionalFlowReader` | `tantra-data` | 2 | **Done** | 0013 (closed) · leg of T6.12 |
+| **T5.10** | ✅ Delivery % / delivery-adjusted volume ingestion — `DeliveryRecord` domain, bhavcopy delivery-column provider (live + legacy headers), `DuckDbDeliveryStore`, `PythonDeliveryReader` | `tantra-data` | 2 | **Done** | 0014 (closed) · leg of T6.12 |
 
 ---
 
@@ -333,7 +333,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-agent` | 5 (0003–0007) | 0007, 0009, 0010, 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.12, T12.8 |
 | `tantra-ui` | 5 (0003–0007 incl. EE+) | 0003, 0006 (EE+, proposed) | T10.1–T10.5, T12.9 |
 | `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
-| `tantra-data` | 11 (0004–0010, 0012–0016 incl. EE+) | 0003, 0004, 0005, 0006 | T5.1–T5.10, T12.3 |
+| `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006 (all Implemented) | T5.1–T5.10 ✅, T12.3 |
 | `tantra-strategies` | 6 (0001–0006 incl. EE+) | 0001 (EE+, proposed) | T8.1–T8.5, T12.4 |
 | `tantra-examples` | 8 (0001–0008) | — | T9.3–T9.10 |
 | `tantra-ffi` | 1 (0001) | — | T9.1, T9.2 ✅ |
@@ -359,6 +359,16 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > in `tantra-exec` (`2258bbb` — SmartAPI 2.0 `BrokerExecutor` + SmartStream order feed, 40
 > tests, clippy-clean; gap 0001 closed). T4.9/T4.10 remain Proposed (adapters plans
 > 0003/0004). `tantra-adapters` open gaps 7 → 0.
+>
+> T5 track complete 2026-11-13 (`tantra-data` plans 0003–0006 all Implemented; gaps
+> 0004–0010 + 0012–0014 closed; commits `3a6b247`, `7af9a81`, `cd9fea6`, `3245b3b`;
+> `tantra-market-store` `b040f68`; `tantra-runtime` `db60aaa`): T5.1/T5.2 calendar real
+> ingestion (Forex Factory weekly JSON vendor, verified live), T5.3 block/bulk deals, T5.4
+> news (Moneycontrol RSS), T5.5/T5.6 filings + corporate-actions → Rust bridge (parquet
+> projection readers + runtime chat-adapter wiring, chat `filings_search`/
+> `corporate_actions` unblocked), T5.7 catalog bhavcopy backfill, T5.8 corporate-actions
+> ingestion, T5.9 FII/DII, T5.10 delivery %. 134 Python tests green; runtime
+> check/fmt/clippy clean + 4 new projection tests; `tantra-data` open gaps 11 → 2.
 
 ## Related
 
