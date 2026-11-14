@@ -11,6 +11,34 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — T6 track complete (agent & MCP ecosystem; plan 0009 Implemented)
+
+Date: 2026-11-14. Executed the T6 track from `docs/task-list-tracks-and-phases.md`:
+- **T6.1/2** — `UserMemory` with per-profile budgeters + recall renderers (`tantra-agent` base
+  crate `memory::user`) + prompt cache-hit/miss regression tests (agent-core `prompt_cache_tests`,
+  agent-prompt `renderer_cache_tests`).
+- **T6.3** — runtime↔agent monitor scheduler bridge: `MonitorSchedulerBridge` in
+  `tantra-runtime-persistence` over the agent `JobScheduler`/`JobStore` ports (6 tests).
+- **T6.4 + T6.11 Ph 15/17** — MCP stdio client (`McpClient` + `mcp_stdio_server` bin, process
+  tests) + `_jq` response filter (`serde_json_path`, filters the envelope, first match → `data`).
+- **T6.5** — `ResearchNote` (Typst/Markdown) + research-loop integration.
+- **T6.9** — Track-4 engines: HMM regimes (Baum-Welch + Viterbi), CUSUM changepoint,
+  Clayton/Gumbel copulas, permutation tests, MPO (`tantra-ledger-allocation`); 5 MCP gateway
+  tools (`tantra_detect_regimes`/`tantra_change_point`/`tantra_copula_tail_risk`/
+  `tantra_permutation_test`/`tantra_multi_period_optimize`); stale HRP-unimplemented test fixed.
+- **T6.6** — verified already shipped (Track-1 engines). **T6.7** — Track-2 chat tools
+  (`market_depth`/`institutional_flows`/`economic_calendar`, catalogue 19→22, new `CalendarReader`
+  port) + runtime wiring (`FeedCalendarReader`, `FeedMarketReader` methods) with honest
+  `PortError::unavailable` stubs citing newly-filed upstream gaps.
+- **New upstream gaps filed**: `tantra-market` 0006 (L2 depth source), `tantra-data` 0017
+  (institutional-flow Rust bridge), 0018 (economic-calendar Rust bridge).
+- **Cleanup per gap-tracking §4**: agent gaps 0003–0008 + ledger gap 0013 closed (docs removed,
+  indexes updated); agent plan 0009 → Implemented. `tantra-agent` open gaps 5 → 0. Task list
+  updated (phase-4 open 20 → 10, total 56 → 47).
+- **Commits**: agent `7f9d480` (T6.1/2/4/5 + _jq), `95ec800` (T6.9), `150bcae` (T6.7); runtime
+  `634de2c` (T6.3), `c0e3a27` (T6.7 wiring); ledger `126087f` (MPO); market `bb997f3`;
+  data `d248240`; root `ec03932`/`2930b06`. All pushed.
+
 ## Latest Batch — Elephant Edge (EE+) strategy platform docs (research + plans/gaps)
 
 Date: 2026-11-13. Research + documentation batch (no code changes):
@@ -396,31 +424,27 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
    (`tantra-strategies` plan 0001/gap 0006) → T12.5–T12.7 execution/risk/OMS (exec 0003,
    risk 0005, ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007,
    docs 0003). See the T12 track in `docs/task-list-tracks-and-phases.md`.
-1. Plan 0006 is complete (Phases 1–4); agent plan 0007 is the active follow-on master guide for
-   future chat-tool/MCP-gateway breadth. The `options_chain` chat tool reads real data via
-   the wired `FeedMarketReader` chain reader (T3.1), and the `filings_search`/`corporate_actions`
-   tools now read real data through the T5.5/T5.6 bridge (`tantra-runtime` `db60aaa` —
-   `FeedContentReader::with_filings` / `FeedMarketReader::with_corporate_actions` over the
-   `tantra-data` parquet projections). `news_search`/`block_deals` still answer
-   `PortError::unavailable` at the chat-adapter layer (runtime wiring of the T5.3 block-deal
-   and T5.4 news data is a follow-on); `oi_buildup` (agent plan 0010) now has its data source
-   (T3.2's `OpenInterestStore`/`BuildupAnalyzer`) but needs the chat tool itself.
-2. T3.3 remaining: capture the Fyers v3 subscribe request from the official SDK and implement
+1. **T6 remaining** — T6.8 (plan 0007 Track 3: fundamentals/MF/IPO — needs new `tantra-data`
+   ingestion, file data gaps before tool code), T6.10 (Track 5: safe trade-intent bridge via
+   NoFX approval queue + paper sandbox, strategy CRUD/community, tax/statements — largest
+   remaining slice), T6.12 (plan 0010: `institutional_flows` shipped; add `delivery_analysis` +
+   `oi_buildup` chat tools with honest stubs citing new bridge gaps, then the composite-signal
+   strategy in `tantra-strategies`). Decide the pre-existing R4 architectural-dependency test
+   (`tantra-agent-mcp` → `tantra-ledger-allocation`): drop the dep or widen R4.
+2. **T7 follow-ons** — wire the runtime chat adapters to the now-closed T5.3 block-deal and
+   T5.4 news data (`FeedMarketReader::block_deals`/`FeedContentReader::news_search` still cite
+   gaps 0005/0006 — both closed upstream, so the adapters can read the stores/projections);
+   `T7.2` block/bulk-deals real data is unblocked by data 0005. `tantra-data` gaps 0017/0018
+   (institutional-flow + calendar Rust bridges) and `tantra-market` gap 0006 (L2 depth) are the
+   upstream work that turns the T6.7 stubs real.
+3. T3.3 remaining: capture the Fyers v3 subscribe request from the official SDK and implement
    the `upstox`/`fyers`/`angelone` feed crates mirroring `dhan`/`zerodha`; live-verify the Dhan
    (and Kite) feeds against the Dhan credentials.
-3. `tantra-data/docs/gaps/0015-nse-trading-holiday-provider.md` — wire the runtime
-   `NseTradingCalendar` to tantra-data's holiday ingestion once it ships (the ledger's
-   calendar is already data-driven). This is `tantra-data`'s only remaining open gap besides
-   EE+ 0016.
-4. T5 follow-ons (small, not filed): wire the runtime chat adapters to the T5.3 block-deal and
-   T5.4 news data (`FeedMarketReader::block_deals`/`FeedContentReader::news_search` still cite
-   gaps 0005/0006 — both now closed upstream, so the adapters can read the new stores/
-   projections); T5.9 FII/DII and T5.10 delivery chat tools wait on the agent smart-money
-   suite (plan 0010).
+4. `tantra-data/docs/gaps/0015-nse-trading-holiday-provider.md` — wire the runtime
+   `NseTradingCalendar` to tantra-data's holiday ingestion once it ships.
 5. T4 follow-ons (both Proposed, not approved): `tantra-adapters` plan 0003 (cross-repo
    integration Python ↔ Rust core) and plan 0004 (production hardening: rate limits, pooling,
-   token refresh). The Python `Tick`/`subscribe_ticks` surface is ready to align with the Rust
-   `tantra-market` feed contracts when 0003 is taken up.
+   token refresh).
 6. Remaining per-repo follow-ups (non-blocking, tracked in each repo's HANDOFF / `docs/gaps/`):
    - **4B Phase 4 (local SLM)** — deferred by design; prerequisite is the Phase-3 golden fixture set accumulating via live OmniRoute runs (`TANTRA_WRITE_FIXTURES=1`), then model licensing/fine-tuning/quantization per `0005`.
    - **0001 Phase 1** (`tantra_search_tools`/`tantra_describe_tool` two-tier gateway) — the forecast engine is currently discoverable via `tools/list` only; once the gateway lands, add the `forecast` category to its category enum.

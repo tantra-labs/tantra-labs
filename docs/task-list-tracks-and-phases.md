@@ -24,10 +24,10 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 1 |
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds | T5, T3 (feeds) | 2 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 2 |
-| **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 20 |
+| **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 10 |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 14 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **56** |
+| **Total** | | | **47** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -191,34 +191,34 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T6 — Agent & MCP Ecosystem · Phase 4
+## T6 — Agent & MCP Ecosystem · Phase 4 — ✅ T6.1–T6.7, T6.9, T6.11 DONE 2026-11-14; T6.8/T6.10/T6.12 Open
 
-**Source**: [`tantra-agent/docs/plans/README.md`](../tantra-agent/docs/plans/README.md) (plans 0007, 0009, 0010) ·
-[`tantra-agent/docs/gaps/README.md`](../tantra-agent/docs/gaps/README.md)
+**Source**: [`tantra-agent/docs/plans/README.md`](../tantra-agent/docs/plans/README.md) (plans 0007, 0010; **plan 0009 Implemented**) ·
+[`tantra-agent/docs/gaps/README.md`](../tantra-agent/docs/gaps/README.md) (**gaps 0003–0008 closed, none open**)
 
-### Plan 0009 — Persistent Memory, MCP Client Bridge & Phase E (Open)
+### Plan 0009 — Persistent Memory, MCP Client Bridge & Phase E (Implemented)
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T6.1** | Persistent `UserMemory` with per-profile budgeters + recall renderers (Phase C) | `tantra-agent-core`, `tantra-agent-prompt` | 4 | Open | 0003 (Med) |
-| **T6.2** | Prompt cache-hit/cache-miss regression tests (Phase C) | `tantra-agent-core`, `tantra-agent-prompt` | 4 | Open | 0007 (Low) |
-| **T6.3** | Runtime↔agent monitor scheduler bridge via inverted ports (Phase D) | `tantra-runtime` + `tantra-agent` | 4 | Open | 0006 (Low) |
-| **T6.4** | MCP stdio client bridge to external MCP servers (Phase E; = plan 0007 Ph 17) | `tantra-agent-mcp` | 4 | Open | 0004 (Med) |
-| **T6.5** | `ResearchNote` in `tantra-agent-report` + research-loop integration + Typst/Markdown rendering (Phase E) | `tantra-agent-report`, `tantra-agent-research` | 4 | Open | 0005 (Low) |
+| **T6.1** | ✅ Persistent `UserMemory` with per-profile budgeters + recall renderers — `tantra-agent::memory::user::UserMemory` (per-profile `ProfileBudget` map, recall `profile_section`/`recall_section`/`assemble` via `tantra-agent-prompt` renderers) | `tantra-agent`, `tantra-agent-prompt` | 4 | **Done** | 0003 (Med, closed) |
+| **T6.2** | ✅ Prompt cache-hit/cache-miss regression tests — `prompt_cache_tests.rs` (agent-core, KV-prefix stability) + `renderer_cache_tests.rs` (agent-prompt, section placement/stability) | `tantra-agent-core`, `tantra-agent-prompt` | 4 | **Done** | 0007 (Low, closed) |
+| **T6.3** | ✅ Runtime↔agent monitor scheduler bridge via inverted ports — `tantra-runtime-persistence::monitor::MonitorSchedulerBridge` over the agent `JobScheduler`/`JobStore` ports (6 tests) | `tantra-runtime` + `tantra-agent` | 4 | **Done** | 0006 (Low, closed) |
+| **T6.4** | ✅ MCP stdio client bridge — `tantra-agent-mcp::client::{McpClient, McpClientError}` + `mcp_stdio_server` bin; process-spawned `tests/client_tests.rs` (initialize/list_tools/call_tool/RPC-error/shutdown) | `tantra-agent-mcp` | 4 | **Done** | 0004 (Med, closed) |
+| **T6.5** | ✅ `ResearchNote` in `tantra-agent-report` (`NoteVerdict` + Typst/Markdown rendering) + research-loop integration (`research_note_from_verification`) | `tantra-agent-report`, `tantra-agent-research` | 4 | **Done** | 0005 (Low, closed) |
 
-### Plan 0007 — Comprehensive MCP Ecosystem Guide (Active; SSE/HTTP transport shipped)
+### Plan 0007 — Comprehensive MCP Ecosystem Guide (Active; Tracks 1/2/4 + Ph 15–17 shipped)
 | Task | Work | Repo / Scope | Phase | Status | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T6.6** | Track 1, Ph 1–3: MCP gateway quant engines (Monte Carlo, cointegration, walk-forward, factor; portfolio optimize; Black-Scholes/Greeks, GARCH) | `tantra-agent-mcp` | 4 | Open | Ph 2 uses T2.x; Ph 3 uses `tantra-market-pricing` |
-| **T6.7** | Track 2, Ph 4–5: market depth / L2 & FII-DII flows; economic-calendar tool | `tantra-agent-chat-tools` | 4 | Open | Ph 4 flows ← T5.9; Ph 5 ← T5.1/5.2 |
+| **T6.6** | ✅ Track 1, Ph 1–3: MCP gateway quant engines — `tantra_monte_carlo`/`tantra_cointegration`/`tantra_walk_forward`/`tantra_factor_attribution`/`tantra_portfolio_optimize`/`tantra_price_derivatives`/`tantra_garch_volatility` registered + dispatched (verified shipped, commit `28629d0`) | `tantra-agent-mcp` | 4 | **Done** | Ph 2 uses T2.x; Ph 3 uses `tantra-market-pricing` |
+| **T6.7** | ✅ Track 2, Ph 4–5: market depth / L2 & FII-DII flows; economic-calendar tool — `market_depth`/`institutional_flows` (MarketReader port methods) + `economic_calendar` (new `CalendarReader` port), catalogue 19→22; honest `PortError::unavailable` stubs citing market 0006 / data 0017 / data 0018; `FeedCalendarReader` + `FeedMarketReader` wired | `tantra-agent-chat-tools` + `tantra-runtime` | 4 | **Done** | Ph 4 flows ← T5.9; Ph 5 ← T5.1/5.2 |
 | **T6.8** | Track 3, Ph 6–8: fundamentals & financial statements, mutual-fund analytics, IPO tracker | `tantra-agent-chat-tools` + `tantra-data` | 4 | Open | needs new data ingestion |
-| **T6.9** | Track 4, Ph 9–11: HMM regimes, change points, copulas + permutation tests, MPO | `tantra-agent-analytics` + `tantra-ledger-allocation` | 4 | Open | — |
+| **T6.9** | ✅ Track 4, Ph 9–11: HMM regimes, change points, copulas + permutation tests, MPO — `regime/hmm.rs` (Baum-Welch + Viterbi), `changepoint.rs` (CUSUM + structural break), `copula.rs` (Clayton/Gumbel + seeded joint VaR), `validation::permutation_test_*`; MPO in `tantra-ledger-allocation`; MCP tools `tantra_detect_regimes`/`tantra_change_point`/`tantra_copula_tail_risk`/`tantra_permutation_test`/`tantra_multi_period_optimize` (49 analytics + 56 mcp tests green) | `tantra-agent-analytics` + `tantra-agent-mcp` + `tantra-ledger-allocation` | 4 | **Done** | — |
 | **T6.10** | Track 5, Ph 12–14: safe trade-intent bridge + paper sandbox, strategy CRUD/community, tax reporting & ledger statements | agent + `tantra-runtime` + `tantra-strategies` + `tantra-ledger-journal` | 4 | Open | NoFX approval-queue pattern |
-| **T6.11** | Track 6, Ph 15–17: `_jq` response filter (Ph 15), SSE/HTTP transport (Ph 16 **shipped**), stdio client (Ph 17 = T6.4) | `tantra-agent-core`, `tantra-agent-mcp` | 4 | Open | — |
+| **T6.11** | ✅ Track 6, Ph 15–17: `_jq` response filter (`serde_json_path`, Ph 15) + stdio client (Ph 17 = T6.4); Ph 16 SSE/HTTP transport shipped earlier | `tantra-agent-core`, `tantra-agent-mcp` | 4 | **Done** | — |
 
 ### Plan 0010 — Institutional / Smart-Money Detection Suite (Proposed)
 | Task | Work | Repo / Scope | Phase | Status | Depends on |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T6.12** | Composite signal (delivery-adjusted volume, shareholding/insider filings, block deals, OI buildup + FII/DII regime) over 3 new chat tools | `tantra-agent-chat-tools`, `tantra-runtime`, `tantra-strategies` | 4 | Proposed | T3.2, T5.3, T5.5, T5.9, T5.10 |
+| **T6.12** | Composite signal (delivery-adjusted volume, shareholding/insider filings, block deals, OI buildup + FII/DII regime) over 3 new chat tools — `institutional_flows` **shipped** with T6.7; `delivery_analysis` + `oi_buildup` + composite-signal strategy remain | `tantra-agent-chat-tools`, `tantra-runtime`, `tantra-strategies` | 4 | Proposed | T3.2, T5.3, T5.5, T5.9, T5.10 (all done) |
 
 ---
 
@@ -329,8 +329,8 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-risk` | 1 (0005 EE+) | 0002 (Implemented) | T1.1–T1.4 ✅, T12.6 |
 | `tantra-market` | 2 (0003, 0005 EE+) | — | T3.1–T3.4 🔶, T12.2 |
 | `tantra-exec` | 1 (0003 EE+) | 0002 (Phase 1 done) | T0.3 ✅, T4.11 ✅, T12.5 |
-| `tantra-runtime` | 5 (0004–0008) | 0004 | T0.2/T0.5 ✅, T7.1–T7.8 |
-| `tantra-agent` | 5 (0003–0007) | 0007, 0009, 0010, 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.12, T12.8 |
+| `tantra-runtime` | 5 (0004–0008) | 0004 | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 |
+| `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active), 0010, 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.7/T6.9/T6.11 ✅, T6.8/T6.10/T6.12, T12.8 |
 | `tantra-ui` | 5 (0003–0007 incl. EE+) | 0003, 0006 (EE+, proposed) | T10.1–T10.5, T12.9 |
 | `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006 (all Implemented) | T5.1–T5.10 ✅, T12.3 |
@@ -369,6 +369,20 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > `corporate_actions` unblocked), T5.7 catalog bhavcopy backfill, T5.8 corporate-actions
 > ingestion, T5.9 FII/DII, T5.10 delivery %. 134 Python tests green; runtime
 > check/fmt/clippy clean + 4 new projection tests; `tantra-data` open gaps 11 → 2.
+>
+> T6 track 2026-11-14 (agent plan 0009 **Implemented**, gaps 0003–0008 closed; ledger gap
+> 0013 closed): T6.1/2 `UserMemory` + prompt cache-hit/miss tests (agent `7f9d480`); T6.3
+> monitor scheduler bridge (runtime `634de2c`); T6.4 MCP stdio client + `mcp_stdio_server`
+> bin; T6.11 Ph 15 `_jq` filter (`serde_json_path`); T6.5 `ResearchNote` + Typst/Markdown
+> rendering (all in agent `7f9d480`); T6.9 Track-4 engines (HMM/changepoint/copula/
+> permutation + MPO in `tantra-ledger-allocation` `126087f`; 5 MCP gateway tools, agent
+> `95ec800`); T6.6 verified shipped; T6.7 Track-2 chat tools (`market_depth`/
+> `institutional_flows`/`economic_calendar`, catalogue 19→22, `CalendarReader` port; agent
+> `150bcae` + runtime `c0e3a27`) with honest `PortError::unavailable` stubs citing new
+> upstream gaps market 0006 + data 0017/0018. Remaining T6: T6.8 (Track 3 fundamentals/
+> MF/IPO — needs new ingestion), T6.10 (Track 5 safe trade-intent/strategy CRUD/tax),
+> T6.12 (plan 0010 smart-money suite; `institutional_flows` shipped, `delivery_analysis`/
+> `oi_buildup` + composite signal remain). Agent gaps open 5 → 0; phase-4 open 20 → 10.
 
 ## Related
 
