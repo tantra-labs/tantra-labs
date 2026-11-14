@@ -31,7 +31,8 @@ Date: 2026-11-14. Executed the recommended close order for
   runtime gap 0007 rewritten (items 1–5, 11, 12 closed); gap/plan indexes + task list T7 rows +
   tantra-data/runtime HANDOFFs updated. Items **10 (L2 depth ← `tantra-market` 0006)** and
   **14–16 (fundamentals/MF/IPO ← `tantra-data` 0020–0022, vendor procurement)** remain
-  upstream-blocked; live trade feed remains `tantra-market` 0001/0002 (plumbing only).
+  upstream-blocked (verified, unchanged by design); live trade feed remains plumbing-only (real
+  broker feed tracked by `tantra-market` gap 0003 / root `docs/gaps/0001`).
 
 ## Latest Batch — T7 remaining (runtime; gap 0006 closed, 0007 items 8/9/17/18/19 closed)
 
@@ -525,12 +526,16 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
    (`tantra-strategies` plan 0001/gap 0006) → T12.5–T12.7 execution/risk/OMS (exec 0003,
    risk 0005, ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007,
    docs 0003). See the T12 track in `docs/task-list-tracks-and-phases.md`.
-1. **T7 remaining (runtime, upstream-blocked)**: gap 0007 items 1–5, 10–12, 14–19 (last-price/
-   volume feed, indicator/macro engines, instrument display-name, regime/risk metrics, L2 depth
-   `tantra-market` 0006, institutional-flow/delivery bridges `tantra-data` 0017/0019,
-   fundamentals/MF/IPO `tantra-data` 0020–0022); gap 0008 closes when option 2 (lift
-   `BrokerAdapter` into `tantra-exec-core`) lands. Gap 0006 is **closed** (SharedLedger in
-   `AppState`, decision in `tantra-runtime/docs/design/code-shared-ledger.md`).
+1. **T7 remaining (runtime, upstream-blocked, verified, unchanged by design)**: gap 0007 item
+   **10** (L2 depth — `tantra-market` 0006: the `DepthReader` port/`DepthSnapshot` exist in
+   `tantra-market-store`; only a data source implementing it is missing) and items **14–16**
+   (fundamentals/MF/IPO — `tantra-data` 0020–0022, vendor selection + ingestion first; real-world
+   data procurement, not code-closeable). Items 1–2's live feed is plumbing-only — wiring a real
+   broker trade feed into `TradeReader` is tracked by `tantra-market` gap 0003 / root
+   `docs/gaps/0001`. Gap 0008 unchanged as intended (documented architecture decision option 1,
+   not a stub); it closes only if option 2 (lift `BrokerAdapter` into `tantra-exec-core`) ever
+   executes. Gap 0006 is **closed** (SharedLedger in `AppState`, decision in
+   `tantra-runtime/docs/design/code-shared-ledger.md`).
 2. T6 follow-ons: `tantra-data` gaps 0020–0022 (Track 3 fundamentals/MF/IPO ingestion),
    `tantra-market` 0006 (L2 depth). Decide the pre-existing R4 architectural-dependency test
    (`tantra-agent-mcp` → `tantra-ledger-allocation`): drop the dep or widen R4.
