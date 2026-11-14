@@ -11,6 +11,35 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — T8 track complete (strategies; gaps 0001–0005 closed)
+
+Date: 2026-11-14. Executed the full T8 track from `docs/task-list-tracks-and-phases.md`
+in `tantra-strategies` (2 waves × 1 subagent, self-contained prompts; commits `5c2049d`
+code + `a7dd055` docs):
+- **T8.1 (gap 0001)** — canonical `Tick` model (`sdk/tick.py`, exact Decimal) +
+  `Strategy.run_ticks` / `SimulatedContext.run_ticks` (`feed_tick` + per-tick outbox
+  drain, same deterministic clock as bars); `Strategy.run`/`run_ticks` duck-type the
+  drive loop so any context with `run`/`run_ticks` drives itself.
+- **T8.2 (gap 0002, High)** — `LiveContext` (`sdk/live.py`) over `MarketDataFeed` /
+  `ExecutionGateway` runtime-checkable protocol seams (canonical Rust traits remain
+  `tantra-market` / `tantra-exec`); sim/live parity tests (same strategy + bars →
+  identical order streams).
+- **T8.3 (gap 0003)** — `tools/run_step.py` executes every `catalog/**/step.toml`
+  through `SimulatedContext` on a deterministic 45-bar series; proves runnable +
+  run-to-run deterministic (CLI + smoke tests).
+- **T8.4 (gap 0004)** — `manifest/basket_run.py` reference run loop: `resolve_manifest`
+  → `instantiate()` → `SimulatedContext` under the optimized capital slice; enforces
+  the basket `RiskBudget` via `RiskBudgetViolation` (notional position fraction +
+  average-cost realized PnL).
+- **T8.5 (gap 0005)** — `optimize_allocations` cap math in `manifest/basket.py`
+  (`max_position_fraction` total + per-member, `max_loss` bounds total deployment);
+  a full `tantra-ledger-allocation` objective optimizer remains cross-repo.
+- Gates: 164 tests green (31 new), `ruff check` + `ruff format --check` clean (incl.
+  3 pre-existing md-format failures fixed), `validate_catalog.py` 10/10,
+  `validate_manifests.py` 3/3, `tools/run_step.py` 10/10 ok. Gap docs 0001–0005
+  removed, indexes + task list updated; `tantra-strategies` open gaps 6 → 1 (0006
+  EE+ SDK surface); phase-5 open 14 → 9; total 42 → 37. Root submodule pointer bumped.
+
 ## Latest Batch — T0.7, T6.9, T7.7, T4.9, T4.10 closed (2026-11-14)
 
 Closed the remaining decision/upstream items of Tracks 1–7:

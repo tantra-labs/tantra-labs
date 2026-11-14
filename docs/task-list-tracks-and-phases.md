@@ -25,9 +25,9 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds | T5, T3 (feeds) | 2 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 2 |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 5 |
-| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 14 |
+| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 9 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **42** |
+| **Total** | | | **37** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -240,17 +240,17 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T8 — Strategies · Phase 5
+## T8 — Strategies · Phase 5 — ✅ COMPLETE 2026-11-14
 
 **Source**: [`tantra-strategies/docs/gaps/README.md`](../tantra-strategies/docs/gaps/README.md) (intentionally ungrouped)
 
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T8.1** | Dispatch `Strategy.on_tick` (declared, never called) | `tantra-strategies` | 5 | Open | 0001 (Med) |
-| **T8.2** | Live/feed-backed `StrategyContext` (only `SimulatedContext` exists) | `tantra-strategies` | 5 | Open | 0002 (**High**) |
-| **T8.3** | In-repo executor for catalog `step.toml` (declarative-only today) | `tantra-strategies` | 5 | Open | 0003 (Med) |
-| **T8.4** | `BasketManifest`-driven run loop | `tantra-strategies` (+ `tantra-runtime-backtest`) | 5 | Open | 0004 (Med) |
-| **T8.5** | `RiskBudget` allocation optimizer (replace Phase-1 simple cap) | `tantra-strategies` | 5 | Open | 0005 (Low) |
+| **T8.1** | ✅ Dispatch `Strategy.on_tick` — canonical `Tick` model, `Strategy.run_ticks` / `SimulatedContext.run_ticks` (feed_tick + outbox drain, same deterministic clock as bars), duck-typed drive loop | `tantra-strategies` | 5 | **Done** | 0001 (Med, closed) |
+| **T8.2** | ✅ Live/feed-backed `StrategyContext` — `LiveContext` in `sdk/live.py` over `MarketDataFeed`/`ExecutionGateway` protocol seams (Rust canonical traits owned by `tantra-market`/`tantra-exec`), sim/live parity tests | `tantra-strategies` | 5 | **Done** | 0002 (**High**, closed) |
+| **T8.3** | ✅ In-repo executor for catalog `step.toml` — `tools/run_step.py` runs every step through `SimulatedContext` on a deterministic bar series (runnable + deterministic), CLI smoke tests | `tantra-strategies` | 5 | **Done** | 0003 (Med, closed) |
+| **T8.4** | ✅ `BasketManifest`-driven run loop — `basket_run.run_basket`: `resolve_manifest` → `instantiate()` → `SimulatedContext` under the optimized capital slice, `RiskBudgetViolation` on breach | `tantra-strategies` (+ `tantra-runtime-backtest`) | 5 | **Done** | 0004 (Med, closed) |
+| **T8.5** | ✅ `RiskBudget` allocation optimizer — `optimize_allocations` cap math (`max_position_fraction` total + per-member, `max_loss` bounds deployment); full `tantra-ledger-allocation` objective remains cross-repo | `tantra-strategies` | 5 | **Done** | 0005 (Low, closed) |
 
 ---
 
@@ -334,7 +334,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-ui` | 5 (0003–0007 incl. EE+) | 0003, 0006 (EE+, proposed) | T10.1–T10.5, T12.9 |
 | `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006, 0017–0019, 0020–0022 (Implemented) | T5.1–T5.10 ✅, T12.3 |
-| `tantra-strategies` | 6 (0001–0006 incl. EE+) | 0001 (EE+, proposed) | T8.1–T8.5, T12.4 |
+| `tantra-strategies` | 1 (0006 EE+) | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 |
 | `tantra-examples` | 8 (0001–0008) | — | T9.3–T9.10 |
 | `tantra-ffi` | 1 (0001) | — | T9.1, T9.2 ✅ |
 | `tantra-docs` | — | 0001, 0003 (EE+, proposed) | T11.1, T11.2 |
@@ -400,6 +400,17 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > portfolio tools remain); T7.7 items 6/7/13 closed (block_deals/news/oi_buildup); T7.8
 > broker-boundary decision documented (gap 0008). `tantra-runtime` open gaps 5 → 3; phase-4
 > open 7 → 5; total 44 → 42.
+>
+> T8 track 2026-11-14 (strategies; gaps 0001–0005 closed in `tantra-strategies` `5c2049d` +
+> `a7dd055`): T8.1 tick dispatch (`Tick` + `Strategy.run_ticks`/`SimulatedContext.run_ticks`,
+> duck-typed drive loop); T8.2 `LiveContext` over `MarketDataFeed`/`ExecutionGateway` seams
+> (canonical Rust traits remain `tantra-market`/`tantra-exec`), sim/live parity tests; T8.3
+> `tools/run_step.py` proves every catalog step runnable + deterministic; T8.4 basket run
+> loop (`basket_run.run_basket` + `RiskBudgetViolation`); T8.5 `optimize_allocations`
+> `RiskBudget` cap math (full `tantra-ledger-allocation` objective stays cross-repo). 31 new
+> tests (164 total), ruff check + format clean, validate_catalog 10/10 + validate_manifests
+> 3/3. `tantra-strategies` open gaps 6 → 1 (0006 EE+ SDK surface); phase-5 open 14 → 9;
+> total 42 → 37.
 
 ## Related
 
