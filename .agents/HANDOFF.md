@@ -11,7 +11,7 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — T6 track complete (agent & MCP ecosystem; plan 0009 + 0010 Implemented)
+## Latest Batch — T6 track complete (agent & MCP ecosystem; plans 0007, 0009, 0010)
 
 Date: 2026-11-14. Executed the T6 track from `docs/task-list-tracks-and-phases.md`
 (T6.1–T6.7, T6.9, T6.11 done; **T6.12 plan 0010 smart-money suite now complete**):
@@ -42,17 +42,26 @@ Date: 2026-11-14. Executed the T6 track from `docs/task-list-tracks-and-phases.m
   `ipo_subscription`), catalogue 24→30; runtime `FeedFundamentalReader`/`FeedFundReader`/
   `FeedIpoReader` stubs citing new `tantra-data` gaps 0020–0022 (data ingestion not started
   anywhere). `register_read_only_tools` gained 3 reader params.
+- **T6.10 (plan 0007 Track 5 — tool surface)** — safe trade intent / strategy CRUD / tax:
+  `TradeIntentSink` port + `propose_trade` LocalWrite tool (closed `Decision::PlaceOrder`,
+  NoFX approval queue pattern), `StrategyStore` port + `strategy_manage` LocalWrite tool,
+  `TaxReportReader` port + pure STCG/LTCG tax math (`compute_capital_gains`: STCG 20% flat,
+  LTCG 12.5% over ₹1.25L exemption) + `tax_report`/`ledger_statement` ReadOnly tools with
+  markdown statements; catalogue 30→32 + 2 trade tools; runtime `FeedTradeIntentSink`/
+  `FeedStrategyStore`/`FeedTaxReportReader` stubs citing gap 0007 items 17–19. **T6 track
+  complete.**
 - **New upstream gaps filed**: `tantra-data` 0019 (delivery-% Rust bridge), 0020
   (fundamentals ingestion), 0021 (mutual-fund data ingestion), 0022 (IPO data ingestion).
 - **Cleanup per gap-tracking §4**: agent gaps 0003–0008 + ledger gap 0013 closed (docs removed,
-  indexes updated); agent plans 0009 + 0010 → Implemented; plan 0007 Track 3 tool surface noted
-  shipped (data tracked by gaps 0020–0022). `tantra-agent` open gaps 0. Task list updated
-  (phase-4 open 20 → 10 → 9 → 8, total 56 → 47 → 46 → 45).
+  indexes updated); agent plans 0009 + 0010 → Implemented; plan 0007 all 6 tracks' tool surfaces
+  shipped (data/wiring tracked by gaps + runtime gap 0007 items 13–19). `tantra-agent` open gaps 0.
+  Task list updated (phase-4 open 20 → 10 → 9 → 8 → 7, total 56 → 47 → 46 → 45 → 44).
 - **Commits**: agent `7f9d480` (T6.1/2/4/5 + _jq), `95ec800` (T6.9), `150bcae` (T6.7); runtime
   `634de2c` (T6.3), `c0e3a27` (T6.7 wiring); ledger `126087f` (MPO); market `bb997f3`;
   data `d248240`; root `ec03932`/`2930b06`. T6.12 commits agent `d8a36b1`, runtime `a305f03`,
-  data `5a83b20`, strategies `6b1a90f`, root `f1e1707`; T6.8 commit SHAs follow this batch's
-  per-repo commits. All pushed.
+  data `5a83b20`, strategies `6b1a90f`, root `f1e1707`; T6.8 commits agent `97b6a5f`, runtime
+  `aee1a54`, data `a3223a0`, root `16889d7`; T6.10 commit SHAs follow this batch's per-repo
+  commits. All pushed.
 
 ## Latest Batch — Elephant Edge (EE+) strategy platform docs (research + plans/gaps)
 
@@ -439,14 +448,12 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
    (`tantra-strategies` plan 0001/gap 0006) → T12.5–T12.7 execution/risk/OMS (exec 0003,
    risk 0005, ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007,
    docs 0003). See the T12 track in `docs/task-list-tracks-and-phases.md`.
-1. **T6 remaining** — T6.10 (Track 5: safe trade-intent bridge via NoFX approval queue + paper
-   sandbox, strategy CRUD/community, tax/statements — the largest remaining slice). T6.8
-   (Track 3) tool surface is shipped; its data ingestion is tracked by `tantra-data` gaps
-   0020–0022. T6.12 (plan 0010) is **implemented**; its stubs turn real by closing
-   `tantra-data` 0017/0019, `tantra-market` 0006, and wiring `ParquetOpenInterestStore` +
-   `BuildupAnalyzer` into the runtime (gap 0007 item 13). Decide the pre-existing R4
-   architectural-dependency test (`tantra-agent-mcp` → `tantra-ledger-allocation`): drop the
-   dep or widen R4.
+1. **T6 complete** — remaining T6 follow-ons are tracked upstream: `tantra-data` gaps
+   0020–0022 (Track 3 fundamentals/MF/IPO ingestion), `tantra-market` 0006 (L2 depth),
+   runtime gap 0007 items 17–19 (Track 5 wiring: FileJobRegistry-backed trade-intent sink +
+   paper sandbox, strategy-manifest store, matched-lot tax-report bridge), and items 13/17
+   (`oi_buildup` store wiring). Decide the pre-existing R4 architectural-dependency test
+   (`tantra-agent-mcp` → `tantra-ledger-allocation`): drop the dep or widen R4.
 2. **T7 follow-ons** — wire the runtime chat adapters to the now-closed T5.3 block-deal and
    T5.4 news data (`FeedMarketReader::block_deals`/`FeedContentReader::news_search` still cite
    gaps 0005/0006 — both closed upstream, so the adapters can read the stores/projections);

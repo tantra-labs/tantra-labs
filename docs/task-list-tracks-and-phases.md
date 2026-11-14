@@ -24,10 +24,10 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 1 |
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds | T5, T3 (feeds) | 2 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 2 |
-| **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 8 |
+| **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 7 |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 14 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **45** |
+| **Total** | | | **44** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -191,7 +191,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T6 — Agent & MCP Ecosystem · Phase 4 — ✅ T6.1–T6.7, T6.9, T6.11, T6.12, T6.8 (tool surface) DONE 2026-11-14; T6.10 Open
+## T6 — Agent & MCP Ecosystem · Phase 4 — ✅ T6.1–T6.12 COMPLETE 2026-11-14
 
 **Source**: [`tantra-agent/docs/plans/README.md`](../tantra-agent/docs/plans/README.md) (plans 0007, 0010 Implemented; **plan 0009 Implemented**) ·
 [`tantra-agent/docs/gaps/README.md`](../tantra-agent/docs/gaps/README.md) (**gaps 0003–0008 closed, none open**)
@@ -212,7 +212,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **T6.7** | ✅ Track 2, Ph 4–5: market depth / L2 & FII-DII flows; economic-calendar tool — `market_depth`/`institutional_flows` (MarketReader port methods) + `economic_calendar` (new `CalendarReader` port), catalogue 19→22; honest `PortError::unavailable` stubs citing market 0006 / data 0017 / data 0018; `FeedCalendarReader` + `FeedMarketReader` wired | `tantra-agent-chat-tools` + `tantra-runtime` | 4 | **Done** | Ph 4 flows ← T5.9; Ph 5 ← T5.1/5.2 |
 | **T6.8** | ✅ Track 3, Ph 6–8 tool surface: fundamentals & financial statements (`FundamentalReader` port + `fundamental_ratios`/`financial_statements` tools), mutual-fund analytics (`FundReader` + `fund_search`/`fund_holdings`), IPO tracker (`IpoReader` + `ipo_calendar`/`ipo_subscription`) — catalogue 22→30, honest `PortError::unavailable` stubs citing new `tantra-data` gaps 0020–0022; runtime `FeedFundamentalReader`/`FeedFundReader`/`FeedIpoReader` adapters; **data ingestion tracked by gaps 0020–0022** | `tantra-agent-chat-tools` + `tantra-data` | 4 | **Done** (tool surface) | needs new data ingestion (gaps 0020–0022) |
 | **T6.9** | ✅ Track 4, Ph 9–11: HMM regimes, change points, copulas + permutation tests, MPO — `regime/hmm.rs` (Baum-Welch + Viterbi), `changepoint.rs` (CUSUM + structural break), `copula.rs` (Clayton/Gumbel + seeded joint VaR), `validation::permutation_test_*`; MPO in `tantra-ledger-allocation`; MCP tools `tantra_detect_regimes`/`tantra_change_point`/`tantra_copula_tail_risk`/`tantra_permutation_test`/`tantra_multi_period_optimize` (49 analytics + 56 mcp tests green) | `tantra-agent-analytics` + `tantra-agent-mcp` + `tantra-ledger-allocation` | 4 | **Done** | — |
-| **T6.10** | Track 5, Ph 12–14: safe trade-intent bridge + paper sandbox, strategy CRUD/community, tax reporting & ledger statements | agent + `tantra-runtime` + `tantra-strategies` + `tantra-ledger-journal` | 4 | Open | NoFX approval-queue pattern |
+| **T6.10** | ✅ Track 5, Ph 12–14 tool surface: safe trade-intent bridge (`TradeIntentSink` port + `propose_trade` LocalWrite tool formulating a closed `Decision::PlaceOrder`, NoFX approval-queue pattern), strategy CRUD (`StrategyStore` port + `strategy_manage` LocalWrite tool), tax reporting & ledger statements (`TaxReportReader` port + pure `compute_capital_gains` STCG 20% / LTCG 12.5% over ₹1.25L exemption + `tax_report`/`ledger_statement` tools with markdown statements) — catalogue 30→32 + 2 LocalWrite trade tools, honest `PortError::unavailable` stubs citing runtime gap 0007 items 17–19; **deep wiring tracked by runtime gap 0007 items 17–19** (FileJobRegistry approval queue, strategy store, matched-lot bridge) | agent + `tantra-runtime` + `tantra-strategies` + `tantra-ledger-journal` | 4 | **Done** (tool surface + tax math) | NoFX approval-queue pattern |
 | **T6.11** | ✅ Track 6, Ph 15–17: `_jq` response filter (`serde_json_path`, Ph 15) + stdio client (Ph 17 = T6.4); Ph 16 SSE/HTTP transport shipped earlier | `tantra-agent-core`, `tantra-agent-mcp` | 4 | **Done** | — |
 
 ### Plan 0010 — Institutional / Smart-Money Detection Suite (Implemented)
@@ -330,7 +330,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-market` | 2 (0003, 0005 EE+) | — | T3.1–T3.4 🔶, T12.2 |
 | `tantra-exec` | 1 (0003 EE+) | 0002 (Phase 1 done) | T0.3 ✅, T4.11 ✅, T12.5 |
 | `tantra-runtime` | 5 (0004–0008) | 0004 | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 |
-| `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active), 0010 (Implemented), 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.7/T6.8/T6.9/T6.11/T6.12 ✅, T6.10, T12.8 |
+| `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — all 6 tracks' tool surfaces shipped), 0010 (Implemented), 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.12 ✅, T12.8 |
 | `tantra-ui` | 5 (0003–0007 incl. EE+) | 0003, 0006 (EE+, proposed) | T10.1–T10.5, T12.9 |
 | `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006 (all Implemented) | T5.1–T5.10 ✅, T12.3 |
@@ -385,9 +385,12 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > `tantra-data` gap 0019 (delivery Rust bridge). **T6.8 (Track 3 tool surface)**: fundamentals /
 > mutual funds / IPO chat tools (catalogue 24→30) + runtime `FeedFundamentalReader`/
 > `FeedFundReader`/`FeedIpoReader` stubs citing new `tantra-data` gaps 0020–0022; the data
-> ingestion itself is tracked by those gaps. Remaining T6: T6.10 (Track 5 safe
-> trade-intent/strategy CRUD/tax). Agent gaps open 5 → 0; phase-4 open 20 → 10 → 9 → 8;
-> total 56 → 47 → 46 → 45.
+> ingestion itself is tracked by those gaps. **T6.10 (Track 5 tool surface)**: trade-intent
+> bridge + strategy CRUD + tax/statements tools (catalogue 30→32 + 2 LocalWrite trade tools),
+> pure STCG/LTCG tax math, honest stubs citing runtime gap 0007 items 17–19; the deep wiring
+> (FileJobRegistry approval queue, strategy store, matched-lot bridge) is tracked by those
+> items. **T6 track complete.** Agent gaps open 5 → 0; phase-4 open 20 → 10 → 9 → 8 → 7;
+> total 56 → 47 → 46 → 45 → 44.
 
 ## Related
 
