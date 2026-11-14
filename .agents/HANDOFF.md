@@ -36,14 +36,23 @@ Date: 2026-11-14. Executed the T6 track from `docs/task-list-tracks-and-phases.m
   composite-signal strategy `CompositeSignalStrategy` + pure `compute_composite_signal` in
   `tantra-strategies` (14 tests). Real-data wiring remains tracked by `tantra-data` 0017/0019,
   `tantra-market` 0006, runtime gap 0007 item 13.
-- **New upstream gap filed**: `tantra-data` 0019 (delivery-% Rust bridge).
+- **T6.8 (plan 0007 Track 3 — tool surface)** — fundamentals / mutual funds / IPO chat tools:
+  3 new ports (`FundamentalReader`/`FundReader`/`IpoReader`) + 6 ReadOnly tools
+  (`fundamental_ratios`/`financial_statements`/`fund_search`/`fund_holdings`/`ipo_calendar`/
+  `ipo_subscription`), catalogue 24→30; runtime `FeedFundamentalReader`/`FeedFundReader`/
+  `FeedIpoReader` stubs citing new `tantra-data` gaps 0020–0022 (data ingestion not started
+  anywhere). `register_read_only_tools` gained 3 reader params.
+- **New upstream gaps filed**: `tantra-data` 0019 (delivery-% Rust bridge), 0020
+  (fundamentals ingestion), 0021 (mutual-fund data ingestion), 0022 (IPO data ingestion).
 - **Cleanup per gap-tracking §4**: agent gaps 0003–0008 + ledger gap 0013 closed (docs removed,
-  indexes updated); agent plans 0009 + 0010 → Implemented. `tantra-agent` open gaps 0. Task list
-  updated (phase-4 open 20 → 10 → 9, total 56 → 47 → 46).
+  indexes updated); agent plans 0009 + 0010 → Implemented; plan 0007 Track 3 tool surface noted
+  shipped (data tracked by gaps 0020–0022). `tantra-agent` open gaps 0. Task list updated
+  (phase-4 open 20 → 10 → 9 → 8, total 56 → 47 → 46 → 45).
 - **Commits**: agent `7f9d480` (T6.1/2/4/5 + _jq), `95ec800` (T6.9), `150bcae` (T6.7); runtime
   `634de2c` (T6.3), `c0e3a27` (T6.7 wiring); ledger `126087f` (MPO); market `bb997f3`;
-  data `d248240`; root `ec03932`/`2930b06`. T6.12 commit SHAs follow this batch's per-repo commits.
-  All pushed.
+  data `d248240`; root `ec03932`/`2930b06`. T6.12 commits agent `d8a36b1`, runtime `a305f03`,
+  data `5a83b20`, strategies `6b1a90f`, root `f1e1707`; T6.8 commit SHAs follow this batch's
+  per-repo commits. All pushed.
 
 ## Latest Batch — Elephant Edge (EE+) strategy platform docs (research + plans/gaps)
 
@@ -430,10 +439,10 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
    (`tantra-strategies` plan 0001/gap 0006) → T12.5–T12.7 execution/risk/OMS (exec 0003,
    risk 0005, ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007,
    docs 0003). See the T12 track in `docs/task-list-tracks-and-phases.md`.
-1. **T6 remaining** — T6.8 (plan 0007 Track 3: fundamentals/MF/IPO — needs new `tantra-data`
-   ingestion, file data gaps before tool code), T6.10 (Track 5: safe trade-intent bridge via
-   NoFX approval queue + paper sandbox, strategy CRUD/community, tax/statements — largest
-   remaining slice). T6.12 (plan 0010) is **implemented**; its stubs turn real by closing
+1. **T6 remaining** — T6.10 (Track 5: safe trade-intent bridge via NoFX approval queue + paper
+   sandbox, strategy CRUD/community, tax/statements — the largest remaining slice). T6.8
+   (Track 3) tool surface is shipped; its data ingestion is tracked by `tantra-data` gaps
+   0020–0022. T6.12 (plan 0010) is **implemented**; its stubs turn real by closing
    `tantra-data` 0017/0019, `tantra-market` 0006, and wiring `ParquetOpenInterestStore` +
    `BuildupAnalyzer` into the runtime (gap 0007 item 13). Decide the pre-existing R4
    architectural-dependency test (`tantra-agent-mcp` → `tantra-ledger-allocation`): drop the
