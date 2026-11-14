@@ -222,7 +222,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T7 — Runtime REST API & Chat Tools · Phase 4 — ✅ T7.1–T7.6, T7.8 DONE 2026-11-14; T7.7 items 6/7/13; rest upstream-blocked
+## T7 — Runtime REST API & Chat Tools · Phase 4 — ✅ T7.1–T7.8 DONE 2026-11-14; gap 0006 closed; gap 0007 items 1–5, 10–12, 14–16 upstream-blocked
 
 **Source**: [`tantra-runtime/docs/plans/0004`](../tantra-runtime/docs/plans/0004-block-bulk-deal-chat-tool-and-rest-endpoint.md) (Implement 2026-11-14 — plan 0004 **Implemented**) ·
 [`tantra-runtime/docs/gaps/README.md`](../tantra-runtime/docs/gaps/README.md)
@@ -234,8 +234,8 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **T7.3** | ✅ Plan 0004 Ph 5: direct `GET /market-data/block-deals` REST endpoint | `tantra-runtime-api-rest` | 4 | **Done** | T5.3 |
 | **T7.4** | ✅ Profile schema: `watchlists` → `Watchlist {name, instrument_ids}` + `portfolios`/`risk_profiles`/`workspaces` + limits | `tantra-runtime-api::profile` | 4 | **Done** | 0004 (closed) |
 | **T7.5** | ✅ OpenAPI 3.1 spec completeness (all v1 routes), schema coverage, static artifact export, conformance test | `tantra-runtime-api-rest::openapi` | 4 | **Done** | 0005 (closed) |
-| **T7.6** | 🔶 Chat session persistence via `SqlxSessionStore` when `TANTRA_DATABASE_URL` set (**done**); portfolio-backed tools remain (need ledger-repo handle in AppState) | `tantra-runtime-api-rest::chat` / `::state` | 4 | In progress | 0006 (half-closed) |
-| **T7.7** | 🔶 Chat market/content readers — items **6 (block_deals), 7 (news), 13 (oi_buildup)** closed; items 1–5, 8–12, 14–19 remain upstream-blocked | `tantra-runtime-api-rest::chat_market` / `::chat_content` | 4 | In progress | 0007 (partly closed) |
+| **T7.6** | ✅ Chat session persistence via `SqlxSessionStore` (`933c53a`); portfolio-backed tools wired — `SharedLedger` handle in `AppState` (design decision recorded in `docs/design/code-shared-ledger.md`), `LedgerPortfolioReader` from the real order/fill flow, `StubPortfolioReader` removed | `tantra-runtime-api-rest::chat` / `::state` | 4 | **Done** | 0006 (closed) |
+| **T7.7** | 🔶 Chat market/content readers — items **6, 7, 8, 9, 13, 17, 18, 19** closed (block_deals/news/options_chain/corporate_actions/oi_buildup/trade-intent/strategy-store/tax); items 1–5, 10–12, 14–16 remain upstream-blocked | `tantra-runtime-api-rest::chat_market` / `::chat_content` | 4 | In progress | 0007 (partly closed) |
 | **T7.8** | ✅ Broker-adapter boundary: option 1 "keep `BrokerAdapter` as sim port" recorded in gap 0008 + code-strategy.md §8.2 | `tantra-runtime-strategy::dispatch` | 4 | **Done** (documented decision; closes when option 2 lands) | 0008 |
 
 ---

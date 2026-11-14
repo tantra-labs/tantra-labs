@@ -11,6 +11,29 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — T7 remaining (runtime; gap 0006 closed, 0007 items 8/9/17/18/19 closed)
+
+Date: 2026-11-14. Completed the runtime-side T7 items that were not upstream-blocked:
+- **Gap 0006 closed (portfolio-backed tools)** — design decision recorded in
+  `tantra-runtime/docs/design/code-shared-ledger.md`: `AppState.shared_ledger` =
+  `tantra-runtime_api::SharedLedger` (the four in-memory `tantra-ledger` repositories +
+  matched-lot history, mutex-backed, `&self` `record_*` methods + the four repository trait
+  impls). The REST order flow opens the default `rest-api` account and records every approved
+  order; the embedded sim records every fill (buy opens a FIFO lot, sell matches, cash
+  adjusts). `StubPortfolioReader` removed; `LedgerPortfolioReader` + `FeedTaxReportReader`
+  (0007 item 19) wired from it.
+- **0007 items 17/18 closed** — `FeedTradeIntentSink` enqueues validated intents into the
+  `FileJobRegistry` as `PendingApproval` (`x-papertrading` flag); `FeedStrategyStore` in-memory
+  CRUD. **Item 9 closed** — `with_corporate_actions` wired into the chat market reader
+  (composable builders). Item 8 (options_chain) already closed via T3.1; 0007 doc now records
+  it. Remaining 0007 items 1–5, 10–12, 14–16 stay upstream-blocked (feed, indicator/macro,
+  display-name, regime, L2 depth `market 0006`, flows/delivery `data 0017/0019`, fundamentals
+  `data 0020–0022`).
+- **Verification**: fmt/clippy/check green; new tests `shared_ledger_tests` (6) +
+  `chat_remaining_t7_tests` (3); existing orders/chat/session/trading-state binaries green.
+- **Cleanup**: gap 0006 doc removed (index → Closed); gap 0007 rewritten; task list T7 rows +
+  runtime HANDOFF updated. Commit: `tantra-runtime` (this batch); root submodule pointer.
+
 ## Latest Batch — T7 track (runtime REST API & chat tools)
 
 Date: 2026-11-14. Executed the T7 track from `docs/task-list-tracks-and-phases.md`
@@ -481,15 +504,15 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
    (`tantra-strategies` plan 0001/gap 0006) → T12.5–T12.7 execution/risk/OMS (exec 0003,
    risk 0005, ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007,
    docs 0003). See the T12 track in `docs/task-list-tracks-and-phases.md`.
-1. **T7 remaining (runtime)**: gap 0006 portfolio-backed tools (decide the ledger-repo
-   handle AppState should hold, replace `StubPortfolioReader`); gap 0007 remaining items
-   1–5, 8–12, 14–19 (last-price/volume feed, indicator/macro engines, L2 depth
+1. **T7 remaining (runtime, upstream-blocked)**: gap 0007 items 1–5, 10–12, 14–19 (last-price/
+   volume feed, indicator/macro engines, instrument display-name, regime/risk metrics, L2 depth
    `tantra-market` 0006, institutional-flow/delivery bridges `tantra-data` 0017/0019,
-   trade-intent/strategy-store/tax wiring items 17–19).
+   fundamentals/MF/IPO `tantra-data` 0020–0022); gap 0008 closes when option 2 (lift
+   `BrokerAdapter` into `tantra-exec-core`) lands. Gap 0006 is **closed** (SharedLedger in
+   `AppState`, decision in `tantra-runtime/docs/design/code-shared-ledger.md`).
 2. T6 follow-ons: `tantra-data` gaps 0020–0022 (Track 3 fundamentals/MF/IPO ingestion),
-   `tantra-market` 0006 (L2 depth), runtime gap 0007 items 17–19 wiring. Decide the
-   pre-existing R4 architectural-dependency test (`tantra-agent-mcp` → `tantra-ledger-allocation`):
-   drop the dep or widen R4.
+   `tantra-market` 0006 (L2 depth). Decide the pre-existing R4 architectural-dependency test
+   (`tantra-agent-mcp` → `tantra-ledger-allocation`): drop the dep or widen R4.
 3. T3.3 remaining: capture the Fyers v3 subscribe request from the official SDK and implement
    the `upstox`/`fyers`/`angelone` feed crates mirroring `dhan`/`zerodha`; live-verify the Dhan
    (and Kite) feeds against the Dhan credentials.
