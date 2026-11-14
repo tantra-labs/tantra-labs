@@ -11,9 +11,10 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — T6 track complete (agent & MCP ecosystem; plan 0009 Implemented)
+## Latest Batch — T6 track complete (agent & MCP ecosystem; plan 0009 + 0010 Implemented)
 
-Date: 2026-11-14. Executed the T6 track from `docs/task-list-tracks-and-phases.md`:
+Date: 2026-11-14. Executed the T6 track from `docs/task-list-tracks-and-phases.md`
+(T6.1–T6.7, T6.9, T6.11 done; **T6.12 plan 0010 smart-money suite now complete**):
 - **T6.1/2** — `UserMemory` with per-profile budgeters + recall renderers (`tantra-agent` base
   crate `memory::user`) + prompt cache-hit/miss regression tests (agent-core `prompt_cache_tests`,
   agent-prompt `renderer_cache_tests`).
@@ -24,20 +25,25 @@ Date: 2026-11-14. Executed the T6 track from `docs/task-list-tracks-and-phases.m
 - **T6.5** — `ResearchNote` (Typst/Markdown) + research-loop integration.
 - **T6.9** — Track-4 engines: HMM regimes (Baum-Welch + Viterbi), CUSUM changepoint,
   Clayton/Gumbel copulas, permutation tests, MPO (`tantra-ledger-allocation`); 5 MCP gateway
-  tools (`tantra_detect_regimes`/`tantra_change_point`/`tantra_copula_tail_risk`/
-  `tantra_permutation_test`/`tantra_multi_period_optimize`); stale HRP-unimplemented test fixed.
+  tools; stale HRP-unimplemented test fixed.
 - **T6.6** — verified already shipped (Track-1 engines). **T6.7** — Track-2 chat tools
   (`market_depth`/`institutional_flows`/`economic_calendar`, catalogue 19→22, new `CalendarReader`
-  port) + runtime wiring (`FeedCalendarReader`, `FeedMarketReader` methods) with honest
-  `PortError::unavailable` stubs citing newly-filed upstream gaps.
-- **New upstream gaps filed**: `tantra-market` 0006 (L2 depth source), `tantra-data` 0017
-  (institutional-flow Rust bridge), 0018 (economic-calendar Rust bridge).
+  port) + runtime wiring with honest `PortError::unavailable` stubs citing newly-filed upstream gaps.
+- **T6.12 (plan 0010, Implemented)** — remaining smart-money suite: `delivery_analysis` +
+  `oi_buildup` ReadOnly chat tools (catalogue 22→24; `DeliveryBar`/`OiBuildupSnapshot` DTOs +
+  `MarketReader::delivery_stats`/`oi_buildup`, exact Decimal), runtime wiring (`FeedMarketReader`
+  stubs + seedable `RuntimeMarketReader` `set_delivery_stats`/`set_oi_buildup` + tests), and the
+  composite-signal strategy `CompositeSignalStrategy` + pure `compute_composite_signal` in
+  `tantra-strategies` (14 tests). Real-data wiring remains tracked by `tantra-data` 0017/0019,
+  `tantra-market` 0006, runtime gap 0007 item 13.
+- **New upstream gap filed**: `tantra-data` 0019 (delivery-% Rust bridge).
 - **Cleanup per gap-tracking §4**: agent gaps 0003–0008 + ledger gap 0013 closed (docs removed,
-  indexes updated); agent plan 0009 → Implemented. `tantra-agent` open gaps 5 → 0. Task list
-  updated (phase-4 open 20 → 10, total 56 → 47).
+  indexes updated); agent plans 0009 + 0010 → Implemented. `tantra-agent` open gaps 0. Task list
+  updated (phase-4 open 20 → 10 → 9, total 56 → 47 → 46).
 - **Commits**: agent `7f9d480` (T6.1/2/4/5 + _jq), `95ec800` (T6.9), `150bcae` (T6.7); runtime
   `634de2c` (T6.3), `c0e3a27` (T6.7 wiring); ledger `126087f` (MPO); market `bb997f3`;
-  data `d248240`; root `ec03932`/`2930b06`. All pushed.
+  data `d248240`; root `ec03932`/`2930b06`. T6.12 commit SHAs follow this batch's per-repo commits.
+  All pushed.
 
 ## Latest Batch — Elephant Edge (EE+) strategy platform docs (research + plans/gaps)
 
@@ -427,10 +433,11 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
 1. **T6 remaining** — T6.8 (plan 0007 Track 3: fundamentals/MF/IPO — needs new `tantra-data`
    ingestion, file data gaps before tool code), T6.10 (Track 5: safe trade-intent bridge via
    NoFX approval queue + paper sandbox, strategy CRUD/community, tax/statements — largest
-   remaining slice), T6.12 (plan 0010: `institutional_flows` shipped; add `delivery_analysis` +
-   `oi_buildup` chat tools with honest stubs citing new bridge gaps, then the composite-signal
-   strategy in `tantra-strategies`). Decide the pre-existing R4 architectural-dependency test
-   (`tantra-agent-mcp` → `tantra-ledger-allocation`): drop the dep or widen R4.
+   remaining slice). T6.12 (plan 0010) is **implemented**; its stubs turn real by closing
+   `tantra-data` 0017/0019, `tantra-market` 0006, and wiring `ParquetOpenInterestStore` +
+   `BuildupAnalyzer` into the runtime (gap 0007 item 13). Decide the pre-existing R4
+   architectural-dependency test (`tantra-agent-mcp` → `tantra-ledger-allocation`): drop the
+   dep or widen R4.
 2. **T7 follow-ons** — wire the runtime chat adapters to the now-closed T5.3 block-deal and
    T5.4 news data (`FeedMarketReader::block_deals`/`FeedContentReader::news_search` still cite
    gaps 0005/0006 — both closed upstream, so the adapters can read the stores/projections);

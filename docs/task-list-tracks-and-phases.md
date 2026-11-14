@@ -24,10 +24,10 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 1 |
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds | T5, T3 (feeds) | 2 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 2 |
-| **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 10 |
+| **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 9 |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 14 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **47** |
+| **Total** | | | **46** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -191,9 +191,9 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T6 — Agent & MCP Ecosystem · Phase 4 — ✅ T6.1–T6.7, T6.9, T6.11 DONE 2026-11-14; T6.8/T6.10/T6.12 Open
+## T6 — Agent & MCP Ecosystem · Phase 4 — ✅ T6.1–T6.7, T6.9, T6.11, T6.12 DONE 2026-11-14; T6.8/T6.10 Open
 
-**Source**: [`tantra-agent/docs/plans/README.md`](../tantra-agent/docs/plans/README.md) (plans 0007, 0010; **plan 0009 Implemented**) ·
+**Source**: [`tantra-agent/docs/plans/README.md`](../tantra-agent/docs/plans/README.md) (plans 0007, 0010 Implemented; **plan 0009 Implemented**) ·
 [`tantra-agent/docs/gaps/README.md`](../tantra-agent/docs/gaps/README.md) (**gaps 0003–0008 closed, none open**)
 
 ### Plan 0009 — Persistent Memory, MCP Client Bridge & Phase E (Implemented)
@@ -215,10 +215,10 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **T6.10** | Track 5, Ph 12–14: safe trade-intent bridge + paper sandbox, strategy CRUD/community, tax reporting & ledger statements | agent + `tantra-runtime` + `tantra-strategies` + `tantra-ledger-journal` | 4 | Open | NoFX approval-queue pattern |
 | **T6.11** | ✅ Track 6, Ph 15–17: `_jq` response filter (`serde_json_path`, Ph 15) + stdio client (Ph 17 = T6.4); Ph 16 SSE/HTTP transport shipped earlier | `tantra-agent-core`, `tantra-agent-mcp` | 4 | **Done** | — |
 
-### Plan 0010 — Institutional / Smart-Money Detection Suite (Proposed)
+### Plan 0010 — Institutional / Smart-Money Detection Suite (Implemented)
 | Task | Work | Repo / Scope | Phase | Status | Depends on |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T6.12** | Composite signal (delivery-adjusted volume, shareholding/insider filings, block deals, OI buildup + FII/DII regime) over 3 new chat tools — `institutional_flows` **shipped** with T6.7; `delivery_analysis` + `oi_buildup` + composite-signal strategy remain | `tantra-agent-chat-tools`, `tantra-runtime`, `tantra-strategies` | 4 | Proposed | T3.2, T5.3, T5.5, T5.9, T5.10 (all done) |
+| **T6.12** | ✅ All 5 phases — `institutional_flows` (shipped T6.7); `delivery_analysis` + `oi_buildup` chat tools (`DeliveryBar`/`OiBuildupSnapshot` DTOs + `MarketReader::delivery_stats`/`oi_buildup`, catalogue 22→24, honest `PortError::unavailable` stubs citing new `tantra-data` gap 0019 + runtime gap 0007 item 12); runtime wiring (`FeedMarketReader` stubs + seedable `RuntimeMarketReader` setters/reads + tests); composite-signal strategy `CompositeSignalStrategy` + pure `compute_composite_signal` in `tantra-strategies` (14 tests). Real-data wiring remains tracked by `tantra-data` 0017/0019, `tantra-market` 0006, runtime gap 0007 item 13 | `tantra-agent-chat-tools`, `tantra-runtime`, `tantra-strategies` | 4 | **Done** | T3.2, T5.3, T5.5, T5.9, T5.10 (all done) |
 
 ---
 
@@ -330,7 +330,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-market` | 2 (0003, 0005 EE+) | — | T3.1–T3.4 🔶, T12.2 |
 | `tantra-exec` | 1 (0003 EE+) | 0002 (Phase 1 done) | T0.3 ✅, T4.11 ✅, T12.5 |
 | `tantra-runtime` | 5 (0004–0008) | 0004 | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 |
-| `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active), 0010, 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.7/T6.9/T6.11 ✅, T6.8/T6.10/T6.12, T12.8 |
+| `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active), 0010 (Implemented), 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.7/T6.9/T6.11/T6.12 ✅, T6.8/T6.10, T12.8 |
 | `tantra-ui` | 5 (0003–0007 incl. EE+) | 0003, 0006 (EE+, proposed) | T10.1–T10.5, T12.9 |
 | `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006 (all Implemented) | T5.1–T5.10 ✅, T12.3 |
@@ -379,10 +379,12 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > `95ec800`); T6.6 verified shipped; T6.7 Track-2 chat tools (`market_depth`/
 > `institutional_flows`/`economic_calendar`, catalogue 19→22, `CalendarReader` port; agent
 > `150bcae` + runtime `c0e3a27`) with honest `PortError::unavailable` stubs citing new
-> upstream gaps market 0006 + data 0017/0018. Remaining T6: T6.8 (Track 3 fundamentals/
-> MF/IPO — needs new ingestion), T6.10 (Track 5 safe trade-intent/strategy CRUD/tax),
-> T6.12 (plan 0010 smart-money suite; `institutional_flows` shipped, `delivery_analysis`/
-> `oi_buildup` + composite signal remain). Agent gaps open 5 → 0; phase-4 open 20 → 10.
+> upstream gaps market 0006 + data 0017/0018; **T6.12 (plan 0010 Implemented)**: `delivery_analysis`
+> + `oi_buildup` tools (catalogue 22→24, DTOs + port methods, exact Decimal), runtime wiring
+> + seedable adapter tests, composite-signal strategy in `tantra-strategies` (14 tests); new
+> `tantra-data` gap 0019 (delivery Rust bridge). Remaining T6: T6.8 (Track 3 fundamentals/
+> MF/IPO — needs new ingestion), T6.10 (Track 5 safe trade-intent/strategy CRUD/tax). Agent
+> gaps open 5 → 0; phase-4 open 20 → 10 → 9; total 56 → 47 → 46.
 
 ## Related
 
