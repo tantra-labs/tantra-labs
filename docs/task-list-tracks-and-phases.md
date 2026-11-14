@@ -49,7 +49,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **T0.4** | ✅ Pin the facade-crate convention (ADR); add facades for market/exec/runtime/ffi/ui | all Rust workspaces | 0 | **Done** | root 0007 (closed) |
 | **T0.5** | ✅ Remove legacy honba aliases from runtime `workspace.dependencies`; drop unused `tantra-market-*` deps in ffi | `tantra-runtime`, `tantra-ffi` | 0 | **Done** | root 0008 · ffi 0002 (closed) |
 | **T0.6** | ✅ Full-workspace verification: 9 Rust repos `check --profile prod` / `fmt --check` / `clippy -D warnings`; `market` + `exec` full `test --profile prod` green (runtime test-binary compiles still OOM — pre-existing) | all Rust repos | 0 | **Done** | — |
-| **T0.7** | ⏸ Delegate downstream return/vol math to `tantra_core::quant` — **Phase A audit done**: no 1:1 delegation sites (streaming f64 indicators / f64 statistical gates vs Decimal-batch quant); matrix in `tantra-core/docs/design/code-quant.md`; kept open as verify-on-future-work | `tantra-core` | 1 | Audit only | core 0001 (open, refined) |
+| **T0.7** | ✅ Delegate downstream return/vol math to `tantra_core::quant` — **Phase A audit done (2026-11-13), closed 2026-11-14**: no 1:1 delegation sites (streaming f64 indicators / f64 statistical gates vs Decimal-batch quant); matrix + verdict in `tantra-core/docs/design/code-quant.md`; gap 0001 + plan 0002 closed on the audit decision — delegation revisited only if a new Decimal-bounded quant consumer appears | `tantra-core` | 1 | **Done** | core 0001, plan 0002 (closed 2026-11-14) |
 | **T0.8** | ✅ Remove inline `#[cfg(test)]` blocks in agent `ref_store.rs` + `verify/mod.rs` → `tests/` (4 + 10 tests green) | `tantra-agent` | 0 | **Done** | agent 0001 (closed, plan 0008) |
 
 ---
@@ -222,7 +222,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T7 — Runtime REST API & Chat Tools · Phase 4 — ✅ T7.1–T7.8 DONE 2026-11-14; gap 0006 closed; gap 0007 items 1–5, 11, 12 closed; items 10, 14–16 upstream-blocked
+## T7 — Runtime REST API & Chat Tools · Phase 4 — ✅ T7.1–T7.8 + gap 0007 (all 19 items) DONE 2026-11-14
 
 **Source**: [`tantra-runtime/docs/plans/0004`](../tantra-runtime/docs/plans/0004-block-bulk-deal-chat-tool-and-rest-endpoint.md) (Implement 2026-11-14 — plan 0004 **Implemented**) ·
 [`tantra-runtime/docs/gaps/README.md`](../tantra-runtime/docs/gaps/README.md)
@@ -235,7 +235,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **T7.4** | ✅ Profile schema: `watchlists` → `Watchlist {name, instrument_ids}` + `portfolios`/`risk_profiles`/`workspaces` + limits | `tantra-runtime-api::profile` | 4 | **Done** | 0004 (closed) |
 | **T7.5** | ✅ OpenAPI 3.1 spec completeness (all v1 routes), schema coverage, static artifact export, conformance test | `tantra-runtime-api-rest::openapi` | 4 | **Done** | 0005 (closed) |
 | **T7.6** | ✅ Chat session persistence via `SqlxSessionStore` (`933c53a`); portfolio-backed tools wired — `SharedLedger` handle in `AppState` (design decision recorded in `docs/design/code-shared-ledger.md`), `LedgerPortfolioReader` from the real order/fill flow, `StubPortfolioReader` removed | `tantra-runtime-api-rest::chat` / `::state` | 4 | **Done** | 0006 (closed) |
-| **T7.7** | 🔶 Chat market/content readers — items **1–5, 6, 7, 8, 9, 11, 12, 13, 17, 18, 19** closed (last-price/volume plumbing, indicators, macro_series, display-name, regime+risk-metrics, block_deals/news/options_chain/corporate_actions/institutional_flows/delivery_stats/oi_buildup/trade-intent/strategy-store/tax); items **10 (L2 depth ← `tantra-market` 0006)** and **14–16 (fundamentals/MF/IPO ← `tantra-data` 0020–0022)** remain upstream-blocked | `tantra-runtime-api-rest::chat_market` / `::chat_content` | 4 | In progress | 0007 (partly closed) |
+| **T7.7** | ✅ Chat market/content readers — **all items closed** (1–5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19: last-price/volume plumbing, indicators, macro_series, display-name, regime+risk-metrics, block_deals/news/options_chain/corporate_actions/L2 market_depth/institutional_flows/delivery_stats/oi_buildup/fundamentals/mutual-funds/IPO/trade-intent/strategy-store/tax); gap 0007 closed 2026-11-14 (fund *holdings* stay unsourced — documented, never fabricated) | `tantra-runtime-api-rest::chat_market` / `::chat_content` | 4 | **Done** | 0007 (closed) |
 | **T7.8** | ✅ Broker-adapter boundary: option 1 "keep `BrokerAdapter` as sim port" recorded in gap 0008 + code-strategy.md §8.2 | `tantra-runtime-strategy::dispatch` | 4 | **Done** (documented decision; closes when option 2 lands) | 0008 |
 
 ---
@@ -324,16 +324,16 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
 | `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella), **0005 (EE+ platform, proposed)** | T0.1–T0.6 ✅, T12.1–T12.10 |
-| `tantra-core` | 2 (0001, 0002 EE+) | 0002, 0003 (EE+, proposed) | T0.7 ⏸, T12.1 |
+| `tantra-core` | 1 (0002 EE+) | 0003 (EE+, proposed) | T0.7 ✅ (audit decision), T12.1 |
 | `tantra-ledger` | 1 (0012 EE+) | — | T2.1–T2.11 ✅, T12.7 |
 | `tantra-risk` | 1 (0005 EE+) | 0002 (Implemented) | T1.1–T1.4 ✅, T12.6 |
 | `tantra-market` | 2 (0003, 0005 EE+) | — | T3.1–T3.4 🔶, T12.2 |
 | `tantra-exec` | 1 (0003 EE+) | 0002 (Phase 1 done) | T0.3 ✅, T4.11 ✅, T12.5 |
-| `tantra-runtime` | 2 (0007, 0008) | 0004 (Implemented) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.6 ✅, T7.7 🔶, T7.8 ✅ |
+| `tantra-runtime` | 1 (0008) | 0004 (Implemented) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅ |
 | `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — all 6 tracks' tool surfaces shipped), 0010 (Implemented), 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.12 ✅, T12.8 |
 | `tantra-ui` | 5 (0003–0007 incl. EE+) | 0003, 0006 (EE+, proposed) | T10.1–T10.5, T12.9 |
 | `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
-| `tantra-data` | 5 (0015 holiday provider, 0016 EE+ option-chain snapshot, 0020–0022 fundamentals/MF/IPO) | 0003–0006, 0017–0019 (Implemented) | T5.1–T5.10 ✅, T12.3 |
+| `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006, 0017–0019, 0020–0022 (Implemented) | T5.1–T5.10 ✅, T12.3 |
 | `tantra-strategies` | 6 (0001–0006 incl. EE+) | 0001 (EE+, proposed) | T8.1–T8.5, T12.4 |
 | `tantra-examples` | 8 (0001–0008) | — | T9.3–T9.10 |
 | `tantra-ffi` | 1 (0001) | — | T9.1, T9.2 ✅ |
@@ -341,7 +341,8 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
 > added, convention pinned, aliases pruned, TDD cleanup done, all workspaces verified. T0.7
-> remains as an audit-recorded verify-on-future-work item (no 1:1 delegation sites exist).
+> closed 2026-11-14 on the audit decision — no 1:1 delegation sites exist (gap 0001 + plan
+> 0002 closed; verdict in `tantra-core/docs/design/code-quant.md`).
 >
 > T2 track complete 2026-11-13 (`tantra-ledger` plans 0003–0005 Implemented): T2.1–T2.6
 > (allocation + performance, commits `9f8ec22`/`f90f192`; runtime `eee9d21`) and T2.7–T2.11

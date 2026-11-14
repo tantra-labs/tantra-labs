@@ -11,6 +11,34 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — T0.7, T6.9, T7.7, T4.9, T4.10 closed (2026-11-14)
+
+Closed the remaining decision/upstream items of Tracks 1–7:
+- **T0.7 (core gap 0001 + plan 0002) closed** (`9af413e`) — Phase-A audit decision: no 1:1
+  delegation sites (streaming f64 indicators / f64 statistical gates vs batch-Decimal quant);
+  verdict in `tantra-core/docs/design/code-quant.md`.
+- **T6.9 architectural rules resolved** (`445a94f`) — `test_architectural_dependency_rules` was
+  red on two intentional `tantra-agent-mcp` compute edges; R1 + R4 widened
+  (`→ tantra-market-pricing`, `→ tantra-ledger-allocation`), rules updated, test green.
+- **T7.7 fully closed (gap 0007 retired)** — items 10 + 14–16 landed with real data:
+  - **Item 10 (L2 depth)**: exact-Decimal `DepthSnapshot`, `LiveQuoteStore::put_depth`,
+    parquet depth ticks (`write_depth_file`), `FeedMarketReader::with_depth_reader` +
+    real `market_depth` + `liquidity_imbalance_pct` (market `4d9e62c`, runtime `922bc5d`).
+  - **Items 14–16 (fundamentals/MF/IPO)**: `tantra-data` 0020 (`d94230c`, yfinance verified
+    live), 0021 (`17c5b94`, AMFI verified live — 14,214 schemes/NAV/returns), 0022
+    (`17c5b94`, NSE IPO verified live — 1,492 issues) → `FundamentalsProjectionReader`
+    (`a8b0c05`) + `FundsIposProjectionReader` (`9f8b04c`) → `FeedFundamentalReader`/
+    `FeedFundReader`/`FeedIpoReader` wired (`37db5b8`/`f752334`). **Fund *holdings* have no
+    verified free source** — `fund_holdings` keeps its gap citation (documented, never
+    fabricated). Gaps 0020–0022 + 0007 retired; T7 track complete.
+- **T4.10 (adapters plan 0004) Implemented** (`0b9636e`) — pooled transport (2.40×
+  throughput), bounded 429 backoff/retry + `Retry-After`, 401 token-refresh path, redacted
+  call-summary logging, 5,000-case fuzz (0 crashes); 39 new tests (173 total).
+- **T4.9 (adapters plan 0003) Implemented** (`faf0563`) — Python ↔ Rust canonical contract
+  alignment (`common/contract.py` encoders, serde-tagged `Tick` envelope, UPPERCASE
+  `OrderSide`, decimal-string wire), deterministic fixture replay; boundary per plan 0001
+  (Python = dev/research path; production routing stays Rust). 16 new tests (189 total).
+
 ## Latest Batch — runtime gap 0007 items 1–5, 11, 12 closed (3 waves, 2 subagents max)
 
 Date: 2026-11-14. Executed the recommended close order for
@@ -526,32 +554,25 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
    (`tantra-strategies` plan 0001/gap 0006) → T12.5–T12.7 execution/risk/OMS (exec 0003,
    risk 0005, ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007,
    docs 0003). See the T12 track in `docs/task-list-tracks-and-phases.md`.
-1. **T7 remaining (runtime, upstream-blocked, verified, unchanged by design)**: gap 0007 item
-   **10** (L2 depth — `tantra-market` 0006: the `DepthReader` port/`DepthSnapshot` exist in
-   `tantra-market-store`; only a data source implementing it is missing) and items **14–16**
-   (fundamentals/MF/IPO — `tantra-data` 0020–0022, vendor selection + ingestion first; real-world
-   data procurement, not code-closeable). Items 1–2's live feed is plumbing-only — wiring a real
-   broker trade feed into `TradeReader` is tracked by `tantra-market` gap 0003 / root
-   `docs/gaps/0001`. Gap 0008 unchanged as intended (documented architecture decision option 1,
-   not a stub); it closes only if option 2 (lift `BrokerAdapter` into `tantra-exec-core`) ever
-   executes. Gap 0006 is **closed** (SharedLedger in `AppState`, decision in
-   `tantra-runtime/docs/design/code-shared-ledger.md`).
-2. T6 follow-ons: `tantra-data` gaps 0020–0022 (Track 3 fundamentals/MF/IPO ingestion),
-   `tantra-market` 0006 (L2 depth). Decide the pre-existing R4 architectural-dependency test
-   (`tantra-agent-mcp` → `tantra-ledger-allocation`): drop the dep or widen R4.
-3. T3.3 remaining: capture the Fyers v3 subscribe request from the official SDK and implement
+1. **T7 complete (2026-11-14)** — gap 0007 (all 19 items) + T4.9/T4.10 + T0.7 + T6.9 closed;
+   items 10/14–16 were the last open (L2 depth, fundamentals/MF/IPO) and landed with real
+   data. Only runtime gap 0008 stays open by design (documented architecture decision option
+   1, not a stub); it closes only if option 2 (lift `BrokerAdapter` into `tantra-exec-core`)
+   ever executes. Fund *holdings* remain unsourced (documented in `tantra-data` 0021 closed
+   row; never fabricated).
+2. T3.3 remaining: capture the Fyers v3 subscribe request from the official SDK and implement
    the `upstox`/`fyers`/`angelone` feed crates mirroring `dhan`/`zerodha`; live-verify the Dhan
    (and Kite) feeds against the Dhan credentials.
-4. `tantra-data/docs/gaps/0015-nse-trading-holiday-provider.md` — wire the runtime
+3. `tantra-data/docs/gaps/0015-nse-trading-holiday-provider.md` — wire the runtime
    `NseTradingCalendar` to tantra-data's holiday ingestion once it ships.
-5. T4 follow-ons (both Proposed, not approved): `tantra-adapters` plan 0003 (cross-repo
+4. T4 follow-ons (both Proposed, not approved): `tantra-adapters` plan 0003 (cross-repo
    integration Python ↔ Rust core) and plan 0004 (production hardening: rate limits, pooling,
    token refresh).
-6. Remaining per-repo follow-ups (non-blocking, tracked in each repo's HANDOFF / `docs/gaps/`):
+5. Remaining per-repo follow-ups (non-blocking, tracked in each repo's HANDOFF / `docs/gaps/`):
    - **4B Phase 4 (local SLM)** — deferred by design; prerequisite is the Phase-3 golden fixture set accumulating via live OmniRoute runs (`TANTRA_WRITE_FIXTURES=1`), then model licensing/fine-tuning/quantization per `0005`.
    - **0001 Phase 1** (`tantra_search_tools`/`tantra_describe_tool` two-tier gateway) — the forecast engine is currently discoverable via `tools/list` only; once the gateway lands, add the `forecast` category to its category enum.
    - **`tantra-ui`** — Leptos view layer for `tantra-ui-app`, wire CLI `ask`/`scan` (gap `tantra-ui/docs/gaps/0001`), TUI `run()` event loop.
-5. Layer 3's `BasketManifest` consumption lands in `tantra-runtime-backtest` (catalog.rs/engine.rs) as a separate future slice, per the plan's scope note.
+   - Layer 3's `BasketManifest` consumption lands in `tantra-runtime-backtest` (catalog.rs/engine.rs) as a separate future slice, per the plan's scope note.
 
 ## Operating Invariants
 - Toolchain: `cargo 1.97.1` / `rustc 1.97.1`; edition 2024, `rust-version = "1.85"`.
