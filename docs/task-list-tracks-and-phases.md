@@ -222,7 +222,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T7 — Runtime REST API & Chat Tools · Phase 4 — ✅ T7.1–T7.8 DONE 2026-11-14; gap 0006 closed; gap 0007 items 1–5, 10–12, 14–16 upstream-blocked
+## T7 — Runtime REST API & Chat Tools · Phase 4 — ✅ T7.1–T7.8 DONE 2026-11-14; gap 0006 closed; gap 0007 items 1–5, 11, 12 closed; items 10, 14–16 upstream-blocked
 
 **Source**: [`tantra-runtime/docs/plans/0004`](../tantra-runtime/docs/plans/0004-block-bulk-deal-chat-tool-and-rest-endpoint.md) (Implement 2026-11-14 — plan 0004 **Implemented**) ·
 [`tantra-runtime/docs/gaps/README.md`](../tantra-runtime/docs/gaps/README.md)
@@ -235,7 +235,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **T7.4** | ✅ Profile schema: `watchlists` → `Watchlist {name, instrument_ids}` + `portfolios`/`risk_profiles`/`workspaces` + limits | `tantra-runtime-api::profile` | 4 | **Done** | 0004 (closed) |
 | **T7.5** | ✅ OpenAPI 3.1 spec completeness (all v1 routes), schema coverage, static artifact export, conformance test | `tantra-runtime-api-rest::openapi` | 4 | **Done** | 0005 (closed) |
 | **T7.6** | ✅ Chat session persistence via `SqlxSessionStore` (`933c53a`); portfolio-backed tools wired — `SharedLedger` handle in `AppState` (design decision recorded in `docs/design/code-shared-ledger.md`), `LedgerPortfolioReader` from the real order/fill flow, `StubPortfolioReader` removed | `tantra-runtime-api-rest::chat` / `::state` | 4 | **Done** | 0006 (closed) |
-| **T7.7** | 🔶 Chat market/content readers — items **6, 7, 8, 9, 13, 17, 18, 19** closed (block_deals/news/options_chain/corporate_actions/oi_buildup/trade-intent/strategy-store/tax); items 1–5, 10–12, 14–16 remain upstream-blocked | `tantra-runtime-api-rest::chat_market` / `::chat_content` | 4 | In progress | 0007 (partly closed) |
+| **T7.7** | 🔶 Chat market/content readers — items **1–5, 6, 7, 8, 9, 11, 12, 13, 17, 18, 19** closed (last-price/volume plumbing, indicators, macro_series, display-name, regime+risk-metrics, block_deals/news/options_chain/corporate_actions/institutional_flows/delivery_stats/oi_buildup/trade-intent/strategy-store/tax); items **10 (L2 depth ← `tantra-market` 0006)** and **14–16 (fundamentals/MF/IPO ← `tantra-data` 0020–0022)** remain upstream-blocked | `tantra-runtime-api-rest::chat_market` / `::chat_content` | 4 | In progress | 0007 (partly closed) |
 | **T7.8** | ✅ Broker-adapter boundary: option 1 "keep `BrokerAdapter` as sim port" recorded in gap 0008 + code-strategy.md §8.2 | `tantra-runtime-strategy::dispatch` | 4 | **Done** (documented decision; closes when option 2 lands) | 0008 |
 
 ---
@@ -329,11 +329,11 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-risk` | 1 (0005 EE+) | 0002 (Implemented) | T1.1–T1.4 ✅, T12.6 |
 | `tantra-market` | 2 (0003, 0005 EE+) | — | T3.1–T3.4 🔶, T12.2 |
 | `tantra-exec` | 1 (0003 EE+) | 0002 (Phase 1 done) | T0.3 ✅, T4.11 ✅, T12.5 |
-| `tantra-runtime` | 3 (0006 half, 0007, 0008) | 0004 (Implemented) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.6 🔶, T7.7 🔶, T7.8 ✅ |
+| `tantra-runtime` | 2 (0007, 0008) | 0004 (Implemented) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.6 ✅, T7.7 🔶, T7.8 ✅ |
 | `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — all 6 tracks' tool surfaces shipped), 0010 (Implemented), 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.12 ✅, T12.8 |
 | `tantra-ui` | 5 (0003–0007 incl. EE+) | 0003, 0006 (EE+, proposed) | T10.1–T10.5, T12.9 |
 | `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
-| `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006 (all Implemented) | T5.1–T5.10 ✅, T12.3 |
+| `tantra-data` | 5 (0015 holiday provider, 0016 EE+ option-chain snapshot, 0020–0022 fundamentals/MF/IPO) | 0003–0006, 0017–0019 (Implemented) | T5.1–T5.10 ✅, T12.3 |
 | `tantra-strategies` | 6 (0001–0006 incl. EE+) | 0001 (EE+, proposed) | T8.1–T8.5, T12.4 |
 | `tantra-examples` | 8 (0001–0008) | — | T9.3–T9.10 |
 | `tantra-ffi` | 1 (0001) | — | T9.1, T9.2 ✅ |

@@ -11,6 +11,28 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — runtime gap 0007 items 1–5, 11, 12 closed (3 waves, 2 subagents max)
+
+Date: 2026-11-14. Executed the recommended close order for
+`tantra-runtime/docs/gaps/0007-chat-market-reader-approximations-and-missing-sources.md`:
+- **Wave 1 (parallel)**: `tantra-data` bridge exports for institutional flows / delivery /
+  economic calendar (gaps 0017/0019/0018 closed — exporter + CLI + 14 tests, `pytest` 144
+  green); `tantra-market-store` 3 projection readers + `LiveQuoteStore::put_trade` +
+  `ports::TradeReader`/`TradeSnapshot` + `wire::Instrument.display_name` catalog column (59
+  store tests green on prod).
+- **Wave 2**: `tantra-runtime` wiring — `FeedMarketReader` `with_institutional_flows` /
+  `with_delivery` / `with_economic_calendar` / `with_trade_reader`, real `institutional_flows` /
+  `delivery_stats` / `macro_series`, `indicators` over `tantra-market-indicators` (12 named
+  indicator families → exact Decimal), `quote` last-print/day-volume plumbing (honest midpoint
+  fallback when unwired), display-name search, `FeedSnapshotSource` `with_risk_engine` +
+  `with_regime` (20-SMA classifier, `TANTRA_REGIME_INSTRUMENT`); 8 new runtime tests, fmt /
+  clippy / check / targeted tests green.
+- **Docs cleanup (§4)**: tantra-data gaps 0017/0018/0019 docs removed + index → Closed;
+  runtime gap 0007 rewritten (items 1–5, 11, 12 closed); gap/plan indexes + task list T7 rows +
+  tantra-data/runtime HANDOFFs updated. Items **10 (L2 depth ← `tantra-market` 0006)** and
+  **14–16 (fundamentals/MF/IPO ← `tantra-data` 0020–0022, vendor procurement)** remain
+  upstream-blocked; live trade feed remains `tantra-market` 0001/0002 (plumbing only).
+
 ## Latest Batch — T7 remaining (runtime; gap 0006 closed, 0007 items 8/9/17/18/19 closed)
 
 Date: 2026-11-14. Completed the runtime-side T7 items that were not upstream-blocked:
@@ -26,9 +48,8 @@ Date: 2026-11-14. Completed the runtime-side T7 items that were not upstream-blo
   `FileJobRegistry` as `PendingApproval` (`x-papertrading` flag); `FeedStrategyStore` in-memory
   CRUD. **Item 9 closed** — `with_corporate_actions` wired into the chat market reader
   (composable builders). Item 8 (options_chain) already closed via T3.1; 0007 doc now records
-  it. Remaining 0007 items 1–5, 10–12, 14–16 stay upstream-blocked (feed, indicator/macro,
-  display-name, regime, L2 depth `market 0006`, flows/delivery `data 0017/0019`, fundamentals
-  `data 0020–0022`).
+  it. At this point items 1–5, 10–12, 14–16 were still upstream-blocked — subsequently closed
+  in the next batch (items 1–5, 11, 12; see the Latest Batch section above).
 - **Verification**: fmt/clippy/check green; new tests `shared_ledger_tests` (6) +
   `chat_remaining_t7_tests` (3); existing orders/chat/session/trading-state binaries green.
 - **Cleanup**: gap 0006 doc removed (index → Closed); gap 0007 rewritten; task list T7 rows +
