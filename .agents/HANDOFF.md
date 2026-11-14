@@ -6,10 +6,43 @@ Level 7 (`tantra-data/0002`, filings breadth) superseded: filings ingestion + th
 `tantra-data` → Rust bridge for filings/corporate actions are both landed (T5 track,
 2026-11-13). Agent-side **plan 0006 (MCP/chat tool catalog expansion) is complete**;
 follow-on breadth tracked under agent plan 0007.
-Date: 2026-11-13 · Workspace: `tantra-labs`
+Date: 2026-11-14 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crate dependency
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
+
+## Latest Batch — T7 track (runtime REST API & chat tools)
+
+Date: 2026-11-14. Executed the T7 track from `docs/task-list-tracks-and-phases.md`
+(T7.1–T7.6, T7.8 + T7.7 items 6/7/13):
+- **T7.2 + T7.3 (plan 0004 Phases 4–5, Implemented)** — block/bulk deals real data:
+  `tantra-data` `export_block_deals` + `--dataset block-deals` CLI (`ce7c392`);
+  `tantra-market-store::BlockDealsProjectionReader` (`02fc20e`/`84d1e99`);
+  `FeedMarketReader::with_block_deals` + real `block_deals` read, `AppState.block_deals` +
+  `with_block_deals`, `GET /market-data/block-deals` route + openapi entry + tests (`b561e12`).
+  Upstream data 0005 (T5.3) was the blocker; it closed 2026-11-13, unblocking this.
+- **T7.4 (gap 0004 closed)** — `Profile.watchlists` values → `Watchlist { name,
+  instrument_ids }` (legacy bare-array deserializer preserves stored profiles), new opaque
+  `portfolios`/`risk_profiles`/`workspaces` fields + `MAX_*` limits + tests (`53e917a`,
+  stack-overflow fix `ad84499`, fmt `7a45a14`).
+- **T7.5 (gap 0005 closed)** — OpenAPI 3.1 spec completed: all 68 v1 route paths (86
+  method/path pairs) + 21 component schemas + `v2_json()` static artifact
+  (`schema/openapi.v2.json`) + `tests/openapi_conformance.rs` (`021f965`/`967fd15`/`085461b`).
+- **T7.6 session-persistence half (gap 0006 half-closed)** — `AppState.database` +
+  `with_database`; `prepare_server` now async; `SqlxSessionStore` when `TANTRA_DATABASE_URL`
+  set, in-memory fallback otherwise; `tests/session_persistence_tests.rs` (`933c53a`).
+  **Portfolio-backed tools remain** (need a ledger-repo handle in AppState).
+- **T7.7 items 7 + 13** — news bridge (`export_news` `4bb1c75`, `NewsProjectionReader`
+  `c88db45`, `FeedContentReader::with_news` + real `news_search`) and oi_buildup
+  (`FeedMarketReader::with_oi_store` + `ParquetOpenInterestStore` + `BuildupAnalyzer`) —
+  `776d145`. Gap 0007 items 6/7/13 closed; remaining items upstream-blocked.
+- **T7.8 (gap 0008)** — documented decision recorded: option 1 "keep `BrokerAdapter` as the
+  runtime's deterministic sim port"; closes when option 2 (lift into exec-core) lands.
+- **Cleanup per gap-tracking §4**: gaps 0004/0005 closed (docs removed, indexes updated),
+  plan 0004 → Implemented (doc removed); gap 0006/0007/0008 statuses updated; task list T7
+  rows updated. **Commits**: data `ce7c392`/`4bb1c75`, market `02fc20e`/`84d1e99`/`c88db45`,
+  runtime `b561e12`/`53e917a`/`ad84499`/`7a45a14`/`021f965`/`776d145`/`933c53a`/`f2c44e4`.
+  All pushed.
 
 ## Latest Batch — T6 track complete (agent & MCP ecosystem; plans 0007, 0009, 0010)
 
@@ -448,18 +481,15 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
    (`tantra-strategies` plan 0001/gap 0006) → T12.5–T12.7 execution/risk/OMS (exec 0003,
    risk 0005, ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007,
    docs 0003). See the T12 track in `docs/task-list-tracks-and-phases.md`.
-1. **T6 complete** — remaining T6 follow-ons are tracked upstream: `tantra-data` gaps
-   0020–0022 (Track 3 fundamentals/MF/IPO ingestion), `tantra-market` 0006 (L2 depth),
-   runtime gap 0007 items 17–19 (Track 5 wiring: FileJobRegistry-backed trade-intent sink +
-   paper sandbox, strategy-manifest store, matched-lot tax-report bridge), and items 13/17
-   (`oi_buildup` store wiring). Decide the pre-existing R4 architectural-dependency test
-   (`tantra-agent-mcp` → `tantra-ledger-allocation`): drop the dep or widen R4.
-2. **T7 follow-ons** — wire the runtime chat adapters to the now-closed T5.3 block-deal and
-   T5.4 news data (`FeedMarketReader::block_deals`/`FeedContentReader::news_search` still cite
-   gaps 0005/0006 — both closed upstream, so the adapters can read the stores/projections);
-   `T7.2` block/bulk-deals real data is unblocked by data 0005. `tantra-data` gaps 0017/0018
-   (institutional-flow + calendar Rust bridges) and `tantra-market` gap 0006 (L2 depth) are the
-   upstream work that turns the T6.7 stubs real.
+1. **T7 remaining (runtime)**: gap 0006 portfolio-backed tools (decide the ledger-repo
+   handle AppState should hold, replace `StubPortfolioReader`); gap 0007 remaining items
+   1–5, 8–12, 14–19 (last-price/volume feed, indicator/macro engines, L2 depth
+   `tantra-market` 0006, institutional-flow/delivery bridges `tantra-data` 0017/0019,
+   trade-intent/strategy-store/tax wiring items 17–19).
+2. T6 follow-ons: `tantra-data` gaps 0020–0022 (Track 3 fundamentals/MF/IPO ingestion),
+   `tantra-market` 0006 (L2 depth), runtime gap 0007 items 17–19 wiring. Decide the
+   pre-existing R4 architectural-dependency test (`tantra-agent-mcp` → `tantra-ledger-allocation`):
+   drop the dep or widen R4.
 3. T3.3 remaining: capture the Fyers v3 subscribe request from the official SDK and implement
    the `upstox`/`fyers`/`angelone` feed crates mirroring `dhan`/`zerodha`; live-verify the Dhan
    (and Kite) feeds against the Dhan credentials.

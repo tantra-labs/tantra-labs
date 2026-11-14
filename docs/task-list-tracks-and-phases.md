@@ -2,7 +2,7 @@
 
 Consolidated, execution-ordered task list for **all open gaps and active/proposed plans across
 every Tantra repo**, grouped by **track** (thematic workstream) and **phase** (bottoms-up
-execution order). Generated 2026-11-13 from the live per-repo indexes; the per-repo
+execution order). Generated 2026-11-14 from the live per-repo indexes; the per-repo
 `docs/{plans,gaps}/README.md` tables remain the **source of truth**.
 
 **How to use this file**
@@ -24,10 +24,10 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 1 |
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds | T5, T3 (feeds) | 2 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 2 |
-| **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 7 |
+| **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 5 |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 14 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **44** |
+| **Total** | | | **42** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -222,21 +222,21 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T7 — Runtime REST API & Chat Tools · Phase 4
+## T7 — Runtime REST API & Chat Tools · Phase 4 — ✅ T7.1–T7.6, T7.8 DONE 2026-11-14; T7.7 items 6/7/13; rest upstream-blocked
 
-**Source**: [`tantra-runtime/docs/plans/0004`](../tantra-runtime/docs/plans/0004-block-bulk-deal-chat-tool-and-rest-endpoint.md) ·
+**Source**: [`tantra-runtime/docs/plans/0004`](../tantra-runtime/docs/plans/0004-block-bulk-deal-chat-tool-and-rest-endpoint.md) (Implement 2026-11-14 — plan 0004 **Implemented**) ·
 [`tantra-runtime/docs/gaps/README.md`](../tantra-runtime/docs/gaps/README.md)
 
 | Task | Work | Repo / Scope | Phase | Status | Gap / Depends |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T7.1** | Plan 0004 Ph 1–3: `block_deals` chat tool + wiring with honest `unavailable` stub — **done** | `tantra-runtime-api-rest` | 4 | In progress | — |
-| **T7.2** | Plan 0004 Ph 4: wire block/bulk deals to real data | `tantra-runtime-api-rest` | 4 | Blocked | T5.3 (data 0005) |
-| **T7.3** | Plan 0004 Ph 5 (optional): direct block/bulk-deal REST endpoint | `tantra-runtime-api-rest` | 4 | Open (optional) | T5.3 |
-| **T7.4** | Profile schema: room for watchlists, portfolios, risk profiles, workspaces | `tantra-runtime-api::profile` | 4 | Open | 0004 |
-| **T7.5** | OpenAPI 3.1 spec completeness, schema coverage, static artifact export | `tantra-runtime-api-rest::openapi` | 4 | Open | 0005 |
-| **T7.6** | Chat agent session persistence + portfolio-backed tools (drop in-memory/store stubs) | `tantra-runtime-api-rest::chat` / `::state` | 4 | Open | 0006 |
-| **T7.7** | Chat market/content readers: real last-price, volume, indicator/macro/news/filings/options-chain/corporate-actions sources | `tantra-runtime-api-rest::chat_market` / `::chat_content` | 4 | Open | 0007 (partly upstream T3.x/T5.x) |
-| **T7.8** | Broker-adapter boundary: keep-or-lift `BrokerAdapter` sync sim port vs `BrokerExecutor` async wire port | `tantra-runtime-strategy::dispatch` | 4 | Open (documented decision) | 0008 |
+| **T7.1** | ✅ Plan 0004 Ph 1–3: `block_deals` chat tool + wiring with honest `unavailable` stub | `tantra-runtime-api-rest` | 4 | **Done** | — |
+| **T7.2** | ✅ Plan 0004 Ph 4: block/bulk deals wired to real data — `tantra-data` `export_block_deals` + CLI, `tantra-market-store::BlockDealsProjectionReader`, `FeedMarketReader::with_block_deals` real read | `tantra-runtime-api-rest` + `tantra-market-store` + `tantra-data` | 4 | **Done** | T5.3 (data 0005) — unblocked 2026-11-14 |
+| **T7.3** | ✅ Plan 0004 Ph 5: direct `GET /market-data/block-deals` REST endpoint | `tantra-runtime-api-rest` | 4 | **Done** | T5.3 |
+| **T7.4** | ✅ Profile schema: `watchlists` → `Watchlist {name, instrument_ids}` + `portfolios`/`risk_profiles`/`workspaces` + limits | `tantra-runtime-api::profile` | 4 | **Done** | 0004 (closed) |
+| **T7.5** | ✅ OpenAPI 3.1 spec completeness (all v1 routes), schema coverage, static artifact export, conformance test | `tantra-runtime-api-rest::openapi` | 4 | **Done** | 0005 (closed) |
+| **T7.6** | 🔶 Chat session persistence via `SqlxSessionStore` when `TANTRA_DATABASE_URL` set (**done**); portfolio-backed tools remain (need ledger-repo handle in AppState) | `tantra-runtime-api-rest::chat` / `::state` | 4 | In progress | 0006 (half-closed) |
+| **T7.7** | 🔶 Chat market/content readers — items **6 (block_deals), 7 (news), 13 (oi_buildup)** closed; items 1–5, 8–12, 14–19 remain upstream-blocked | `tantra-runtime-api-rest::chat_market` / `::chat_content` | 4 | In progress | 0007 (partly closed) |
+| **T7.8** | ✅ Broker-adapter boundary: option 1 "keep `BrokerAdapter` as sim port" recorded in gap 0008 + code-strategy.md §8.2 | `tantra-runtime-strategy::dispatch` | 4 | **Done** (documented decision; closes when option 2 lands) | 0008 |
 
 ---
 
@@ -329,7 +329,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-risk` | 1 (0005 EE+) | 0002 (Implemented) | T1.1–T1.4 ✅, T12.6 |
 | `tantra-market` | 2 (0003, 0005 EE+) | — | T3.1–T3.4 🔶, T12.2 |
 | `tantra-exec` | 1 (0003 EE+) | 0002 (Phase 1 done) | T0.3 ✅, T4.11 ✅, T12.5 |
-| `tantra-runtime` | 5 (0004–0008) | 0004 | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 |
+| `tantra-runtime` | 3 (0006 half, 0007, 0008) | 0004 (Implemented) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.6 🔶, T7.7 🔶, T7.8 ✅ |
 | `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — all 6 tracks' tool surfaces shipped), 0010 (Implemented), 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.12 ✅, T12.8 |
 | `tantra-ui` | 5 (0003–0007 incl. EE+) | 0003, 0006 (EE+, proposed) | T10.1–T10.5, T12.9 |
 | `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
@@ -391,6 +391,14 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > (FileJobRegistry approval queue, strategy store, matched-lot bridge) is tracked by those
 > items. **T6 track complete.** Agent gaps open 5 → 0; phase-4 open 20 → 10 → 9 → 8 → 7;
 > total 56 → 47 → 46 → 45 → 44.
+>
+> T7 track 2026-11-14 (runtime REST API & chat tools): T7.2/T7.3 block/bulk deals real data +
+> `GET /market-data/block-deals` (plan 0004 Ph 4–5, Implemented); T7.4 profile schema (gap
+> 0004 closed); T7.5 OpenAPI completeness + static artifact + conformance test (gap 0005
+> closed); T7.6 chat session persistence via `SqlxSessionStore` (gap 0006 half-closed;
+> portfolio tools remain); T7.7 items 6/7/13 closed (block_deals/news/oi_buildup); T7.8
+> broker-boundary decision documented (gap 0008). `tantra-runtime` open gaps 5 → 3; phase-4
+> open 7 → 5; total 44 → 42.
 
 ## Related
 
