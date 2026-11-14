@@ -41,8 +41,6 @@ Date: 2026-11-13. Research + documentation batch (no code changes):
   T12.1–T12.10 + per-repo summary refresh).
 - **No build needed** (docs-only batch; no Rust/Python code touched).
 
-## Immediate Next Step (EE+)
-
 ## Latest Batch — T5 track complete (data lakehouse & ingestion)
 
 Date: 2026-11-13. Executed the full T5 track from `docs/task-list-tracks-and-phases.md` in
