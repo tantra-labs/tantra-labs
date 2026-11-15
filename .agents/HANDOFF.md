@@ -856,6 +856,7 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
   - `tantra-ui`: **PLAN-0001 Stage 4 CLI half landed** — `tantra jobs run/tick/logs` on the runtime pool + per-run journals (`tantra jobs add ... -> tick -> journal verified` acceptance suite, 11 e2e tests) + agent tool-call journals + approvals gating (`0b9241d`); clippy-driven fixups (breach-first refusal for PendingApproval jobs) follow-up. Open: ui-core trade rows (`tantra-ui/docs/gaps/0002`).
 
 ## Immediate Next Step
+- **Trade signal generator (root plan 0008, proposed 2026-11-15)** — docs only; build order core 0005 (planner + manager) ∥ market gap 0007 (ADR%/Chandelier) → ffi 0002 → strategies 0003 → runtime 0006 → agent 0014. `strategy_suggest` remains a stub until agent 0014.
 - **Screener taxonomy / QVM / group alerts (root plan 0007, proposed 2026-11-15)** — docs only so far; build order P1 `tantra-core` 0004 → P2–P4 `tantra-data` 0007/0008 → P5 strategies 0002 → P6 runtime 0005 → P7 agent 0013 → P8 examples 0003. Research: `docs/research/trendlyne-screener-alerts-mcp.md`.
 0. **T9.8 (ex 0006 kernel-domain root, in progress)** — continue the Decimal-canonical wheel
    slices bottom-up: `bar` (Decimal) → `order_state`/`execution` → `indicators` (87 files) →
