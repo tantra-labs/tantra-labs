@@ -11,62 +11,42 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — ex 0006: execution + indicators + portfolio_strategy base layers shipped
+## Latest Batch — ex 0006 CLOSED: mirror deleted, everything retargeted to the wheel
 
-Date: 2026-11-15. Continued the ex 0006 kernel-domain root (8 subagent waves, each
-verified before the next; local commits only, not pushed). `tantra-ffi` only. Earlier
-this batch (bar/tick/order/order_state, `89b3cbe`/`b5d9627`) is recorded in git history.
-- **`execution`** (`4ae4e72`): Decimal-canonical `tantra.execution` — the ADR 0019
-  `ExecutionPort` contract (7 event types, `OrderRejection`, `order_event` FSM
-  projection, `events_from_native` via `to_decimal` + new `Money.from_minor`,
-  `adapt_port`/`AdaptedPort`/`LegacyPortEvents`, `BaseExecutionPort` legacy shim,
-  runtime-checkable protocols). 21 new tests.
-- **`indicators`** (87 kernel files; `fb009d4`+`c8ee1fb`+`784ac1d`+`90da245`): flat
-  `tantra.indicators` module → Decimal-canonical registry **package** (legacy
-  `SMA`/`EMA`/`RSI` aliases preserved), all 8 families — **74 registered kinds**,
-  parity-tested against the kernel `_REGISTRY`; `_atr.py` stand-in superseded by the
-  registered `volatility.atr.Atr`.
-- **kernel strategy base layer** (`1230a1e`): `tantra.base` (ADR-008 `Strategy` +
-  `Parameter` + the 4 StockSharp primitives, `to_spec` deferred pending the manifest
-  surface), `tantra.context` (`StrategyContext` ABC + `LedgerContext`, Decimal
-  quantities/cash), `sizing.whole_shares`, `entities.OrderIntent` re-export. 38 tests.
-- **declarative + portfolio_strategy** (`5a20582`): `tantra.declarative`
-  (`DeclarativeStrategy` OCO/Jesse facade + `TargetWeightStrategy` rebalancer, Decimal)
-  + `tantra.portfolio_strategy` package (universe/selection/weighting/schedule/scoring/
-  stats/view/strategy/factory, Decimal; `NamedUniverse` lazy-imports
-  `tantra_examples.universe_lists` and raises a gap-0004-cited `NotImplementedError`
-  when unavailable). 13 tests.
-- **`wire`** (`26e9dd2`): `tantra.wire` — faithful pydantic port of the ADR 006 wire
-  contract (base/screener/wire: UnixNanos, f64 OHLCV models, Order/OrderIntent/Trade/
-  Position, 11 event variants + discriminated `Event`, `Message` envelope with the
-  compiled-`SCHEMA_VERSION` check, strict `loads`/`loads_many`, `MODELS`/`ENUMS`).
-  Wire = the f64 serde contract boundary, ported verbatim (not Decimal-converted);
-  `Money`/`OrderIntent`/`InstrumentId` from_domain/to_domain bridge the Decimal domain
-  to the wire f64/minor-unit contract. pydantic added as `wire`/`test` optional deps
-  (installed in the ffi venv); `tantra.wire` deliberately NOT eager-imported by
-  `tantra/__init__.py` so `import tantra` needs no pydantic. 34 tests.
-- **`coverage` + `store`** (`c83c295`): `tantra.coverage` (CoverageStatus/DateInterval/
-  CoverageRecord + interval algebra, verbatim) + `tantra.store` (`find_data_root`,
-  `ParquetBarStore` — **Decimal128(38,10) parquet schema** per the zero-floats policy and
-  tantra-data lakehouse convention; read path tolerates legacy float64 files; atomic
-  ledger + `.tmp` writes; `validate_bar` ported with Decimal `.is_finite()`). 18 tests.
-- **`backtest` sims** (`271b9df` + `83c53c4`): `tantra.backtest` — `impact`
-  (`MarketImpact`, square-root law, Decimal), `opening_auction` (`OpeningAuction`,
-  spread-bps buffer + delay-bars), `simulated` (`NextOpenExecution` next-open simulator
-  — the pure-Python reference, Decimal cash/positions, settlement receivables, funding
-  cuts, long-only caps, `group_sessions`/`session_date`/`is_intraday`/
-  `make_simulator`), `l2_sim` (`TopOfBook` + `L2Execution` L2 book port, ADR 0030), and
-  `bar_close_fills` (`BarCloseFills` conformance simulator). All native-backend
-  machinery stripped (`resolve_backend` → "python"; `"native"` raises, gap-0006-cited);
-  the India cost/settlement packs (`markets.india`, gap 0004) raise gap-0004-cited
-  `NotImplementedError` with explicit-`settlement_days` required for daily fills. 36
-  backtest tests.
-- Wheel suite 218 → **357 collected, 355 green** (2 pre-existing stale-wheel
-  `test_risk.py` failures untouched).
-- **Remaining ex 0006** (per HANDOFF immediate next step): the closure step — re-point
-  every `_kernel.*` import → wheel and delete the 166-file mirror (dropping the
-  `[[tool.mypy.overrides]]` block). All wheel slices are now shipped. The other gaps
-  (0002/0003/0004/0007/0008) remain blocked on upstream wheel surfaces as documented.
+Date: 2026-11-15. The kernel-domain root is **closed**. `tantra-examples` closure
+(7 subagent waves; local commits only, not pushed):
+- The Decimal-canonical `tantra` wheel kernel-domain layer shipped in the earlier
+  batches (money/position/trade/instrument/entities, bar, tick, order, order_state,
+  execution, indicators 74 kinds, base/context, declarative, portfolio_strategy,
+  wire, store, backtest sims — see git history).
+- **Retarget + Decimal conversion of the entire remaining harness** to the wheel:
+  `markets/india` (costs/settlement), `portfolio`, `risk`, `evaluator`, then
+  calendar/config/log/option/greeks/ports/manifest/loader/screener/cli/data, then
+  the hub (`runner`, `testing`, `session`, `service`), then the `adapters`+`ai`
+  subpackages, then the outer SDK (`backtest.py` engine, `synthetic`, `bars`,
+  `amfi`, `bhavcopy`, `sip*`, `base`, `decision_guard`, `catalog`,
+  `replay_report`, `ewr/simulation`, `universe_lists`), then **examples/ + tests/
+  (78 files)**. Wheel `Money` (Decimal major) replaced kernel minor-int Money; the
+  `run_portfolio_backtest` output keeps its integer-minor public contract via a
+  boundary converter.
+- **Deleted** the ex-0006-owned mirror: 17 root modules (`bar/base/context/
+  coverage/declarative/entities/execution/instrument/money/order/order_state/
+  position/sizing/store/tick/trade/native`) + the `indicators/portfolio_strategy/
+  wire/backtest` subpackages + `__pycache__` (−12,170 lines, 123 files). Rewrote
+  the `_kernel/__init__.py` facade to re-export the wheel + kept `_kernel.portfolio`;
+  dropped the `[[tool.mypy.overrides]]` block. Kept modules (risk/runner/testing/
+  adapters) gained a local `_native_attr` probe (compiled `SCHEMA_VERSION`/
+  `API_VERSION`; `RuntimeError` for the absent compiled risk/trading-state classes).
+- **Suite**: `pytest tests/unit` 838 passed, 72 failed (pre-existing float-rooted
+  failures in the KEPT harness/metrics — e.g. `metrics.fills_equity_curve` — out of
+  scope), 3 environmental errors (optional `httpx`), 50 skipped. No new failures.
+- Gap doc 0006 removed, indexes + cascade map → Closed; remaining `_kernel/` files
+  are the other gaps' mirrors (0002 `ai/`, 0003 `data/`+`screener/`, 0004
+  `markets/india/`+`cli/`, 0007 `adapters/`, 0008 `session.py`) + the shared
+  harness — all now built on the wheel; **the cascade root is unblocked**.
+- The other gaps (0002/0003/0004/0007/0008) remain open — each still blocked on its
+  own upstream surface (`tantra.ai`, `tantra_data`, `tantra.display`/universes/
+  india pack, `tantra.adapters` framework, runtime session orchestrator).
 
 ## Latest Batch — T9.3 + T9.7 closed; T9.8 (kernel-domain root) started
 
