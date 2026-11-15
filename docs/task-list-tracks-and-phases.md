@@ -26,8 +26,8 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 0 |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 5 |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 6 |
-| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 2 |
-| **Total** | | | **28** |
+| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 0 |
+| **Total** | | | **26** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -289,14 +289,14 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T11 — Documentation · Phase 6
+## T11 — Documentation · Phase 6 — ✅ COMPLETE 2026-11-15 (T11.1, T11.2)
 
-**Source**: [`tantra-docs/docs/plans/README.md`](../tantra-docs/docs/plans/README.md)
+**Source**: [`tantra-docs/docs/plans/README.md`](../tantra-docs/docs/plans/README.md) (plans 0001 + 0003 Implemented)
 
 | Task | Work | Repo / Scope | Phase | Status | Plan |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T11.1** | MCP quantitative gateway & 15-engine reference (`docs/mcp/`) | `tantra-docs` | 6 | Ready | docs 0001 |
-| **T11.2** | EE+ strategy user guide (level map, signals, SL/TSL, positioning, studio) | `tantra-docs` | 6 | Proposed | docs 0003 |
+| **T11.1** | ✅ MCP quantitative gateway & 15-engine reference — `docs/ai/mcp_gateway.md` overhauled into the complete 22-tool gateway reference (stdio + SSE/HTTP transports, Two-Tier Gateway Discovery `tantra_search_tools`/`tantra_describe_tool`/`tantra_read_result`, `_jq` filter, corrected: no `tantra_call_tool`); 16 toolset pages (`docs/ai/toolsets/` — all 15 engines: market/technicals/scanner/analytics/validation/allocation/risk/regimes/volatility/ledger/calc/research/backtest/forecast/derivatives); 4 client guides (`docs/ai/clients/{claude_code,cursor,vs_code,gemini}.md`); `docs/ai/result_protocol.md` (`tantra/result/v1` envelope + `DisplayBlock`); `docs/ai/personas.md` (9 personas); `docs/getting-started/mcp.md` quickstart; `docs/llms.txt`; nav + indexes wired; `mkdocs build --strict` green | `tantra-docs` | 6 | **Done** | docs 0001 (Implemented) |
+| **T11.2** | ✅ EE+ strategy user guide — `docs/strategies/elephant-edge/` (index + overview/level-map/signals/stops-positioning/studio) grounded in the research basis + shipped SDK (`Level`/`LevelMap`/`OptionsSnapshot`/`StrategySignal`/`StopProtection`/`StopUpdate`, gap 0006), with honest status banners: strategy engine / Studio / `level_map`+`oi_walls` chat tools documented as **planned** citing strategies 0001 / ui 0006 / agent 0011; snippets use only shipped tested SDK models | `tantra-docs` | 6 | **Done** | docs 0003 (Implemented) |
 
 ---
 
@@ -337,7 +337,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅) |
 | `tantra-examples` | 6 (0002–0004, 0006–0008 — 0001/0005 closed) | — | T9.1 ✅, T9.2 ✅, T9.3 ✅, T9.7 ✅, T9.8 🔶, T9.4/5/6/9/10 (blocked) |
 | `tantra-ffi` | **0** | — | T9.1 ✅, T9.2 ✅ |
-| `tantra-docs` | — | 0001, 0003 (EE+, proposed) | T11.1, T11.2 |
+| `tantra-docs` | — | 0001, 0003 (both Implemented) | T11.1 ✅, T11.2 ✅ |
 
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
 > added, convention pinned, aliases pruned, TDD cleanup done, all workspaces verified. T0.7
