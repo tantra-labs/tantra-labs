@@ -54,6 +54,7 @@ Per-repo documents:
 | P4 | PyO3 `tantra.trade_plan` bindings; reconcile `declarative.py` OCO and `TRAILING_STOP` | [`tantra-ffi` plan 0002](../../tantra-ffi/docs/plans/0002-trade-planner-bindings.md) |
 | P5 | SDK `ctx.equity()`, `Strategy.plan_trade(signal, preset, **overrides)`, `on_trade_action`, `partial_exit`, preset catalog | [`tantra-strategies` plan 0003](../../tantra-strategies/docs/plans/0003-trade-plan-sdk.md) |
 | P6 | Backtest via TradeManager (intrabar, trailing, partials, breakeven, time stops); live synthetic brackets; `POST /v1/trade-plan`; R-multiple journal | [`tantra-runtime` plan 0006](../../tantra-runtime/docs/plans/0006-trade-manager-backtest-and-synthetic-brackets.md) |
+| P3b | Chart pattern analyzer: flag/triangle/rectangle/Darvas/double/H&S/wedge/cup-and-handle/VCP plus multi-bar candlesticks, emitting breakout, invalidation and measured-target geometry; per-pattern edge stats | [`tantra-market` plan 0002](../../tantra-market/docs/plans/0002-chart-pattern-analyzer.md) (+ `ChartPattern` in core plan 0005 §2a) |
 | P7 | Real `strategy_suggest` over a `TradePlanPort`; MCP `trade_plan` and `trade_plan_presets` | [`tantra-agent` plan 0014](../../tantra-agent/docs/plans/0014-real-trade-suggestion-and-trade-plan-mcp.md) |
 
 Plans and gaps this work unblocks or partly closes:
@@ -82,3 +83,17 @@ Plans and gaps this work unblocks or partly closes:
    - LLM-proposed plans remain untrusted and always pass `RiskEngine`.
 7. **Follow-up: `tantra-examples`.** Preset-driven examples (screen → plan → backtest), filed when P5 lands.
    - These can chain off the root [plan 0007](0007-screener-taxonomy-and-alerts.md) screener.
+
+## 3. Pattern-driven trade plans
+
+A chart pattern supplies the three prices a plan needs from the price structure itself:
+- **Entry:** the breakout level (`EntryRule::PatternBreakout`).
+- **SL:** the invalidation point (`StopRule::PatternInvalidation`). This is usually a better stop than an ATR multiple, because it sits where the setup is disproved.
+- **Target:** the measured move (`TargetLeg::MeasuredMove`). This also lets the planner reject setups below `min_reward_risk` before entry.
+
+Preset `pattern_breakout`: ½ booked at the measured move, with the runner on a Chandelier trail.
+
+Guardrails:
+- Patterns are anchored at their **confirmation** bar, so the analyzer does not repaint and backtests see no look-ahead.
+- Pattern quality may scale risk only after `tantra-market` plan 0002 Phase D publishes per-pattern edge statistics.
+- The detectors also feed the plan 0007 Candlestick/Pattern screen presets and an agent `chart_patterns` tool.
