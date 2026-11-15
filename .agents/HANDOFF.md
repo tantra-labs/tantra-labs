@@ -36,12 +36,20 @@ this batch (bar/tick/order/order_state, `89b3cbe`/`b5d9627`) is recorded in git 
   stats/view/strategy/factory, Decimal; `NamedUniverse` lazy-imports
   `tantra_examples.universe_lists` and raises a gap-0004-cited `NotImplementedError`
   when unavailable). 13 tests.
-- Wheel suite 218 → **269 collected, 267 green** (2 pre-existing stale-wheel
+- **`wire`** (`26e9dd2`): `tantra.wire` — faithful pydantic port of the ADR 006 wire
+  contract (base/screener/wire: UnixNanos, f64 OHLCV models, Order/OrderIntent/Trade/
+  Position, 11 event variants + discriminated `Event`, `Message` envelope with the
+  compiled-`SCHEMA_VERSION` check, strict `loads`/`loads_many`, `MODELS`/`ENUMS`).
+  Wire = the f64 serde contract boundary, ported verbatim (not Decimal-converted);
+  `Money`/`OrderIntent`/`InstrumentId` from_domain/to_domain bridge the Decimal domain
+  to the wire f64/minor-unit contract. pydantic added as `wire`/`test` optional deps
+  (installed in the ffi venv); `tantra.wire` deliberately NOT eager-imported by
+  `tantra/__init__.py` so `import tantra` needs no pydantic. 34 tests.
+- Wheel suite 218 → **303 collected, 301 green** (2 pre-existing stale-wheel
   `test_risk.py` failures untouched).
-- **Remaining ex 0006 slices** (per HANDOFF immediate next step): `wire`, then
-  `store`/`backtest` sims, then re-point `_kernel` → wheel and delete the mirror. The
-  other gaps (0002/0003/0004/0007/0008) remain blocked on upstream wheel surfaces as
-  documented.
+- **Remaining ex 0006 slices** (per HANDOFF immediate next step): `store`/`backtest`
+  sims, then re-point `_kernel` → wheel and delete the mirror. The other gaps
+  (0002/0003/0004/0007/0008) remain blocked on upstream wheel surfaces as documented.
 
 ## Latest Batch — T9.3 + T9.7 closed; T9.8 (kernel-domain root) started
 
