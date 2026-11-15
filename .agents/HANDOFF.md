@@ -11,6 +11,29 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — T9.8 continued: Decimal bar + tick + order + order_state wheel slices
+
+Date: 2026-11-15. Continued the ex 0006 kernel-domain root (2 subagent waves, each
+verified before the next). Local commits only (not pushed):
+- **Wave 1** (`tantra-ffi` `89b3cbe`): wheel `tantra.bar.Bar` (Decimal OHLCV/volume,
+  validates prices >= 0 and high >= low) + `tantra.tick` (`AggressorSide`/`QuoteTick`/
+  `TradeTick` with exact `mid_price`) — mirrors of the float `_kernel` bar/tick public
+  API. 16 new tests.
+- **Wave 2** (`tantra-ffi` `b5d9627`): wheel `tantra.order` (`OrderSide`/`OrderType`/
+  `TimeInForce`/`OrderStatus`/`validate_intent`/`OrderIntent` with Decimal quantity/
+  price/trail fields + trailing-stop factories) + `tantra.order_state` (the `OrderEvent`/
+  `OrderState` lifecycle FSM, exact Decimal `QTY_EPS`, mirror-parity `can_transition`
+  table incl. illegal-transition raises and terminal no-ops). 18 new tests. Orchestrator
+  spot-fixed a `can_transition`-parity divergence found on review (illegal events no
+  longer silently no-op) and added edge-case regression tests.
+- Both slices wired into the `tantra` top-level package (compiled top-level `Bar`/
+  `OrderSide`/`OrderStatus` untouched — same documented split as `money.Currency`).
+  Wheel suite: 127 collected, 125 green (2 pre-existing stale-wheel `test_risk.py`
+  failures untouched). Gap doc 0006 + cascade map updated.
+- **Remaining ex 0006 slices** (per HANDOFF immediate next step): `execution`, then
+  `indicators` (87 files), then `portfolio_strategy`/`wire`/`store`/`backtest` sims,
+  then re-point `_kernel` → wheel and delete the mirror.
+
 ## Latest Batch — T9.3 + T9.7 closed; T9.8 (kernel-domain root) started
 
 Date: 2026-11-15. Executed "all 8 (T9.3–T9.10), starting at the root", per the user's scope
