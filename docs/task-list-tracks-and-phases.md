@@ -25,9 +25,9 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds | T5, T3 (feeds) | 2 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 2 |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 5 |
-| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 9 |
+| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 8 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **37** |
+| **Total** | | | **36** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -261,7 +261,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 | Task | Work | Repo / Scope | Phase | Status | Gap |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T9.1** | Implement `tantra` CLI `backtest`; make `serve`/`stub` real subcommands | `tantra-ffi` (`python/tantra/cli.py`) | 5 | Open | ffi 0001 |
+| **T9.1** | ✅ Real `tantra` CLI `backtest` — bars-JSON fixture → `tantra.strategy.run(...)`, optional `--strategy MODULE:CLASS` + built-in SMA-cross default, `--algo-id`; `serve`/`stub` placeholders **removed** (no serving surface exists; gap-tracking §4); 7 CLI tests | `tantra-ffi` (`python/tantra/cli.py`) | 5 | **Done** | ffi 0001 (closed) |
 | **T9.2** | ✅ Remove unused `tantra-market-{finance,feed,store}` workspace deps | `tantra-ffi` | 0 | **Done** | ffi 0002 (closed, part of T0.5) |
 | **T9.3** | Wheel `algo_analytics` surface — mirror, delete once runtime enhancer / ffi ships it | `tantra-examples` → `tantra-runtime` / `tantra-ffi` | 5 | Open | ex 0001 |
 | **T9.4** | Wheel AI-provider surface — mirror, delete once `tantra-agent` / ffi ships it | `tantra-examples` → `tantra-agent` / `tantra-ffi` | 5 | Open | ex 0002 |
@@ -309,7 +309,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **T12.1** | Kernel domain types — level map, options positioning, gamma, stop protection, signals (zero-I/O, Decimal) | `tantra-core` | 5 | Proposed | core plan 0003 / gap 0002 |
 | **T12.2** | Elephant-zone / OI-wall / gamma / Order-Block streaming indicators | `tantra-market` | 5 | Proposed | market 0005 |
 | **T12.3** | Intraday option-chain snapshot lakehouse + point-in-time GEX series | `tantra-data` | 5 | Proposed | data 0016 |
-| **T12.4** | EE+ strategy: level-map fusion, confluence scoring, signals, SL/TSL, positioning (+ SDK stop-protection/options context) | `tantra-strategies` | 5 | Proposed | strategies plan 0001 / gap 0006 |
+| **T12.4** | EE+ strategy: level-map fusion, confluence scoring, signals, SL/TSL, positioning — **SDK prerequisite shipped (gap 0006)**: `stop_loss`/`trail_stop`/`on_stop_update` + `level_map()`/`options_snapshot()` context surface; the strategy itself remains (needs core 0003 / market 0005 / data 0016) | `tantra-strategies` | 5 | Proposed | strategies plan 0001 (gap 0006 closed 2026-11-14) |
 | **T12.5** | Bracket-order (SL/target/TSL) execution contract + trailing runner | `tantra-exec` | 5 | Proposed | exec 0003 |
 | **T12.6** | Stop-protection risk validation (mandatory SL, SL band, no-widening TSL) | `tantra-risk` | 5 | Proposed | risk 0005 |
 | **T12.7** | Bracket-order OMS lifecycle (SL/TSL child orders, stop-trigger close) | `tantra-ledger` | 5 | Proposed | ledger 0012 |
@@ -334,9 +334,9 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-ui` | 5 (0003–0007 incl. EE+) | 0003, 0006 (EE+, proposed) | T10.1–T10.5, T12.9 |
 | `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006, 0017–0019, 0020–0022 (Implemented) | T5.1–T5.10 ✅, T12.3 |
-| `tantra-strategies` | 1 (0006 EE+) | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 |
+| `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅) |
 | `tantra-examples` | 8 (0001–0008) | — | T9.3–T9.10 |
-| `tantra-ffi` | 1 (0001) | — | T9.1, T9.2 ✅ |
+| `tantra-ffi` | **0** | — | T9.1 ✅, T9.2 ✅ |
 | `tantra-docs` | — | 0001, 0003 (EE+, proposed) | T11.1, T11.2 |
 
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
@@ -411,6 +411,21 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > tests (164 total), ruff check + format clean, validate_catalog 10/10 + validate_manifests
 > 3/3. `tantra-strategies` open gaps 6 → 1 (0006 EE+ SDK surface); phase-5 open 14 → 9;
 > total 42 → 37.
+>
+> T9/T12-SDK batch 2026-11-14: **T9.1 closed** in `tantra-ffi` (`a9204a1` — real `backtest`
+> CLI delegating to `tantra.strategy.run` with bars-JSON + optional `--strategy`/built-in
+> SMA-cross default; `serve`/`stub` placeholders removed per gap-tracking §4; 7 CLI tests,
+> 10 green with test_strategy). **`tantra-strategies` gap 0006 closed** (`53bd2e0`, plan 0001
+> §7 — the EE+ SDK prerequisite): `sdk/stop_protection.py` (`StopProtection`/`TrailMode`/
+> `StopUpdate`) + `sdk/levels.py` (`Level`/`LevelMap`/`StrategySignal`/`PositionIntent`/
+> `OptionLeg`/`OptionsSnapshot`), `Strategy.stop_loss`/`trail_stop`/`on_stop_update`,
+> `StrategyContext.level_map()`/`options_snapshot()` with seedable `SimulatedContext` stores
+> and honest `LevelsUnavailable`/`OptionsUnavailable` degradation citing market 0005 /
+> data 0016; 17 new tests (181 total), ruff clean, mypy at baseline. T9.3–T9.10
+> (`tantra-examples` gaps 0001–0008) remain **open — blocked**: each "delete mirror once X
+> ships" depends on an upstream wheel surface (`tantra-runtime` enhancer, `tantra-agent`,
+> `tantra-data`, `tantra-exec` freeze slicer, `tantra-adapters`, `tantra-ffi` session
+> orchestrator) that has not shipped. Phase-5 open 9 → 8; total 37 → 36.
 
 ## Related
 

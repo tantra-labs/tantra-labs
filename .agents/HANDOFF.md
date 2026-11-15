@@ -11,6 +11,37 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — T9.1 (ffi CLI) + T12.4 SDK prerequisite (strategies gap 0006)
+
+Date: 2026-11-14. 2 subagents in one wave (self-contained prompts, independent repos):
+- **T9.1 / ffi gap 0001 closed** (`tantra-ffi` `a9204a1`) — `python/tantra/cli.py` `backtest`
+  subcommand is now real: loads a bars-JSON fixture, builds `_tantra.Bar`s, delegates to
+  `tantra.strategy.run(...)`, prints the `BacktestResult.summary()`; optional
+  `--strategy MODULE:CLASS` (importlib + `Strategy` subclass guard) with a built-in SMA 3/8
+  cross default (`_SmaCrossStrategy`, Decimal-safe, limit orders at close); `--algo-id`.
+  `serve`/`stub` placeholder subcommands **removed** per gap-tracking §4 (no serving surface
+  exists in the repo). 7 new CLI tests (`python/tests/test_cli.py`); gap doc deleted, index →
+  Closed, HANDOFF updated. `tantra-ffi` open gaps 1 → 0.
+- **T12.4 first SDK prerequisite / strategies gap 0006 closed** (`tantra-strategies` `53bd2e0`,
+  plan 0001 §7 shipped) — new `sdk/stop_protection.py` (`StopProtection`/`TrailMode`/`StopUpdate`)
+  + `sdk/levels.py` (`Level`/`LevelMap`/`StrategySignal`/`PositionIntent`/`OptionLeg`/
+  `OptionsSnapshot`, frozen Decimal dataclasses mirroring `tantra-core` plan 0003 1:1);
+  `Strategy.stop_loss`/`trail_stop`/`_emit_stop_update` + `on_stop_update` hook;
+  `StrategyContext.level_map()`/`options_snapshot()` extended onto the protocol with seedable
+  `SimulatedContext` stores and honest `LevelsUnavailable`/`OptionsUnavailable` degradation on
+  unseeded/live contexts citing market 0005 / data 0016. 17 new tests (181 total) incl.
+  `tests/golden/stop_trail_golden.json` golden vectors + the EE+-style seeded-sim SL/TSL
+  integration test; ruff + format clean, mypy at baseline (2 minimal fakes in
+  `tests/sdk/test_live_context.py`/`test_tick_dispatch.py` extended with honest raisers to stay
+  protocol-conformant). Gap doc deleted, index → Closed (none open), plan 0001 status/§1/§7
+  updated. `tantra-strategies` open gaps 1 → 0.
+- **T9.3–T9.10 (`tantra-examples` gaps 0001–0008) stay open — blocked**: each is "delete the
+  mirror once the upstream ships its wheel surface" (`tantra-runtime` enhancer, `tantra-agent`,
+  `tantra-data`, `tantra-exec` freeze slicer, `tantra-adapters`, `tantra-ffi` session
+  orchestrator) and none of those surfaces shipped this batch.
+- Task list + per-repo summary updated: phase-5 open 9 → 8, total 37 → 36, `tantra-ffi` open
+  gaps 1 → 0, `tantra-strategies` open gaps 1 → 0.
+
 ## Latest Batch — T8 track complete (strategies; gaps 0001–0005 closed)
 
 Date: 2026-11-14. Executed the full T8 track from `docs/task-list-tracks-and-phases.md`
@@ -577,12 +608,18 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
   - `tantra-ui`: **PLAN-0001 Stage 4 CLI half landed** — `tantra jobs run/tick/logs` on the runtime pool + per-run journals (`tantra jobs add ... -> tick -> journal verified` acceptance suite, 11 e2e tests) + agent tool-call journals + approvals gating (`0b9241d`); clippy-driven fixups (breach-first refusal for PendingApproval jobs) follow-up. Open: ui-core trade rows (`tantra-ui/docs/gaps/0002`).
 
 ## Immediate Next Step
-0. **EE+ (root plan 0005, proposed)** — implement in dependency order: T12.1 kernel domain
+0. **EE+ (root plan 0005, proposed)** — the SDK prerequisite of T12.4 (strategies gap 0006) is
+   **closed 2026-11-14** (`stop_loss`/`trail_stop`/`on_stop_update` + `level_map()`/
+   `options_snapshot()` context surface shipped). Remaining dependency order: T12.1 kernel domain
    types (`tantra-core` plan 0003) → T12.2 indicators (`tantra-market` gap 0005) → T12.3
-   chain-snapshot lakehouse (`tantra-data` gap 0016) → T12.4 strategy + SDK
-   (`tantra-strategies` plan 0001/gap 0006) → T12.5–T12.7 execution/risk/OMS (exec 0003,
-   risk 0005, ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007,
-   docs 0003). See the T12 track in `docs/task-list-tracks-and-phases.md`.
+   chain-snapshot lakehouse (`tantra-data` gap 0016) → T12.4 EE+ strategy itself
+   (`tantra-strategies` plan 0001) → T12.5–T12.7 execution/risk/OMS (exec 0003, risk 0005,
+   ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007, docs 0003). See the
+   T12 track in `docs/task-list-tracks-and-phases.md`.
+1. **T9.3–T9.10 (`tantra-examples` gaps 0001–0008)** — each closes only when its owning repo
+   ships the wheel surface: `tantra-runtime` enhancer (0001), `tantra-agent` (0002),
+   `tantra-data` (0003), `tantra-ffi` display/universes (0004) + kernel domain (0006) + session
+   orchestrator (0008), `tantra-exec` freeze slicer (0005), `tantra-adapters` framework (0007).
 1. **T7 complete (2026-11-14)** — gap 0007 (all 19 items) + T4.9/T4.10 + T0.7 + T6.9 closed;
    items 10/14–16 were the last open (L2 depth, fundamentals/MF/IPO) and landed with real
    data. Only runtime gap 0008 stays open by design (documented architecture decision option
