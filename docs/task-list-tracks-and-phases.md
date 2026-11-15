@@ -26,8 +26,8 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 2 |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 5 |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 6 |
-| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **34** |
+| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 2 |
+| **Total** | | | **30** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -274,18 +274,18 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
-## T10 — UI / TUI / CLI · Phase 6
+## T10 — UI / TUI / CLI · Phase 6 — ✅ COMPLETE 2026-11-15
 
 **Source**: [`tantra-ui/docs/gaps/README.md`](../tantra-ui/docs/gaps/README.md) ·
-[`tantra-ui/docs/plans/README.md`](../tantra-ui/docs/plans/README.md)
+[`tantra-ui/docs/plans/README.md`](../tantra-ui/docs/plans/README.md) (plan 0003 **Implemented**)
 
 | Task | Work | Repo / Scope | Phase | Status | Gap / Plan |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T10.1** | CLI `memory`/`plugin`/`skills`/`mcp`/`doctor`/`purge`/`health` — real reports, not canned strings | `tantra-cli` | 6 | Open | ui 0003 |
-| **T10.2** | Leptos/CSR view layer for `tantra-ui-app` (feature-state models exist, no views) | `tantra-ui-app` | 6 | Open | ui 0004 |
-| **T10.3** | TUI Watchlist real rows; Screener/Portfolio/Orders real panels (drop placeholders) | `tantra-tui` | 6 | Open | ui 0005 |
-| **T10.4** | CLI `scan` against live `GET /screener/scan` (drop the 4-scrip fixture universe) | `tantra-cli` | 6 | Open | ui 0006 |
-| **T10.5** | MCP gateway result-block rendering + client configs | `tantra-cli`, `tantra-tui` | 6 | Ready | ui plan 0003 |
+| **T10.1** | ✅ Real reports for CLI `memory`/`plugin`/`skills`/`mcp`/`doctor`/`purge`/`health` — real on-disk `~/.tantra` stores (`memory_store.rs` JSONL journal, plugin/skills/mcp dirs), doctor env checks, purge real-path listing, factual health report; hermetic `*_with_home` variants + 13 tests | `tantra-cli` | 6 | **Done** | ui 0003 (closed) |
+| **T10.2** | ✅ Leptos 0.8 CSR view layer — `tantra-ui-app/src/web.rs` renders all 8 `AppRoute` views from feature-state models (pure `view_model` helpers, `mount_app`); WASM invariant green (pre-existing `tantra-ui-core` wasm `std::fs` break fixed); 12 view tests | `tantra-ui-app` | 6 | **Done** | ui 0004 (closed) |
+| **T10.3** | ✅ TUI real panels — `LiveData` + pure `ClientEvent` fold (`live_data.rs`), real Watchlist/Screener/Portfolio/Orders rendering over `TuiApp.live` with honest empty-states + `TuiApp::publish` feed seam; 10 tests | `tantra-tui` | 6 | **Done** | ui 0005 (closed) |
+| **T10.4** | ✅ CLI `scan --server` against live `GET /screener/scan` — `ScreenerQuery`/`ScreenerResponse` wire types, canonical filter serialization, `reqwest`; fixture = offline fallback only; integration test boots an in-memory `tantra-runtime-api-rest` router | `tantra-cli` | 6 | **Done** | ui 0006 (closed) |
+| **T10.5** | ✅ MCP gateway result-block rendering + client configs (plan 0003, all 4 phases) — `block_render.rs` ANSI Table/MetricGrid/Chart/Alert renderer, `tantra tools search\|describe\|call` (wired to `tantra-agent-mcp` `McpServer`), `tantra mcp config --client <claude-code\|cursor\|vscode\|gemini>` (via `ManifestGenerator`), `ResultBlockWidget` ratatui widget; 8 new tests | `tantra-cli`, `tantra-tui` | 6 | **Done** | ui plan 0003 (Implemented) |
 
 ---
 
@@ -331,7 +331,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-exec` | 1 (0003 EE+) | 0002 (Phase 1 done) | T0.3 ✅, T4.11 ✅, T12.5 |
 | `tantra-runtime` | 1 (0008) | 0004 (Implemented) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅ |
 | `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — all 6 tracks' tool surfaces shipped), 0010 (Implemented), 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.12 ✅, T12.8 |
-| `tantra-ui` | 5 (0003–0007 incl. EE+) | 0003, 0006 (EE+, proposed) | T10.1–T10.5, T12.9 |
+| `tantra-ui` | 1 (0007 EE+) | 0003 (Implemented), 0006 (EE+, proposed) | T10.1–T10.5 ✅, T12.9 |
 | `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006, 0017–0019, 0020–0022 (Implemented) | T5.1–T5.10 ✅, T12.3 |
 | `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅) |
@@ -442,6 +442,22 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > `tantra-examples/docs/design/gap-cascade-kernel-mirror.md`). ex 0002/0003/0004/0007/0008
 > verified-blocked with per-doc blocker analysis. `tantra-examples` open gaps 8 → 6;
 > phase-5 open 8 → 6; total 36 → 34.
+
+> T10 track complete 2026-11-15 (tantra-ui commits `19b8acd` + `d60d840`): **T10.1** CLI
+> `memory`/`plugin`/`skills`/`mcp`/`doctor`/`purge`/`health` real reports over on-disk
+> `~/.tantra` stores (gaps 0003–0006 closed, plan 0003 Implemented); **T10.2** Leptos 0.8 CSR
+> view layer for `tantra-ui-app` (8 `AppRoute` views; pre-existing wasm `std::fs` break in
+> `tantra-ui-core` fixed — WASM check green); **T10.3** TUI real Watchlist/Screener/Portfolio/
+> Orders panels via `LiveData` + pure `ClientEvent` fold; **T10.4** CLI `scan --server` live
+> `GET /screener/scan` (fixture = offline fallback only); **T10.5** plan 0003 — `block_render.rs`
+> ANSI result blocks, `tantra tools search|describe|call` (via `tantra-agent-mcp` `McpServer`),
+> `tantra mcp config --client ...`, `ResultBlockWidget`. Verification: fmt + clippy `-D
+> warnings` clean, all crate suites green (cli 79, tui 33, app 59, core 44, api-wasm 37,
+> charts 33, assets 17, highlight 13, client 7), WASM check green, `make prod` green.
+> `tantra-ui` open gaps 5 → 1 (0007 EE+ charts); phase-6 open 6 → 2; total 34 → 30.
+> Known limitation: `cargo test --workspace` OOMs linking the `tantra-ui` facade's test
+> binary under prod LTO (facade has no tests; run per-crate or `--workspace --exclude
+> tantra-ui`).
 
 ## Related
 
