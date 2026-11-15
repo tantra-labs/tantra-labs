@@ -45,10 +45,27 @@ this batch (bar/tick/order/order_state, `89b3cbe`/`b5d9627`) is recorded in git 
   to the wire f64/minor-unit contract. pydantic added as `wire`/`test` optional deps
   (installed in the ffi venv); `tantra.wire` deliberately NOT eager-imported by
   `tantra/__init__.py` so `import tantra` needs no pydantic. 34 tests.
-- Wheel suite 218 → **303 collected, 301 green** (2 pre-existing stale-wheel
+- **`coverage` + `store`** (`c83c295`): `tantra.coverage` (CoverageStatus/DateInterval/
+  CoverageRecord + interval algebra, verbatim) + `tantra.store` (`find_data_root`,
+  `ParquetBarStore` — **Decimal128(38,10) parquet schema** per the zero-floats policy and
+  tantra-data lakehouse convention; read path tolerates legacy float64 files; atomic
+  ledger + `.tmp` writes; `validate_bar` ported with Decimal `.is_finite()`). 18 tests.
+- **`backtest` sims** (`271b9df` + `83c53c4`): `tantra.backtest` — `impact`
+  (`MarketImpact`, square-root law, Decimal), `opening_auction` (`OpeningAuction`,
+  spread-bps buffer + delay-bars), `simulated` (`NextOpenExecution` next-open simulator
+  — the pure-Python reference, Decimal cash/positions, settlement receivables, funding
+  cuts, long-only caps, `group_sessions`/`session_date`/`is_intraday`/
+  `make_simulator`), `l2_sim` (`TopOfBook` + `L2Execution` L2 book port, ADR 0030), and
+  `bar_close_fills` (`BarCloseFills` conformance simulator). All native-backend
+  machinery stripped (`resolve_backend` → "python"; `"native"` raises, gap-0006-cited);
+  the India cost/settlement packs (`markets.india`, gap 0004) raise gap-0004-cited
+  `NotImplementedError` with explicit-`settlement_days` required for daily fills. 36
+  backtest tests.
+- Wheel suite 218 → **357 collected, 355 green** (2 pre-existing stale-wheel
   `test_risk.py` failures untouched).
-- **Remaining ex 0006 slices** (per HANDOFF immediate next step): `store`/`backtest`
-  sims, then re-point `_kernel` → wheel and delete the mirror. The other gaps
+- **Remaining ex 0006** (per HANDOFF immediate next step): the closure step — re-point
+  every `_kernel.*` import → wheel and delete the 166-file mirror (dropping the
+  `[[tool.mypy.overrides]]` block). All wheel slices are now shipped. The other gaps
   (0002/0003/0004/0007/0008) remain blocked on upstream wheel surfaces as documented.
 
 ## Latest Batch — T9.3 + T9.7 closed; T9.8 (kernel-domain root) started
