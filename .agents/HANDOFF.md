@@ -11,30 +11,37 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — ex 0006: execution + indicators (87 files) wheel slices shipped
+## Latest Batch — ex 0006: execution + indicators + portfolio_strategy base layers shipped
 
-Date: 2026-11-15. Continued the ex 0006 kernel-domain root (5 subagent waves, each
+Date: 2026-11-15. Continued the ex 0006 kernel-domain root (8 subagent waves, each
 verified before the next; local commits only, not pushed). `tantra-ffi` only. Earlier
 this batch (bar/tick/order/order_state, `89b3cbe`/`b5d9627`) is recorded in git history.
 - **`execution`** (`4ae4e72`): Decimal-canonical `tantra.execution` — the ADR 0019
-  `ExecutionPort` contract (Submitted/Accepted/Rejected/Fill/CancelRequested/Cancelled/
-  Expired events, `OrderRejection`, `order_event` FSM projection, `events_from_native`
-  via `to_decimal` + new `Money.from_minor`, `adapt_port`/`AdaptedPort`/
-  `LegacyPortEvents`, `BaseExecutionPort` legacy shim, runtime-checkable protocols).
-  21 new tests.
+  `ExecutionPort` contract (7 event types, `OrderRejection`, `order_event` FSM
+  projection, `events_from_native` via `to_decimal` + new `Money.from_minor`,
+  `adapt_port`/`AdaptedPort`/`LegacyPortEvents`, `BaseExecutionPort` legacy shim,
+  runtime-checkable protocols). 21 new tests.
 - **`indicators`** (87 kernel files; `fb009d4`+`c8ee1fb`+`784ac1d`+`90da245`): flat
   `tantra.indicators` module → Decimal-canonical registry **package** (legacy
-  `SMA`/`EMA`/`RSI` aliases preserved for `strategy.indicators`/`cli.py`), `_base`
-  registry + `IndicatorBank` + `_india` + Decimal `_rolling` (RollingSum/Moments/
-  LinReg/PairMoments), and all 8 families (moving_average, trend, momentum, volatility,
-  volume, support_resistance, breadth, statistical) — **74 registered kinds**, registry
-  parity test asserts equality with the kernel `_REGISTRY`. Wave-2b `_atr.py` stand-in
-  superseded by the registered `volatility.atr.Atr`. Wheel suite 218 collected, 216
-  green (2 pre-existing stale-wheel `test_risk.py` failures untouched).
-- **Remaining ex 0006 slices** (per HANDOFF immediate next step): `portfolio_strategy`
-  (10 files), then `wire`/`store`/`backtest` sims, then re-point `_kernel` → wheel and
-  delete the mirror. The other gaps (0002/0003/0004/0007/0008) remain blocked on
-  upstream wheel surfaces as documented.
+  `SMA`/`EMA`/`RSI` aliases preserved), all 8 families — **74 registered kinds**,
+  parity-tested against the kernel `_REGISTRY`; `_atr.py` stand-in superseded by the
+  registered `volatility.atr.Atr`.
+- **kernel strategy base layer** (`1230a1e`): `tantra.base` (ADR-008 `Strategy` +
+  `Parameter` + the 4 StockSharp primitives, `to_spec` deferred pending the manifest
+  surface), `tantra.context` (`StrategyContext` ABC + `LedgerContext`, Decimal
+  quantities/cash), `sizing.whole_shares`, `entities.OrderIntent` re-export. 38 tests.
+- **declarative + portfolio_strategy** (`5a20582`): `tantra.declarative`
+  (`DeclarativeStrategy` OCO/Jesse facade + `TargetWeightStrategy` rebalancer, Decimal)
+  + `tantra.portfolio_strategy` package (universe/selection/weighting/schedule/scoring/
+  stats/view/strategy/factory, Decimal; `NamedUniverse` lazy-imports
+  `tantra_examples.universe_lists` and raises a gap-0004-cited `NotImplementedError`
+  when unavailable). 13 tests.
+- Wheel suite 218 → **269 collected, 267 green** (2 pre-existing stale-wheel
+  `test_risk.py` failures untouched).
+- **Remaining ex 0006 slices** (per HANDOFF immediate next step): `wire`, then
+  `store`/`backtest` sims, then re-point `_kernel` → wheel and delete the mirror. The
+  other gaps (0002/0003/0004/0007/0008) remain blocked on upstream wheel surfaces as
+  documented.
 
 ## Latest Batch — T9.3 + T9.7 closed; T9.8 (kernel-domain root) started
 
