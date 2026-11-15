@@ -11,6 +11,34 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — T9.3 + T9.7 closed; T9.8 (kernel-domain root) started
+
+Date: 2026-11-15. Executed "all 8 (T9.3–T9.10), starting at the root", per the user's scope
+decision. **Local commits only (not pushed).** 2 repos touched:
+- **Wheel surfaces shipped** (`tantra-ffi` `d79d31b` + `6ac14dd`): `tantra.algo_analytics`
+  (walk-forward/folds/monte-carlo/plateau/deflated-sharpe, with an injected backtest runner —
+  no session orchestrator yet, raises loudly), `tantra.quant` (returns/mean/std-dev/covariance/
+  solver/OLS), `tantra.optimizer` (Pareto helpers), `tantra.sizing` freeze-slicing
+  (`freeze_limit_qty`/`slice_order`/`verify_slices`), and the **ex 0006 root slice**: Decimal-
+  canonical `tantra.{money,position,trade,instrument,entities}` (the `_kernel` mirrors are
+  float-based and conflict with the zero-floats policy — the wheel surface is a Decimal
+  re-implementation, not a verbatim promotion). 83 wheel tests green (2 pre-existing
+  stale-wheel `test_risk.py` failures untouched).
+- **Gaps 0001 + 0005 closed** (`tantra-examples` `4bc6c4f`, −2014 lines): the mirrors
+  (`optimizer/algo_analytics/` + `quant.py`; the `options/__init__.py` freeze block) deleted,
+  every consumer retargeted to the wheel (04/05/10/12, optimizer 01/02/03, options 06/07,
+  stocksharp 02, flat 12/14/15, tests + `docs/reference/*`), gap docs 0001/0005 removed and
+  README → Closed. Suite green except one pre-existing environmental failure
+  (`test_mutual_fund_screener_execution` needs the 1D NSE catalog); ruff clean (pre-existing
+  I001/SIM102 fixed).
+- **ex 0006 verified as the root of an 8-gap dependency cascade**: verified map written to
+  `tantra-examples/docs/design/gap-cascade-kernel-mirror.md`; blocker analysis added to gap
+  docs 0002/0003/0004/0006/0007/0008 (all `open — blocked` except 0006 `in progress`).
+  Remaining ex 0006 slices: Decimal `bar`, `indicators` (87 files), `execution`/`order_state`,
+  `portfolio_strategy`, `session`, `wire`, `store`, `backtest` sims — multi-week.
+- Task list updated: T9.3 ✅ + T9.7 ✅, T9.8 🔶, T9.4/5/6/9/10 blocked; `tantra-examples` open
+  gaps 8 → 6; phase-5 open 8 → 6; total 36 → 34.
+
 ## Latest Batch — T9.1 (ffi CLI) + T12.4 SDK prerequisite (strategies gap 0006)
 
 Date: 2026-11-14. 2 subagents in one wave (self-contained prompts, independent repos):
@@ -608,7 +636,13 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
   - `tantra-ui`: **PLAN-0001 Stage 4 CLI half landed** — `tantra jobs run/tick/logs` on the runtime pool + per-run journals (`tantra jobs add ... -> tick -> journal verified` acceptance suite, 11 e2e tests) + agent tool-call journals + approvals gating (`0b9241d`); clippy-driven fixups (breach-first refusal for PendingApproval jobs) follow-up. Open: ui-core trade rows (`tantra-ui/docs/gaps/0002`).
 
 ## Immediate Next Step
-0. **EE+ (root plan 0005, proposed)** — the SDK prerequisite of T12.4 (strategies gap 0006) is
+0. **T9.8 (ex 0006 kernel-domain root, in progress)** — continue the Decimal-canonical wheel
+   slices bottom-up: `bar` (Decimal) → `order_state`/`execution` → `indicators` (87 files) →
+   `portfolio_strategy`/`wire`/`store`/`backtest` sims, then re-point the `_kernel` modules
+   to re-export from the wheel and delete the mirror. Map: `tantra-examples/docs/design/
+   gap-cascade-kernel-mirror.md`. Then ex 0004 (display/universes/india), ex 0003 (data
+   re-point), ex 0002 (ai), ex 0007 (adapters framework), ex 0008 (session).
+1. **EE+ (root plan 0005, proposed)** — the SDK prerequisite of T12.4 (strategies gap 0006) is
    **closed 2026-11-14** (`stop_loss`/`trail_stop`/`on_stop_update` + `level_map()`/
    `options_snapshot()` context surface shipped). Remaining dependency order: T12.1 kernel domain
    types (`tantra-core` plan 0003) → T12.2 indicators (`tantra-market` gap 0005) → T12.3
@@ -616,10 +650,6 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
    (`tantra-strategies` plan 0001) → T12.5–T12.7 execution/risk/OMS (exec 0003, risk 0005,
    ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007, docs 0003). See the
    T12 track in `docs/task-list-tracks-and-phases.md`.
-1. **T9.3–T9.10 (`tantra-examples` gaps 0001–0008)** — each closes only when its owning repo
-   ships the wheel surface: `tantra-runtime` enhancer (0001), `tantra-agent` (0002),
-   `tantra-data` (0003), `tantra-ffi` display/universes (0004) + kernel domain (0006) + session
-   orchestrator (0008), `tantra-exec` freeze slicer (0005), `tantra-adapters` framework (0007).
 1. **T7 complete (2026-11-14)** — gap 0007 (all 19 items) + T4.9/T4.10 + T0.7 + T6.9 closed;
    items 10/14–16 were the last open (L2 depth, fundamentals/MF/IPO) and landed with real
    data. Only runtime gap 0008 stays open by design (documented architecture decision option

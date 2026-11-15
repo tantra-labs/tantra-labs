@@ -25,9 +25,9 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds | T5, T3 (feeds) | 2 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor | T4 | 2 |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling | T6, T7 | 5 |
-| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 8 |
+| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors | T8, T9 | 6 |
 | **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference | T10, T11 | 6 |
-| **Total** | | | **36** |
+| **Total** | | | **34** |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -263,14 +263,14 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **T9.1** | ✅ Real `tantra` CLI `backtest` — bars-JSON fixture → `tantra.strategy.run(...)`, optional `--strategy MODULE:CLASS` + built-in SMA-cross default, `--algo-id`; `serve`/`stub` placeholders **removed** (no serving surface exists; gap-tracking §4); 7 CLI tests | `tantra-ffi` (`python/tantra/cli.py`) | 5 | **Done** | ffi 0001 (closed) |
 | **T9.2** | ✅ Remove unused `tantra-market-{finance,feed,store}` workspace deps | `tantra-ffi` | 0 | **Done** | ffi 0002 (closed, part of T0.5) |
-| **T9.3** | Wheel `algo_analytics` surface — mirror, delete once runtime enhancer / ffi ships it | `tantra-examples` → `tantra-runtime` / `tantra-ffi` | 5 | Open | ex 0001 |
-| **T9.4** | Wheel AI-provider surface — mirror, delete once `tantra-agent` / ffi ships it | `tantra-examples` → `tantra-agent` / `tantra-ffi` | 5 | Open | ex 0002 |
-| **T9.5** | `tantra-data` nav/loaders surface — mirror, delete once data ships it | `tantra-examples` → `tantra-data` | 5 | Open | ex 0003 |
-| **T9.6** | Wheel display/universes/client surface — mirror, delete once ffi ships it | `tantra-examples` → `tantra-ffi` | 5 | Open | ex 0004 |
-| **T9.7** | Freeze-slicer wheel surface — mirror, delete once exec / ffi ships it | `tantra-examples` → `tantra-exec` / `tantra-ffi` | 5 | Open | ex 0005 |
-| **T9.8** | Wheel kernel-domain surface (166-file `_kernel/` mirror) — delete once ffi ships it | `tantra-examples` → `tantra-ffi` | 5 | Open | ex 0006 |
-| **T9.9** | Adapters framework surface — mirror, delete once adapters / ffi ships it | `tantra-examples` → `tantra-adapters` / `tantra-ffi` | 5 | Open | ex 0007 |
-| **T9.10** | Runtime session surface (`Tantra.backtest` raises `NotImplementedError`) — delete once runtime / ffi ships it | `tantra-examples` → `tantra-runtime` / `tantra-ffi` | 5 | Open | ex 0008 |
+| **T9.3** | ✅ Wheel `algo_analytics` surface — `tantra.algo_analytics` + `tantra.quant` + `tantra.optimizer` shipped in the wheel; `optimizer/algo_analytics/` + `quant.py` mirrors **deleted**, all consumers retargeted | `tantra-examples` → `tantra-ffi` | 5 | **Done** | ex 0001 (closed) |
+| **T9.4** | Wheel AI-provider surface — mirror, delete once `tantra-agent` / ffi ships it | `tantra-examples` → `tantra-agent` / `tantra-ffi` | 5 | Open (blocked) | ex 0002 |
+| **T9.5** | `tantra-data` nav/loaders surface — mirror, delete once data ships it | `tantra-examples` → `tantra-data` | 5 | Open (blocked) | ex 0003 |
+| **T9.6** | Wheel display/universes/client surface — mirror, delete once ffi ships it | `tantra-examples` → `tantra-ffi` | 5 | Open (blocked) | ex 0004 |
+| **T9.7** | ✅ Freeze-slicer wheel surface — `tantra.sizing` freeze-slicing (`freeze_limit_qty`/`slice_order`/`verify_slices`); `options/__init__.py` mirror **removed**, consumers retargeted | `tantra-examples` → `tantra-ffi` | 5 | **Done** | ex 0005 (closed) |
+| **T9.8** | Wheel kernel-domain surface (166-file `_kernel/` mirror) — **root started 2026-11-15**: Decimal domain-core slice (`tantra.{money,position,trade,instrument,entities}`) shipped; `_kernel` float-bar/indicators/execution/portfolio_strategy/session/wire remain; see `tantra-examples/docs/design/gap-cascade-kernel-mirror.md` | `tantra-examples` → `tantra-ffi` | 5 | In progress | ex 0006 |
+| **T9.9** | Adapters framework surface — mirror, delete once adapters / ffi ships it | `tantra-examples` → `tantra-adapters` / `tantra-ffi` | 5 | Open (blocked) | ex 0007 |
+| **T9.10** | Runtime session surface (`Tantra.backtest` raises `NotImplementedError`) — delete once runtime / ffi ships it | `tantra-examples` → `tantra-runtime` / `tantra-ffi` | 5 | Open (blocked) | ex 0008 |
 
 ---
 
@@ -335,7 +335,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-adapters` | 0 | 0002 (Implemented), 0003, 0004 (Proposed) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006, 0017–0019, 0020–0022 (Implemented) | T5.1–T5.10 ✅, T12.3 |
 | `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅) |
-| `tantra-examples` | 8 (0001–0008) | — | T9.3–T9.10 |
+| `tantra-examples` | 6 (0002–0004, 0006–0008 — 0001/0005 closed) | — | T9.1 ✅, T9.2 ✅, T9.3 ✅, T9.7 ✅, T9.8 🔶, T9.4/5/6/9/10 (blocked) |
 | `tantra-ffi` | **0** | — | T9.1 ✅, T9.2 ✅ |
 | `tantra-docs` | — | 0001, 0003 (EE+, proposed) | T11.1, T11.2 |
 
@@ -426,6 +426,22 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 > ships" depends on an upstream wheel surface (`tantra-runtime` enhancer, `tantra-agent`,
 > `tantra-data`, `tantra-exec` freeze slicer, `tantra-adapters`, `tantra-ffi` session
 > orchestrator) that has not shipped. Phase-5 open 9 → 8; total 37 → 36.
+>
+> T9.3/T9.7 + T12-SDK-root batch 2026-11-15 ("all 8 starting at the root"; local commits,
+> not pushed): **T9.3 + T9.7 closed** — the wheel shipped `tantra.algo_analytics` +
+> `tantra.quant` + `tantra.optimizer` (ex 0001) and `tantra.sizing` freeze-slicing
+> (ex 0005) in `tantra-ffi` `d79d31b` + `6ac14dd`; `tantra-examples` `4bc6c4f` **deleted the
+> mirrors** (`optimizer/algo_analytics/` + `quant.py` + the `options/__init__.py` freeze
+> block) and retargeted all consumers (04/05/10/12 walk-forward/monte-carlo/dsr, optimizer
+> 01/02/03, options 06/07, stocksharp 02, flat 12/14/15, tests + docs); suite green except
+> the pre-existing catalog-dependent `test_mutual_fund_screener_execution`; ruff clean.
+> **T9.8 (ex 0006, the kernel-domain root) started**: Decimal-canonical domain-core slice
+> (`tantra.{money,position,trade,instrument,entities}`) shipped in the wheel; the float
+> kernel `bar`/`indicators`/`execution`/`portfolio_strategy`/`session`/`wire` remain as the
+> next slices — the `_kernel` mirror is a dependency cascade (verified map in
+> `tantra-examples/docs/design/gap-cascade-kernel-mirror.md`). ex 0002/0003/0004/0007/0008
+> verified-blocked with per-doc blocker analysis. `tantra-examples` open gaps 8 → 6;
+> phase-5 open 8 → 6; total 36 → 34.
 
 ## Related
 
