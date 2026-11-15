@@ -264,7 +264,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **T9.1** | ✅ Real `tantra` CLI `backtest` — bars-JSON fixture → `tantra.strategy.run(...)`, optional `--strategy MODULE:CLASS` + built-in SMA-cross default, `--algo-id`; `serve`/`stub` placeholders **removed** (no serving surface exists; gap-tracking §4); 7 CLI tests | `tantra-ffi` (`python/tantra/cli.py`) | 5 | **Done** | ffi 0001 (closed) |
 | **T9.2** | ✅ Remove unused `tantra-market-{finance,feed,store}` workspace deps | `tantra-ffi` | 0 | **Done** | ffi 0002 (closed, part of T0.5) |
 | **T9.3** | ✅ Wheel `algo_analytics` surface — `tantra.algo_analytics` + `tantra.quant` + `tantra.optimizer` shipped in the wheel; `optimizer/algo_analytics/` + `quant.py` mirrors **deleted**, all consumers retargeted | `tantra-examples` → `tantra-ffi` | 5 | **Done** | ex 0001 (closed) |
-| **T9.4** | Wheel AI-provider surface — mirror, delete once `tantra-agent` / ffi ships it | `tantra-examples` → `tantra-agent` / `tantra-ffi` | 5 | Open (blocked) | ex 0002 |
+| **T9.4** | ✅ Wheel AI-provider surface — `tantra.ai` (ask/decision/knowledge/llm.provider) shipped; `_kernel/ai/` + `fake_llm.py` + `decision_guard.py` mirrors **deleted**, consumers retargeted; 4 design-only scripts un-skipped; `nl_support.py` retained as screener harness | `tantra-examples` → `tantra-ffi` | 5 | **Done** | ex 0002 (closed) |
 | **T9.5** | ✅ `tantra-data` nav/loaders surface — `tantra_data.loaders.{amfi,nse,yfinance}` + `domain.quantity` shipped; wheel `tantra.screener` (catalog/coverage) shipped; `_kernel/data/`+`_kernel/screener/`+`amfi.py`+`bhavcopy.py` mirrors **deleted**, consumers retargeted (offline `VYAAPAAR_DATA_DIR` seam kept — real catalog absent from CI) | `tantra-examples` → `tantra-data` / `tantra-ffi` | 5 | **Done** | ex 0003 (closed) |
 | **T9.6** | ✅ Wheel display/universes/client surface — `tantra.display` + `tantra.markets.india` (costs/settlement) + `tantra.markets.india.universes` + `tantra.cli.data` shipped; `display_style.py`/`universe_lists.py`/`pipeline/io.py` + `_kernel/markets/india/` + `_kernel/cli/` mirrors **deleted**, consumers retargeted; `tantra.client` (REST) deferred as a separate future surface | `tantra-examples` → `tantra-ffi` | 5 | **Done** | ex 0004 (closed) |
 | **T9.7** | ✅ Freeze-slicer wheel surface — `tantra.sizing` freeze-slicing (`freeze_limit_qty`/`slice_order`/`verify_slices`); `options/__init__.py` mirror **removed**, consumers retargeted | `tantra-examples` → `tantra-ffi` | 5 | **Done** | ex 0005 (closed) |
@@ -335,7 +335,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-adapters` | 0 | 0002, 0003, 0004 (all Implemented) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006, 0017–0019, 0020–0022 (Implemented) | T5.1–T5.10 ✅, T12.3 |
 | `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅) |
-| `tantra-examples` | 2 (0002, 0008 — 0001/0003/0004/0005/0006/0007 closed) | — | T9.1 ✅, T9.2 ✅, T9.3 ✅, T9.5 ✅, T9.6 ✅, T9.7 ✅, T9.8 ✅, T9.9 ✅, T9.4/10 (blocked) |
+| `tantra-examples` | 1 (0008 — 0001/0002/0003/0004/0005/0006/0007 closed) | — | T9.1 ✅, T9.2 ✅, T9.3 ✅, T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.7 ✅, T9.8 ✅, T9.9 ✅, T9.10 (blocked) |
 | `tantra-ffi` | **0** | — | T9.1 ✅, T9.2 ✅ |
 | `tantra-docs` | — | 0001, 0003 (both Implemented) | T11.1 ✅, T11.2 ✅ |
 
