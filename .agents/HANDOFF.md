@@ -11,28 +11,30 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — T9.8 continued: Decimal bar + tick + order + order_state wheel slices
+## Latest Batch — ex 0006: execution + indicators (87 files) wheel slices shipped
 
-Date: 2026-11-15. Continued the ex 0006 kernel-domain root (2 subagent waves, each
-verified before the next). Local commits only (not pushed):
-- **Wave 1** (`tantra-ffi` `89b3cbe`): wheel `tantra.bar.Bar` (Decimal OHLCV/volume,
-  validates prices >= 0 and high >= low) + `tantra.tick` (`AggressorSide`/`QuoteTick`/
-  `TradeTick` with exact `mid_price`) — mirrors of the float `_kernel` bar/tick public
-  API. 16 new tests.
-- **Wave 2** (`tantra-ffi` `b5d9627`): wheel `tantra.order` (`OrderSide`/`OrderType`/
-  `TimeInForce`/`OrderStatus`/`validate_intent`/`OrderIntent` with Decimal quantity/
-  price/trail fields + trailing-stop factories) + `tantra.order_state` (the `OrderEvent`/
-  `OrderState` lifecycle FSM, exact Decimal `QTY_EPS`, mirror-parity `can_transition`
-  table incl. illegal-transition raises and terminal no-ops). 18 new tests. Orchestrator
-  spot-fixed a `can_transition`-parity divergence found on review (illegal events no
-  longer silently no-op) and added edge-case regression tests.
-- Both slices wired into the `tantra` top-level package (compiled top-level `Bar`/
-  `OrderSide`/`OrderStatus` untouched — same documented split as `money.Currency`).
-  Wheel suite: 127 collected, 125 green (2 pre-existing stale-wheel `test_risk.py`
-  failures untouched). Gap doc 0006 + cascade map updated.
-- **Remaining ex 0006 slices** (per HANDOFF immediate next step): `execution`, then
-  `indicators` (87 files), then `portfolio_strategy`/`wire`/`store`/`backtest` sims,
-  then re-point `_kernel` → wheel and delete the mirror.
+Date: 2026-11-15. Continued the ex 0006 kernel-domain root (5 subagent waves, each
+verified before the next; local commits only, not pushed). `tantra-ffi` only. Earlier
+this batch (bar/tick/order/order_state, `89b3cbe`/`b5d9627`) is recorded in git history.
+- **`execution`** (`4ae4e72`): Decimal-canonical `tantra.execution` — the ADR 0019
+  `ExecutionPort` contract (Submitted/Accepted/Rejected/Fill/CancelRequested/Cancelled/
+  Expired events, `OrderRejection`, `order_event` FSM projection, `events_from_native`
+  via `to_decimal` + new `Money.from_minor`, `adapt_port`/`AdaptedPort`/
+  `LegacyPortEvents`, `BaseExecutionPort` legacy shim, runtime-checkable protocols).
+  21 new tests.
+- **`indicators`** (87 kernel files; `fb009d4`+`c8ee1fb`+`784ac1d`+`90da245`): flat
+  `tantra.indicators` module → Decimal-canonical registry **package** (legacy
+  `SMA`/`EMA`/`RSI` aliases preserved for `strategy.indicators`/`cli.py`), `_base`
+  registry + `IndicatorBank` + `_india` + Decimal `_rolling` (RollingSum/Moments/
+  LinReg/PairMoments), and all 8 families (moving_average, trend, momentum, volatility,
+  volume, support_resistance, breadth, statistical) — **74 registered kinds**, registry
+  parity test asserts equality with the kernel `_REGISTRY`. Wave-2b `_atr.py` stand-in
+  superseded by the registered `volatility.atr.Atr`. Wheel suite 218 collected, 216
+  green (2 pre-existing stale-wheel `test_risk.py` failures untouched).
+- **Remaining ex 0006 slices** (per HANDOFF immediate next step): `portfolio_strategy`
+  (10 files), then `wire`/`store`/`backtest` sims, then re-point `_kernel` → wheel and
+  delete the mirror. The other gaps (0002/0003/0004/0007/0008) remain blocked on
+  upstream wheel surfaces as documented.
 
 ## Latest Batch — T9.3 + T9.7 closed; T9.8 (kernel-domain root) started
 
