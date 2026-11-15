@@ -11,36 +11,40 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — gap-closure program (0007/0003/0004/0002 CLOSED; 0008 last)
+## Latest Batch — gap-closure program COMPLETE (all 8 tantra-examples gaps closed)
 
 Date: 2026-11-15. Per user direction ("use subagents to close the remaining one by one",
-full program): the 5 remaining `tantra-examples` gaps are being closed **one per wave**
-(sequential — their downstream closures touch overlapping example files). Order:
-0007 → 0003 → 0004 → 0002 → 0008. Four waves done:
-- **0007 CLOSED** — wheel `tantra.adapters` (`tantra-ffi` `437eddf`); `_kernel/adapters/`
-  deleted + 18 consumers retargeted (`tantra-examples` `6b4e86c`); snippets `9433aa0`.
-- **0003 CLOSED** — `tantra_data.loaders.{amfi,nse,yfinance}` + `domain.quantity`
-  (`tantra-data` `54d5b34`), wheel `tantra.screener` (`tantra-ffi` `07b4956`);
-  `_kernel/{data,screener}`+`amfi.py`+`bhavcopy.py` deleted + 32 files retargeted
-  (`eef65a5`). Decision: catalog/coverage in the wheel (ai needs it without tantra_data);
-  loaders+quantity in tantra-data. `VYAAPAAR_DATA_DIR` seam kept. Env provisioned:
-  `tantra_data`+`polars` into `tantra-ffi/.venv`.
-- **0004 CLOSED** — wheel `tantra.display` + `tantra.markets.india`(costs/settlement) +
-  `tantra.markets.india.universes` + `tantra.cli.data` (`tantra-ffi` `e5f40b3` + `723c9c0`
-  retargeting the wheel's own `portfolio_strategy/universe.py` stand-in);
-  `display_style.py`/`universe_lists.py`/`pipeline/io.py`+`_kernel/markets/india/`+
-  `_kernel/cli/` deleted + consumers retargeted (`e816185`). Decisions: output/screener_cli/cli
-  retained as harness; `tantra.client` (REST) deferred.
-- **0002 CLOSED** — wheel `tantra.ai` (ask/decision/knowledge/llm.provider) (`tantra-ffi`
-  `4d570b4`, 11 new wheel tests); `_kernel/ai/`+`fake_llm.py`+`decision_guard.py` deleted +
-  consumers retargeted + **4 design-only scripts un-skipped and runnable** (`tantra-examples`
-  `5de0436`); `nl_support.py` retained as screener harness. LLM-decision float wire boundary
-  preserved by design (no-quantity-increase + protective-exit guard).
-- **Unit suite: 841 passed / 73 failed / 3 errors / 50 skipped at committed HEAD** — failed
-  set byte-identical to baseline (stash-verified each wave); the +1 pass is the intended
-  design-only-scripts un-skip. Zero new failures across all four closures.
-- **Open gap now 1: 0008** (wheel session surface on `tantra.backtest` + `tantra.markets.india`;
-  retarget the wheel `algo_analytics` `_kernel.session` imports; delete `_kernel/session.py`).
+full program): the 5 remaining `tantra-examples` gaps (0002/0003/0004/0007/0008) were closed
+**one per wave** (sequential — their downstream closures touch overlapping example files),
+each subagent shipping the upstream wheel/`tantra_data` surface first, then deleting the
+mirror and retargeting consumers:
+- **0007** — wheel `tantra.adapters` (`tantra-ffi` `437eddf`); `_kernel/adapters/` deleted +
+  18 consumers retargeted (`tantra-examples` `6b4e86c`); snippets `9433aa0`.
+- **0003** — `tantra_data.loaders.{amfi,nse,yfinance}` + `domain.quantity` (`tantra-data`
+  `54d5b34`); wheel `tantra.screener` (`tantra-ffi` `07b4956`); `_kernel/{data,screener}` +
+  `amfi.py` + `bhavcopy.py` deleted + 32 files retargeted (`eef65a5`). `VYAAPAAR_DATA_DIR`
+  seam kept. Env provisioned: `tantra_data`+`polars` into `tantra-ffi/.venv`.
+- **0004** — wheel `tantra.display` + `tantra.markets.india`(costs/settlement) +
+  `tantra.markets.india.universes` + `tantra.cli.data` (`tantra-ffi` `e5f40b3` + `723c9c0`);
+  display/universe/cli mirrors + `_kernel/markets/india/` + `_kernel/cli/` deleted
+  (`e816185`). `output.py`/`screener_cli.py`/`cli.py` retained as harness; `tantra.client`
+  (REST) deferred.
+- **0002** — wheel `tantra.ai` (ask/decision/knowledge/llm.provider) (`tantra-ffi`
+  `4d570b4`); `_kernel/ai/`+`fake_llm.py`+`decision_guard.py` deleted; **4 design-only
+  scripts un-skipped and runnable** (`5de0436`); `nl_support.py` retained as screener
+  harness.
+- **0008** — wheel `tantra.backtest.session` (`Tantra.backtest`: next-open fills, NSE
+  delivery costs, T+1 settlement) (`tantra-ffi` `2d9214e`, incl. wiring `resolve_fill_costs`
+  + `make_simulator` settlement to `tantra.markets.india` and defaulting `algo_analytics`
+  `runner=None` to the session); `_kernel/session.py` deleted (`bd469dd`). Final doc sweep
+  `bfbcad1` (cascade map all-closed; production/backtesting README snippets retargeted).
+- **Unit suite: 841 passed / 73 failed (pre-existing float-rooted) / 3 errors / 50 skipped**
+  — the failed set is byte-identical to the pre-program baseline (stash-verified each wave);
+  zero new failures across all five closures. The `_kernel/` mirror is fully dismantled;
+  only the shared harness remains (`calendar/config/evaluator/greeks/loader/log/manifest/
+  option/portfolio/ports/risk/runner/service/testing` + `portfolio`).
+- **Workspace `tantra-examples` open gaps: 0** (all 8 closed). All work committed locally,
+  not pushed.
 
 ## Previous Batch — ex 0006 CLOSED (cascade root)
 
