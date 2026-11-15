@@ -11,26 +11,36 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — gap-closure program (0007 CLOSED; 0002/0003/0004/0008 next)
+## Latest Batch — gap-closure program (0007 + 0003 CLOSED; 0004/0002/0008 next)
 
 Date: 2026-11-15. Per user direction ("use subagents to close the remaining one by one",
 full program): the 5 remaining `tantra-examples` gaps are being closed **one per wave**
 (sequential — their downstream closures touch overlapping example files). Order:
-0007 → 0003 → 0004 → 0002 → 0008. Wave 1 done:
+0007 → 0003 → 0004 → 0002 → 0008. Two waves done:
 - **Gap 0007 CLOSED** — wheel `tantra.adapters` framework surface shipped in `tantra-ffi`
   `437eddf` (13 modules promoted verbatim from the mirror, `ENTRY_POINT_GROUP="tantra.adapters"`,
   13 new wheel tests; wheel suite 231 collected, only 3 pre-existing failures), and
   `tantra-examples` `6b4e86c` deleted `_kernel/adapters/` + retargeted 18 consumers to
-  `tantra.adapters`; gap doc removed, README + HANDOFF updated. Suite unchanged at
-  841/72/3/41. Doc-snippet retargets `9433aa0`. Open gaps now **4** (0002/0003/0004/0008).
-- **Waves remaining**: 0003 (ships wheel `tantra.screener` catalog/coverage + `tantra_data`
-  loaders; delete `_kernel/data/`+`_kernel/screener/`+`amfi.py`+`bhavcopy.py`, retarget
-  paths/sip/conftest + `_kernel/ai/{ask,knowledge}.py` catalog imports), 0004 (wheel
-  `tantra.display`/`tantra.markets.india`/universes/`tantra.cli.data`; delete the
-  display/universe/cli mirrors + `_kernel/markets/india/` + `_kernel/cli/`; ~90 consumers),
-  0002 (wheel `tantra.ai` on `tantra.screener`; delete `_kernel/ai/`+`fake_llm`+`decision_guard`+
-  `nl_support`; un-skip 4 design-only scripts), 0008 (wheel session surface on
-  `tantra.backtest`+`tantra.markets.india`; retarget wheel `algo_analytics` `_kernel.session`
+  `tantra.adapters`; gap doc removed, README + HANDOFF updated. Doc-snippet retargets `9433aa0`.
+- **Gap 0003 CLOSED** — `tantra_data.loaders.{amfi,nse,yfinance}` + `domain.quantity` shipped
+  in `tantra-data` `54d5b34` (216 tests, 211 pass / 5 skips in the wheel-less venv); wheel
+  `tantra.screener` (catalog/coverage) shipped in `tantra-ffi` `07b4956` (237 collected, same 3
+  pre-existing failures); `tantra-examples` `eef65a5` deleted `_kernel/data/` + `_kernel/screener/`
+  + `amfi.py` + `bhavcopy.py` and retargeted 32 files (AMFI→`tantra_data.loaders.amfi`,
+  bhavcopy→`tantra_data.loaders.nse`, catalog→`tantra.screener`, `parse_quantity`→`tantra_data`).
+  **Recorded decision**: the screener catalog/coverage landed in the wheel (`tantra.screener`)
+  because `tantra.ai` (gap 0002) needs it without a `tantra_data` dependency; loaders + quantity
+  landed in tantra-data. The `VYAAPAAR_DATA_DIR` offline seam was KEPT (real NSE catalog absent
+  from CI). **Environment provisioned**: `tantra_data` (editable) + `polars` installed into
+  `tantra-ffi/.venv` (the interpreter tantra-examples tests run under). Unit suite at committed
+  HEAD: 840 passed / 73 failed (72 pre-existing float-rooted + 1 provisioning artifact: a
+  mutual-fund screener test now runs instead of skipping and fails on the missing real catalog) /
+  3 errors / 41 skipped — proven identical at untouched HEAD.
+- **Open gaps now 3**: 0004 (wheel `tantra.display`/`tantra.markets.india`/universes/
+  `tantra.cli.data`; delete display/universe/cli mirrors + `_kernel/markets/india/` + `_kernel/cli/`;
+  ~90 consumers), 0002 (wheel `tantra.ai` on `tantra.screener`; delete `_kernel/ai/` + `fake_llm` +
+  `decision_guard` + `nl_support`; un-skip 4 design-only scripts), 0008 (wheel session surface on
+  `tantra.backtest` + `tantra.markets.india`; retarget wheel `algo_analytics` `_kernel.session`
   imports; delete `_kernel/session.py`).
 
 ## Previous Batch — ex 0006 CLOSED (cascade root)
