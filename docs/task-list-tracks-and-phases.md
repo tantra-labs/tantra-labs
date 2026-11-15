@@ -268,8 +268,8 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **T9.5** | `tantra-data` nav/loaders surface — mirror, delete once data ships it | `tantra-examples` → `tantra-data` | 5 | Open (blocked) | ex 0003 |
 | **T9.6** | Wheel display/universes/client surface — mirror, delete once ffi ships it | `tantra-examples` → `tantra-ffi` | 5 | Open (blocked) | ex 0004 |
 | **T9.7** | ✅ Freeze-slicer wheel surface — `tantra.sizing` freeze-slicing (`freeze_limit_qty`/`slice_order`/`verify_slices`); `options/__init__.py` mirror **removed**, consumers retargeted | `tantra-examples` → `tantra-ffi` | 5 | **Done** | ex 0005 (closed) |
-| **T9.8** | Wheel kernel-domain surface (166-file `_kernel/` mirror) — **root started 2026-11-15**: Decimal domain-core slice (`tantra.{money,position,trade,instrument,entities}`) + `bar`/`tick`/`order`/`order_state` shipped in the wheel (2026-11-15); `_kernel` float execution/indicators/portfolio_strategy/session/wire remain; see `tantra-examples/docs/design/gap-cascade-kernel-mirror.md` | `tantra-examples` → `tantra-ffi` | 5 | In progress | ex 0006 |
-| **T9.9** | Adapters framework surface — mirror, delete once adapters / ffi ships it | `tantra-examples` → `tantra-adapters` / `tantra-ffi` | 5 | Open (blocked) | ex 0007 |
+| **T9.8** | ✅ Wheel kernel-domain surface (166-file `_kernel/` mirror) — **CLOSED**: Decimal-canonical domain core (`tantra.{money,position,trade,instrument,entities}`) + `bar`/`tick`/`order`/`order_state`/`execution`/`indicators` (74)/`declarative`/`portfolio_strategy`/`wire`/`store`/`coverage`/`backtest` sims + `base`/`context` shipped in the wheel; every `_kernel.*` consumer retargeted, mirror deleted | `tantra-examples` → `tantra-ffi` | 5 | **Done** | ex 0006 (closed) |
+| **T9.9** | ✅ Adapters framework surface — wheel `tantra.adapters` shipped (registry/capabilities/contract/`FakeAdapter`/session/rate-limit/secrets); `_kernel/adapters/` (13 modules) **deleted**, 18 consumers retargeted | `tantra-examples` → `tantra-ffi` | 5 | **Done** | ex 0007 (closed) |
 | **T9.10** | Runtime session surface (`Tantra.backtest` raises `NotImplementedError`) — delete once runtime / ffi ships it | `tantra-examples` → `tantra-runtime` / `tantra-ffi` | 5 | Open (blocked) | ex 0008 |
 
 ---
@@ -335,7 +335,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-adapters` | 0 | 0002, 0003, 0004 (all Implemented) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006, 0017–0019, 0020–0022 (Implemented) | T5.1–T5.10 ✅, T12.3 |
 | `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅) |
-| `tantra-examples` | 6 (0002–0004, 0006–0008 — 0001/0005 closed) | — | T9.1 ✅, T9.2 ✅, T9.3 ✅, T9.7 ✅, T9.8 🔶, T9.4/5/6/9/10 (blocked) |
+| `tantra-examples` | 4 (0002–0004, 0008 — 0001/0005/0006/0007 closed) | — | T9.1 ✅, T9.2 ✅, T9.3 ✅, T9.7 ✅, T9.8 ✅, T9.9 ✅, T9.4/5/6/10 (blocked) |
 | `tantra-ffi` | **0** | — | T9.1 ✅, T9.2 ✅ |
 | `tantra-docs` | — | 0001, 0003 (both Implemented) | T11.1 ✅, T11.2 ✅ |
 

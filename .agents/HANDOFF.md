@@ -11,42 +11,39 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — ex 0006 CLOSED: mirror deleted, everything retargeted to the wheel
+## Latest Batch — gap-closure program (0007 CLOSED; 0002/0003/0004/0008 next)
 
-Date: 2026-11-15. The kernel-domain root is **closed**. `tantra-examples` closure
-(7 subagent waves; local commits only, not pushed):
-- The Decimal-canonical `tantra` wheel kernel-domain layer shipped in the earlier
-  batches (money/position/trade/instrument/entities, bar, tick, order, order_state,
-  execution, indicators 74 kinds, base/context, declarative, portfolio_strategy,
-  wire, store, backtest sims — see git history).
-- **Retarget + Decimal conversion of the entire remaining harness** to the wheel:
-  `markets/india` (costs/settlement), `portfolio`, `risk`, `evaluator`, then
-  calendar/config/log/option/greeks/ports/manifest/loader/screener/cli/data, then
-  the hub (`runner`, `testing`, `session`, `service`), then the `adapters`+`ai`
-  subpackages, then the outer SDK (`backtest.py` engine, `synthetic`, `bars`,
-  `amfi`, `bhavcopy`, `sip*`, `base`, `decision_guard`, `catalog`,
-  `replay_report`, `ewr/simulation`, `universe_lists`), then **examples/ + tests/
-  (78 files)**. Wheel `Money` (Decimal major) replaced kernel minor-int Money; the
-  `run_portfolio_backtest` output keeps its integer-minor public contract via a
-  boundary converter.
-- **Deleted** the ex-0006-owned mirror: 17 root modules (`bar/base/context/
-  coverage/declarative/entities/execution/instrument/money/order/order_state/
-  position/sizing/store/tick/trade/native`) + the `indicators/portfolio_strategy/
-  wire/backtest` subpackages + `__pycache__` (−12,170 lines, 123 files). Rewrote
-  the `_kernel/__init__.py` facade to re-export the wheel + kept `_kernel.portfolio`;
-  dropped the `[[tool.mypy.overrides]]` block. Kept modules (risk/runner/testing/
-  adapters) gained a local `_native_attr` probe (compiled `SCHEMA_VERSION`/
-  `API_VERSION`; `RuntimeError` for the absent compiled risk/trading-state classes).
-- **Suite**: `pytest tests/unit` 838 passed, 72 failed (pre-existing float-rooted
-  failures in the KEPT harness/metrics — e.g. `metrics.fills_equity_curve` — out of
-  scope), 3 environmental errors (optional `httpx`), 50 skipped. No new failures.
-- Gap doc 0006 removed, indexes + cascade map → Closed; remaining `_kernel/` files
-  are the other gaps' mirrors (0002 `ai/`, 0003 `data/`+`screener/`, 0004
-  `markets/india/`+`cli/`, 0007 `adapters/`, 0008 `session.py`) + the shared
-  harness — all now built on the wheel; **the cascade root is unblocked**.
-- The other gaps (0002/0003/0004/0007/0008) remain open — each still blocked on its
-  own upstream surface (`tantra.ai`, `tantra_data`, `tantra.display`/universes/
-  india pack, `tantra.adapters` framework, runtime session orchestrator).
+Date: 2026-11-15. Per user direction ("use subagents to close the remaining one by one",
+full program): the 5 remaining `tantra-examples` gaps are being closed **one per wave**
+(sequential — their downstream closures touch overlapping example files). Order:
+0007 → 0003 → 0004 → 0002 → 0008. Wave 1 done:
+- **Gap 0007 CLOSED** — wheel `tantra.adapters` framework surface shipped in `tantra-ffi`
+  `437eddf` (13 modules promoted verbatim from the mirror, `ENTRY_POINT_GROUP="tantra.adapters"`,
+  13 new wheel tests; wheel suite 231 collected, only 3 pre-existing failures), and
+  `tantra-examples` `6b4e86c` deleted `_kernel/adapters/` + retargeted 18 consumers to
+  `tantra.adapters`; gap doc removed, README + HANDOFF updated. Suite unchanged at
+  841/72/3/41. Doc-snippet retargets `9433aa0`. Open gaps now **4** (0002/0003/0004/0008).
+- **Waves remaining**: 0003 (ships wheel `tantra.screener` catalog/coverage + `tantra_data`
+  loaders; delete `_kernel/data/`+`_kernel/screener/`+`amfi.py`+`bhavcopy.py`, retarget
+  paths/sip/conftest + `_kernel/ai/{ask,knowledge}.py` catalog imports), 0004 (wheel
+  `tantra.display`/`tantra.markets.india`/universes/`tantra.cli.data`; delete the
+  display/universe/cli mirrors + `_kernel/markets/india/` + `_kernel/cli/`; ~90 consumers),
+  0002 (wheel `tantra.ai` on `tantra.screener`; delete `_kernel/ai/`+`fake_llm`+`decision_guard`+
+  `nl_support`; un-skip 4 design-only scripts), 0008 (wheel session surface on
+  `tantra.backtest`+`tantra.markets.india`; retarget wheel `algo_analytics` `_kernel.session`
+  imports; delete `_kernel/session.py`).
+
+## Previous Batch — ex 0006 CLOSED (cascade root)
+
+Date: 2026-11-15. The Decimal-canonical `tantra` wheel kernel-domain layer shipped (money/
+position/trade/instrument/entities, bar, tick, order, order_state, execution, indicators 74,
+base/context, declarative, portfolio_strategy, wire, store, coverage, backtest sims);
+`tantra-examples` retargeted every `_kernel.*` consumer to the wheel and deleted the
+ex-0006-owned mirror (−12,170 lines); gap doc 0006 removed, indexes + cascade map → Closed.
+Suite: 838→841 passed, 72 pre-existing float-rooted failures, 3 environmental errors, 50→41
+skipped — no new failures. The remaining `_kernel/` files are the other gaps' mirrors
+(0002 `ai/`, 0003 `data/`+`screener/`, 0004 `markets/india/`+`cli/`, 0007 `adapters/` (now
+closed), 0008 `session.py`) + the shared harness — all built on the wheel. Commit: `d4b9f82`.
 
 ## Latest Batch — T9.3 + T9.7 closed; T9.8 (kernel-domain root) started
 
