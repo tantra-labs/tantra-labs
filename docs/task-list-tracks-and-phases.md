@@ -319,11 +319,35 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ---
 
+## T13 — Dismantle the `_kernel` shared harness · Phase 5
+
+**Source**: [root plan 0006](plans/0006-dismantle-kernel-harness.md) (master) ·
+[`tantra-ffi/docs/plans/0002-*.md`](../tantra-ffi/docs/plans/0002-tantra-wheel-domain-harness-surface.md)
+(Thrust A) · [`tantra-examples/docs/plans/0003-*.md`](../tantra-examples/docs/plans/0003-tantra-examples-harness-dismantle.md)
+(Thrust B)
+
+Clean-architecture + tantra-philosophy cleanup: with all 8 `_kernel` mirror gaps closed, the
+`_kernel/` package is pure residue. Lift the 6 domain/math modules into the wheel
+(consolidation over duplication, AGENTS §4.1), then rename the remaining app-harness out of
+`_kernel`. Planning-only until approved.
+
+| Task | Work | Repo / Scope | Phase | Status | Gap / Plan |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **T13.1** | Wheel `tantra.portfolio` — promote `Account`/`Portfolio` (`_kernel/portfolio.py`, Decimal); delete the mirror + facade re-export; re-verify zero consumers (delete outright if unused) | `tantra-ffi` → `tantra-examples` | 5 | Proposed | ffi plan 0002 (A1) |
+| **T13.2** | Wheel `tantra.risk` — promote the pure-Python pre-trade checks (`check_state`/`check_order`/`limits_from_config` + audit records + `_native_attr` probe); delete `_kernel/risk.py`; retarget `_kernel/runner.py` | `tantra-ffi` → `tantra-examples` | 5 | Proposed | ffi plan 0002 (A2) |
+| **T13.3** | Wheel `tantra.options` — promote `bs_greeks`/`bs_price` + `OptionKind`/`OptionStyle`/`OptionChain`/`OptionContract`; delete `_kernel/{greeks,option}.py`; retarget options examples 01–08 + `tantra_examples/options/*` | `tantra-ffi` → `tantra-examples` | 5 | Proposed | ffi plan 0002 (A3) |
+| **T13.4** | Wheel `tantra.metrics` — promote `extract_metrics_from_bars`; delete `_kernel/evaluator.py`; retarget `screening/nl_support.py` | `tantra-ffi` → `tantra-examples` | 5 | Proposed | ffi plan 0002 (A4) |
+| **T13.5** | Wheel `tantra.calendar` — promote `ist_midnight_ns` + IST helpers; delete `_kernel/calendar.py`; retarget `_kernel/ports.py` | `tantra-ffi` → `tantra-examples` | 5 | Proposed | ffi plan 0002 (A5) |
+| **T13.6** | Harness rename — `tantra_examples/_kernel/` → `tantra_examples/harness/` (config/loader/log/manifest/ports/runner/service/testing + rewritten facade); retarget ~60 `_kernel.*` import sites; delete `_kernel/`; docs sweep (architecture/code-migration-map/cascade/READMEs/HANDOFF) | `tantra-examples` | 5 | Proposed | ex plan 0003 (B) |
+| **T13.7** | Gate + follow-on — full wheel + `tests/unit` suites green (baseline 841/73/3/50, zero new failures), ruff clean, example smoke runs; record follow-on consolidation candidates (`runner`→wheel session, `service`→tantra_data, `testing.replay`→wheel helper) | `tantra-ffi` + `tantra-examples` | 5 | Proposed | ex plan 0003 (C) |
+
+---
+
 ## Per-repo summary
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
-| `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella), **0005 (EE+ platform, proposed)** | T0.1–T0.6 ✅, T12.1–T12.10 |
+| `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella), **0005 (EE+ platform, proposed)**, **0006 (dismantle `_kernel` harness, proposed — T13)** | T0.1–T0.6 ✅, T12.1–T12.10, T13.1–T13.7 |
 | `tantra-core` | 1 (0002 EE+) | 0003 (EE+, proposed) | T0.7 ✅ (audit decision), T12.1 |
 | `tantra-ledger` | 1 (0012 EE+) | — | T2.1–T2.11 ✅, T12.7 |
 | `tantra-risk` | 1 (0005 EE+) | 0002 (Implemented) | T1.1–T1.4 ✅, T12.6 |
@@ -335,8 +359,8 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | `tantra-adapters` | 0 | 0002, 0003, 0004 (all Implemented) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006, 0017–0019, 0020–0022 (Implemented) | T5.1–T5.10 ✅, T12.3 |
 | `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅) |
-| `tantra-examples` | **0** (all 8 closed: 0001–0008) | — | T9.1–T9.10 all ✅ (T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.10 ✅) |
-| `tantra-ffi` | **0** | — | T9.1 ✅, T9.2 ✅ |
+| `tantra-examples` | **0** (all 8 closed: 0001–0008) | **0003 (harness dismantle, proposed — T13)** | T9.1–T9.10 all ✅ (T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.10 ✅), T13.6–T13.7 |
+| `tantra-ffi` | **0** | **0002 (wheel domain-harness surfaces, proposed — T13)** | T9.1 ✅, T9.2 ✅, T13.1–T13.5 |
 | `tantra-docs` | — | 0001, 0003 (both Implemented) | T11.1 ✅, T11.2 ✅ |
 
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades

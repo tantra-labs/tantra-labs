@@ -12,6 +12,7 @@ Per workspace rule `.agents/rules/gap-tracking.md`:
 |---|-------|--------------|--------|
 | [0001](0001-fincept-quantcepts-gap-closure-and-feature-roadmap.md) | Fincept & Quantcepts Feature Parity, Gap Closure, and Platform Expansion Master Plan | Platform-wide | Approved Architecture & Implementation Roadmap |
 | [0005](0005-elephant-edge-strategy-platform.md) | Elephant Edge (EE+) Intraday Strategy Platform — level map, buy/sell signals, SL/TSL, positioning (with Order Blocks & OI/gamma confluence) | `tantra-strategies`, `tantra-core`, `tantra-market`, `tantra-data`, `tantra-exec`, `tantra-risk`, `tantra-ledger`, `tantra-ui`, `tantra-agent`, `tantra-docs` | Proposed — tracks per-repo gaps/plans in the §2 table; research basis `docs/research/elephant-edge-strategy.md` |
+| [0006](0006-dismantle-kernel-harness.md) | Dismantle the `_kernel` shared harness — lift domain/math modules into the wheel (`tantra.portfolio`/`risk`/`options`/`metrics`/`calendar`) and rename the remaining examples harness out of `_kernel` | `tantra-ffi` (wheel), `tantra-examples` (harness) | Proposed — T13; tracks per-repo plans `tantra-ffi/docs/plans/0002-*.md` + `tantra-examples/docs/plans/0003-*.md` |
 
 ## Related
 

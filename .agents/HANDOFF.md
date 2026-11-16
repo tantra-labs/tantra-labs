@@ -11,7 +11,36 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — gap-closure program COMPLETE (all 8 tantra-examples gaps closed)
+## Latest Batch — T13 PLANNED (docs only; no development)
+
+Date: 2026-11-15. Per user direction ("create a new set of plan(s) to achieve this… may call it
+Track 13"): planning artifacts for **T13 — Dismantle the `_kernel` shared harness** were
+created, no code was written:
+- **Root master plan** `docs/plans/0006-dismantle-kernel-harness.md` (Proposed): after all 8
+  gap closures, the `_kernel/` package (14 modules, 3,469 lines, ~60 import sites) is mirror
+  residue. Clean-architecture correction in two thrusts — **Thrust A**: lift the 6
+  domain/math modules into the wheel (`tantra.portfolio`/`risk`/`options`/`metrics`/
+  `calendar`) per Consolidation Over Duplication (AGENTS §4.1); **Thrust B**: rename the
+  remaining app-harness to `tantra_examples/harness/` and delete `_kernel/`. Full audit
+  table (module → lines → classification → consumers) is in the plan.
+- **`tantra-ffi/docs/plans/0002-tantra-wheel-domain-harness-surface.md`** (Proposed) — Thrust
+  A phases A1–A5 (T13.1–T13.5), each: promote verbatim → wheel tests → delete mirror →
+  retarget consumers. Includes the recorded decisions: `_kernel/portfolio.py` `Account`/
+  `Portfolio` have no consumers outside the facade (delete-if-unused option); `tantra.risk`
+  keeps the `_native_attr` probe (compiled risk classes still absent); non-goals (no Rust,
+  harness modules not promoted here).
+- **`tantra-examples/docs/plans/0003-tantra-examples-harness-dismantle.md`** (Proposed) —
+  Thrust B (T13.6): rename the 8 harness modules into `harness/`, retarget ~60 sites, delete
+  `_kernel/`, docs sweep; Phase C (T13.7) gate + recorded follow-on candidates (`runner`→
+  wheel session, `service`→tantra_data, `testing.replay`→wheel helper).
+- **Root task list**: `## T13` track added (T13.1–T13.7, Phase 5, all Proposed); per-repo
+  summary rows for root/`tantra-examples`/`tantra-ffi` updated. Plan indexes updated in all
+  three repos. HANDOFFs updated per repo.
+- Execution is NOT started — the plans await approval. When approved, run one subagent per
+  phase (A1–A5 sequential, then B, then C), mirroring the gap-closure program pattern
+  (promote → delete → retarget → verify; unit baseline 841/73/3/50, zero new failures).
+
+## Previous Batch — gap-closure program COMPLETE (all 8 tantra-examples gaps closed)
 
 Date: 2026-11-15. Per user direction ("use subagents to close the remaining one by one",
 full program): the 5 remaining `tantra-examples` gaps (0002/0003/0004/0007/0008) were closed
