@@ -11,6 +11,17 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — T12.10 (docs slice of the EE+ platform track)
+
+Date: 2026-11-15. `tantra-docs` only: the EE+ strategy guide gained
+`docs/strategies/elephant-edge/reference.md` — the missing plan-0003 page 6 (parameter
+reference, declarative `Parameter` + `config.toml` configuration example, illustrative
+worked session walk-through on the shipped gap-0006 SDK models). Nav + index + cross-links
+wired; `mkdocs build --strict` green. Cross-repo EE+ deps stay open and are tracked in
+their own repos — T12.4 strategy engine (`tantra-strategies` plan 0001), T12.9 Studio
+(`tantra-ui` plan 0006), T12.8 `level_map`/`oi_walls` chat tools (`tantra-agent` plan
+0011); the guide's "planned" banners drop when those land. Task list: T12.10 Done.
+
 ## Latest Batch — T13 PLANNED (docs only; no development)
 
 Date: 2026-11-15. Per user direction ("create a new set of plan(s) to achieve this… may call it
@@ -724,8 +735,9 @@ Date: 2026-11-12. Dismantled `docs/roadmap/` in both repos and re-wrote
    types (`tantra-core` plan 0003) → T12.2 indicators (`tantra-market` gap 0005) → T12.3
    chain-snapshot lakehouse (`tantra-data` gap 0016) → T12.4 EE+ strategy itself
    (`tantra-strategies` plan 0001) → T12.5–T12.7 execution/risk/OMS (exec 0003, risk 0005,
-   ledger 0012) → T12.8–T12.10 agent/UI/docs (agent 0011, ui 0006/gap 0007, docs 0003). See the
-   T12 track in `docs/task-list-tracks-and-phases.md`.
+   ledger 0012) → T12.8/T12.9 agent/UI (agent 0011, ui 0006/gap 0007). **Docs (T12.10) DONE
+   2026-11-15** — `tantra-docs` guide + `reference.md` shipped; its "planned" banners drop
+   when T12.4/T12.8/T12.9 land. See the T12 track in `docs/task-list-tracks-and-phases.md`.
 1. **T7 complete (2026-11-14)** — gap 0007 (all 19 items) + T4.9/T4.10 + T0.7 + T6.9 closed;
    items 10/14–16 were the last open (L2 depth, fundamentals/MF/IPO) and landed with real
    data. Only runtime gap 0008 stays open by design (documented architecture decision option

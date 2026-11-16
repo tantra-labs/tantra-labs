@@ -315,7 +315,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **T12.7** | Bracket-order OMS lifecycle (SL/TSL child orders, stop-trigger close) | `tantra-ledger` | 5 | Proposed | ledger 0012 |
 | **T12.8** | `level_map` / `oi_walls` ReadOnly chat tools | `tantra-agent` | 4–5 | Proposed | agent plan 0011 |
 | **T12.9** | EE+ Strategy Studio — level map, signal/SL/TSL lines, positioning (web/TUI/CLI) | `tantra-ui` | 6 | Proposed | ui plan 0006 / gap 0007 |
-| **T12.10** | EE+ user guide + worked example | `tantra-docs` | 6 | Proposed | docs 0003 |
+| **T12.10** | ✅ EE+ user guide + worked example — `docs/strategies/elephant-edge/` guide completed with `reference.md` (full parameter reference, declarative `Parameter` + catalog-style `config.toml` configuration example, illustrative worked session walk-through using only the shipped gap-0006 SDK models); nav + index + cross-links wired; `mkdocs build --strict` green. The guide's "planned" banners for the strategy engine (T12.4), Studio (T12.9), and `level_map`/`oi_walls` chat tools (T12.8) remain until those land in their own repos | `tantra-docs` | 6 | **Done** | docs 0003 (Implemented) |
 
 ---
 
@@ -361,7 +361,7 @@ Clean-architecture + tantra-philosophy cleanup: with all 8 `_kernel` mirror gaps
 | `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅) |
 | `tantra-examples` | **0** (all 8 closed: 0001–0008) | **0003 (harness dismantle, proposed — T13)** | T9.1–T9.10 all ✅ (T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.10 ✅), T13.6–T13.7 |
 | `tantra-ffi` | **0** | **0002 (wheel domain-harness surfaces, proposed — T13)** | T9.1 ✅, T9.2 ✅, T13.1–T13.5 |
-| `tantra-docs` | — | 0001, 0003 (both Implemented) | T11.1 ✅, T11.2 ✅ |
+| `tantra-docs` | — | 0001, 0003 (both Implemented) | T11.1 ✅, T11.2 ✅, T12.10 ✅ |
 
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
 > added, convention pinned, aliases pruned, TDD cleanup done, all workspaces verified. T0.7

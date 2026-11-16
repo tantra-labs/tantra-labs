@@ -74,7 +74,7 @@ Probe-verified 2026-11-13:
 | `tantra-ledger` | gap 0012 | OMS lifecycle for bracket orders: fill → SL/TSL child orders, TSL modify events, square-off; position-level P&L trail. |
 | `tantra-agent` | plan 0011 | `level_map` / `oi_walls` chat tool surface (ReadOnly, honest `unavailable` until upstream gaps close; cites plan 0010). |
 | `tantra-ui` | plan 0006 / gap 0007 | EE+ Strategy Studio: level-map rendering (zones, walls, flip, OB), signal markers with entry/SL/TSL lines, positioning panel. |
-| `tantra-docs` | plan 0003 | User guide: strategy setup, level-map legend, parameter reference, worked example. |
+| `tantra-docs` | plan 0003 | User guide: strategy setup, level-map legend, parameter reference, worked example. **DONE 2026-11-15 (T12.10)** — guide + `reference.md` shipped; guide keeps "planned" banners for engine/Studio/chat tools until those land. |
 
 ## 3. Phases
 
@@ -104,8 +104,9 @@ Probe-verified 2026-11-13:
   on ui gap 0004 view-layer work) + TUI/CLI surfacing.
 
 ### Phase 6 — Documentation (`tantra-docs` 0003)
-- User guide + strategy reference; examples in `tantra-examples` (mirror, per
-  the T9 convention).
+- User guide + strategy reference: **DONE 2026-11-15 (T12.10)** (`docs/strategies/elephant-edge/` incl.
+  `reference.md`); examples in `tantra-examples` still wait on the strategy engine (T12.4), per the T9 mirror
+  convention.
 
 ## 4. Strategy Contract (binding across repos)
 
