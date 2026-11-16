@@ -1,4 +1,4 @@
-# 0006 — Qullamaggie Multi-Market Swing Trading Platform (India NSE/BSE & US Equities)
+# 0009 — Qullamaggie Multi-Market Swing Trading Platform (India NSE/BSE & US Equities)
 
 **Status**: Proposed  
 **Date**: 2026-11-15  
@@ -213,7 +213,7 @@ Dependency order mirrors Master Plan [`0005`](0005-elephant-edge-strategy-platfo
 
 | Phase | Owning Repo / Scope | Work Item Summary | Depends On |
 |---|---|---|---|
-| **0. Verify & Research Baseline** | `tantra-labs` (root) + code read across `data`, `market`, `risk`, `exec`, `runtime`, `ledger` | Inspect source implementations for the **9 unverified rows (`7, 8, 11, 12, 25, 26, 27, 28, 32`)**; verify NSE/BSE circuit-band & F&O circulars; update §1 & §2 with exact file evidence; file confirmed `docs/gaps/XXXX-*.md` in each owning repo. *(Note: Plan `0006` itself preserves the consolidated research baseline until retired or split if needed.)* | — |
+| **0. Verify & Research Baseline** | `tantra-labs` (root) + code read across `data`, `market`, `risk`, `exec`, `runtime`, `ledger` | Inspect source implementations for the **9 unverified rows (`7, 8, 11, 12, 25, 26, 27, 28, 32`)**; verify NSE/BSE circuit-band & F&O circulars; update §1 & §2 with exact file evidence; file confirmed `docs/gaps/XXXX-*.md` in each owning repo. *(Note: Plan `0009` itself preserves the consolidated research baseline until retired or split if needed.)* | — |
 | **1. Domain Contracts** | `tantra-core` | Add zero-I/O `Decimal` domain types: `MarketProfile` (id, currency, sessions, pre-open window, price-band model, shortability model, settlement/lot rules), `SwingSetupKind`, `CandidateGrade`, `ScanCandidate` (pivot, stop, `adr_pct`, `rvol`, `regime_label`), `RegimeState` (4 levels), `JournalEntry` extensions (`setup_tag`, `r_multiple`, `regime_at_entry`, `override_reason`). | Phase 0 |
 | **1. Finance Profiles & Dynamic Universe** | `tantra-market-finance` | Populate `INDIA_NSE_BSE` profile + `US_EQUITIES` profile (calendar/sessions/costs); add `DynamicUniverse` trait supporting point-in-time historical membership & liquidity filtering alongside `StaticUniverse`. | `tantra-core` contract |
 | **1. Strategy SDK Interfaces** | `tantra-strategies` | Extend `StrategyContext` & `Strategy` contracts for multi-symbol `universe()`, account `equity()`, mixed **daily + intraday bar** lookup, and `partial_exit` / `close_based_trailing_stop` intents (`stop_protection.py` foundation already landed). | `tantra-core` contract |
@@ -324,7 +324,7 @@ No public study reports win rate, mean $R$, expectancy, drawdown, and regime bre
 Per `.agents/rules/gap-tracking.md`:
 - Phase 0 updates §1–§2 with verified file-level findings and files individual per-repo gap docs under owning `docs/gaps/XXXX-*.md` repositories.
 - As each capability ships and passes its quality & validation gates, its gap document is removed from active `docs/gaps/` and recorded in the repo's index.
-- Once all phases are closed or explicitly scoped out, move **Plan `0006`** to the `Implemented Plans` table in [`docs/plans/README.md`](README.md) and mark **Track T13** complete in [`docs/task-list-tracks-and-phases.md`](../task-list-tracks-and-phases.md).
+- Once all phases are closed or explicitly scoped out, move **Plan `0009`** to the `Implemented Plans` table in [`docs/plans/README.md`](README.md) and mark **Track T13** complete in [`docs/task-list-tracks-and-phases.md`](../task-list-tracks-and-phases.md).
 
 ## 8. Related
 - Plans Index: [`docs/plans/README.md`](README.md)

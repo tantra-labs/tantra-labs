@@ -54,7 +54,7 @@ Per-repo documents:
 | P2 | `TradeManager` pure state machine (`on_entry_fill`, `on_bar`, `on_session_close` → `MoveStop` / `PartialExit` / `ExitAll`), tick-snapping, intrabar policy, canonical preset TOMLs + golden vectors | same |
 | P3 | ADR%(20) and Chandelier exit indicators | [`tantra-market` gap 0007](../../tantra-market/docs/gaps/0007-adr-pct-and-chandelier-exit.md) |
 | P3b | Chart pattern analyzer: geometric + multi-bar candlesticks over `&[Bar]` (`Decimal` geometry + `DateTime<Utc>`, `PatternStage { FormingArmed, BreakoutConfirmed }`, no look-ahead), per-pattern edge stats | [`tantra-market` plan 0002](../../tantra-market/docs/plans/0002-chart-pattern-analyzer.md) (+ `ChartPattern` in core plan 0005 §2a) |
-| P4 | PyO3 `tantra.trade_plan` bindings (`TradePlanner`, `TradeManager`, `ChartPattern`, canonical presets); reconcile `declarative.py` OCO and `TRAILING_STOP` | [`tantra-ffi` plan 0002](../../tantra-ffi/docs/plans/0002-trade-planner-bindings.md) |
+| P4 | PyO3 `tantra.trade_plan` bindings (`TradePlanner`, `TradeManager`, `ChartPattern`, canonical presets); reconcile `declarative.py` OCO and `TRAILING_STOP` | [`tantra-ffi` plan 0004](../../tantra-ffi/docs/plans/0004-trade-planner-bindings.md) |
 | P5 | SDK `ctx.equity()`, `Strategy.plan_trade(signal, preset, **overrides)`, `on_trade_action`, `partial_exit`; read canonical presets from FFI; drive `SimulatedContext` via Rust `TradeManager` | [`tantra-strategies` plan 0003](../../tantra-strategies/docs/plans/0003-trade-plan-sdk.md) |
 | P6 | Backtest via `TradeManager` (MTM equity, no sizer overwrite, `on_entry_fill` R-anchoring, intrabar H/L, trailing, partials, breakeven, time stops); live synthetic OCO state machine; `POST /v1/trade-plan`; R-multiple journal; pattern scan wiring | [`tantra-runtime` plan 0006](../../tantra-runtime/docs/plans/0006-trade-manager-backtest-and-synthetic-brackets.md) |
 | P7 | Real `strategy_suggest` over `TradePlanPort`; MCP `trade_plan`, `trade_plan_presets`, and `chart_patterns` | [`tantra-agent` plan 0014](../../tantra-agent/docs/plans/0014-real-trade-suggestion-and-trade-plan-mcp.md) |
@@ -62,8 +62,8 @@ Per-repo documents:
 Plans and gaps this work unblocks or partly closes:
 
 - Root [plan 0005](0005-elephant-edge-strategy-platform.md) (EE+ SL/TSL/partials/sizing)
-- Root [plan 0006](0006-qullamaggie-swing-trading-platform.md) (ADR% gate, partial exits, close-based trail, `equity()`: gap row 22; flag/VCP/Darvas detection)
-- Root [plan 0007](0007-screener-taxonomy-and-alerts.md) & [`tantra-data` plan 0008](../../tantra-data/docs/plans/0008-screen-dsl-catalog-qvm.md) (Candlestick/Darvas/Pattern screen presets aligned to `tantra-market-signals` codes)
+- Root [plan 0009](0009-qullamaggie-swing-trading-platform.md) (ADR% gate, partial exits, close-based trail, `equity()`: gap row 22; flag/VCP/Darvas detection)
+- Root [plan 0010](0010-screener-taxonomy-and-alerts.md) & [`tantra-data` plan 0008](../../tantra-data/docs/plans/0008-screen-dsl-catalog-qvm.md) (Candlestick/Darvas/Pattern screen presets aligned to `tantra-market-signals` codes)
 - [`tantra-risk` gap 0005](../../tantra-risk/docs/gaps/0005-stop-protection-risk-validation.md) (SL/TSL validation over `TradePlan`, plus weight/ADV sizing refusals)
 - [`tantra-exec` gap 0003](../../tantra-exec/docs/gaps/0003-bracket-order-slt-sl-execution.md) and [`tantra-ledger` gap 0012](../../tantra-ledger/docs/gaps/0012-bracket-order-oms-lifecycle.md) (multi-leg bracket contract & OMS lifecycle)
 
@@ -93,7 +93,7 @@ Plans and gaps this work unblocks or partly closes:
    - Stateless `POST /v1/trade-plan` preview endpoint; wire `PatternAnalyzer` in scan/backtest.
 7. **P7, L3 `tantra-agent`.** `TradePlanPort` + `PatternPort` wired in `tantra-runtime` (R1/R4 — never add `tantra-market`/`tantra-ledger` deps to `tantra-agent-mcp`).
    - LLM-proposed presets/overrides deserialize with `#[serde(deny_unknown_fields)]` and remain advisory; any order conversion passes `RiskEngine`.
-8. **Follow-up: `tantra-examples`.** Preset-driven examples (screen → pattern/signal → plan → backtest), chained off root [plan 0007](0007-screener-taxonomy-and-alerts.md).
+8. **Follow-up: `tantra-examples`.** Preset-driven examples (screen → pattern/signal → plan → backtest), chained off root [plan 0010](0010-screener-taxonomy-and-alerts.md).
 
 ## 3. Pattern-driven trade plans
 
@@ -108,7 +108,7 @@ Guardrails:
 - Patterns are strictly causal: all constituent pivots must have `confirmed_at <= armed_at`, and `BreakoutConfirmed` patterns anchor at the breakout bar close (never backdated to pivot bars) so backtests cannot look ahead.
 - `ChartPattern` carries `timeframe` and `stage` explicitly so multi-timeframe setups (e.g. D1 pattern with M5 entry) remain unambiguous.
 - Pattern `quality` may scale `risk_pct` only after [`tantra-market` plan 0002](../../tantra-market/docs/plans/0002-chart-pattern-analyzer.md) Phase D publishes point-in-time edge statistics.
-- Pattern detectors also feed [plan 0007](0007-screener-taxonomy-and-alerts.md) Candlestick/Pattern screens, `tantra-ui` chart annotations (`LevelLine`/`ZoneBand`/`StopLine`), and the agent `chart_patterns` tool.
+- Pattern detectors also feed [plan 0010](0010-screener-taxonomy-and-alerts.md) Candlestick/Pattern screens, `tantra-ui` chart annotations (`LevelLine`/`ZoneBand`/`StopLine`), and the agent `chart_patterns` tool.
 
 ## 4. Cross-Cutting Architectural Invariants
 

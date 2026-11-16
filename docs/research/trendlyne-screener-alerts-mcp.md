@@ -1,7 +1,7 @@
 # Research — Trendlyne screeners, DVM, Alpha Alerts & MCP → what Tantra should adopt
 
 **Date**: 2026-11-15 · **Scope**: idea source only (native implementation; no Trendlyne data
-dependency, no adapter to its paid MCP) · **Roadmap**: [`docs/plans/0007`](../plans/0007-screener-taxonomy-and-alerts.md)
+dependency, no adapter to its paid MCP) · **Roadmap**: [`docs/plans/0010`](../plans/0010-screener-taxonomy-and-alerts.md)
 
 Trendlyne is an Indian equity research platform (NSE/BSE). Its value for Tantra is not its data
 (proprietary, subscription-gated, no public API) but its **organizing taxonomy**: how a retail/pro

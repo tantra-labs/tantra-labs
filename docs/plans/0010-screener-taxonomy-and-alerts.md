@@ -1,4 +1,4 @@
-# 0007 — Screener Taxonomy, QVM Score, Group Alerts & Screener MCP (Trendlyne-inspired, native)
+# 0010 — Screener Taxonomy, QVM Score, Group Alerts & Screener MCP (Trendlyne-inspired, native)
 
 **Status**: Proposed
 
@@ -24,15 +24,15 @@ The pieces Tantra has today don't fit together. Python `ScreenQuery`/`Vectorized
 | F1 + F7 wire | Classification value objects, `ScreenCategory`, crossing ops, peer-relative predicates, `AlertRule`/`AlertEvent` | [`tantra-core` plan 0004](../../tantra-core/docs/plans/0004-classification-and-alert-wire-types.md) |
 | F2 | Instrument master, NSE industry classification, point-in-time index membership, cap-bucket history | [`tantra-data` plan 0007](../../tantra-data/docs/plans/0007-instrument-master-index-membership.md) |
 | F3 + F4 + F5 | Unified screen DSL, screener v2 joins, TOML screen catalog, QVM score | [`tantra-data` plan 0008](../../tantra-data/docs/plans/0008-screen-dsl-catalog-qvm.md) |
-| F9 | Shareholding / pledge / SAST / analyst estimates (no source yet) | [`tantra-data` gap 0023](../../tantra-data/docs/gaps/0023-shareholding-sast-estimates.md) |
+| F9 | Shareholding / pledge / SAST / analyst estimates (no source yet) | [`tantra-data` gap 0024](../../tantra-data/docs/gaps/0024-shareholding-sast-estimates.md) |
 | F6 | SDK `StrategyContext.universe / classification / screen`, `on_rebalance` | [`tantra-strategies` plan 0002](../../tantra-strategies/docs/plans/0002-universe-screen-context.md) |
-| F7 engine | AlertRule store, scheduler, edge detection, notification sinks, `/v1/alerts/*`, MCP port wiring | [`tantra-runtime` plan 0005](../../tantra-runtime/docs/plans/0005-group-screener-alerts.md) |
+| F7 engine | AlertRule store, scheduler, edge detection, notification sinks, `/v1/alerts/*`, MCP port wiring | [`tantra-runtime` plan 0007](../../tantra-runtime/docs/plans/0007-group-screener-alerts.md) |
 | F8 | Screener / universe / QVM / alert / watchlist MCP tools | [`tantra-agent` plan 0013](../../tantra-agent/docs/plans/0013-screener-mcp-tools.md) |
-| — | Categorized examples and migration off the examples universe mirror | [`tantra-examples` plan 0003](../../tantra-examples/docs/plans/0003-categorized-examples.md) |
+| — | Categorized examples and migration off the examples universe mirror | [`tantra-examples` plan 0005](../../tantra-examples/docs/plans/0005-categorized-examples.md) |
 
 Related: root [plan 0001](0001-fincept-quantcepts-gap-closure-and-feature-roadmap.md) §`screener`
 and §`workspace` (watchlists, multi-condition alerts). This plan is the concrete, per-repo
-breakdown of those areas. Root [plan 0006](0006-qullamaggie-swing-trading-platform.md) (cross-sectional
+breakdown of those areas. Root [plan 0009](0009-qullamaggie-swing-trading-platform.md) (cross-sectional
 leader rank, back watchlist) consumes F2/F3/F6. Examples gaps 0004/0006 (universe mirror) are
 superseded for their universe portion by `tantra-data` plan 0007.
 
@@ -45,9 +45,9 @@ superseded for their universe portion by `tantra-data` plan 0007.
 | P3 | L6 | `tantra-data` 0008 A–C: DSL unification, screener v2, screen catalog | P1, P2 |
 | P4 | L6 | `tantra-data` 0008 D: QVM score (point-in-time, open weights, G/M/B combo labels) | P3 |
 | P5 | L6 | `tantra-strategies` 0002: SDK context surface + `SimulatedContext` seeding | P2, P3 (Protocol only; adapter at composition) |
-| P6 | L3 | `tantra-runtime` 0005: alert engine + REST; wires the MCP ports | P1, P3 (via HTTP/FFI schema) |
+| P6 | L3 | `tantra-runtime` 0007: alert engine + REST; wires the MCP ports | P1, P3 (via HTTP/FFI schema) |
 | P7 | L3 | `tantra-agent` 0013: MCP tool definitions over ports | P1; wired by P6 |
-| P8 | L6 | `tantra-examples` 0003: categorized examples, rotation strategy, mirror removal | P2–P5 |
+| P8 | L6 | `tantra-examples` 0005: categorized examples, rotation strategy, mirror removal | P2–P5 |
 | Later | L6 | `tantra-data` gap 0023: shareholding / SAST / estimates, which unlock the Shareholding, Forecaster and Red-flag categories and insider-deal alerts | data source |
 
 Invariants across all phases: Decimal only (no floats); parameterized SQL only (including
