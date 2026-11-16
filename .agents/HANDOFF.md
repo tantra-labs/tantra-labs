@@ -78,9 +78,12 @@ mirror and retargeting consumers:
   + `make_simulator` settlement to `tantra.markets.india` and defaulting `algo_analytics`
   `runner=None` to the session); `_kernel/session.py` deleted (`bd469dd`). Final doc sweep
   `bfbcad1` (cascade map all-closed; production/backtesting README snippets retargeted).
-- **Unit suite: 841 passed / 73 failed (pre-existing float-rooted) / 3 errors / 50 skipped**
-  — the failed set is byte-identical to the pre-program baseline (stash-verified each wave);
-  zero new failures across all five closures. The `_kernel/` mirror is fully dismantled;
+- **Unit suite: 916 passed / 51 skipped, exit 0** — the 73 pre-existing float-rooted failures
+  and 3 errors were fixed in a follow-up batch (2026-11-15): examples + tests Decimal-canonicalized
+  against the wheel (float literals → `decimal.Decimal`; jsonable decimal-string assertions;
+  `default=str` for determinism tests), `fills_equity_curve` + `safe_eval_predicate` made exact
+  Decimal, and the stale `backtest_parity_golden.json` regenerated. Wheel suite: 464 passed.
+  The `_kernel/` mirror is fully dismantled;
   only the shared harness remains (`calendar/config/evaluator/greeks/loader/log/manifest/
   option/portfolio/ports/risk/runner/service/testing` + `portfolio`).
 - **Workspace `tantra-examples` open gaps: 0** (all 8 closed). All work committed locally,
