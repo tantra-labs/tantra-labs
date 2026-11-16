@@ -5,8 +5,12 @@
 Level 7 (`tantra-data/0002`, filings breadth) superseded: filings ingestion + the
 `tantra-data` → Rust bridge for filings/corporate actions are both landed (T5 track,
 2026-11-13). Agent-side **plan 0006 (MCP/chat tool catalog expansion) is complete**;
-follow-on breadth tracked under agent plan 0007.
-Date: 2026-11-15 · Workspace: `tantra-labs`
+follow-on breadth tracked under agent plan 0007. **T14 (Standalone Paper Trading
+Exchange, root plan 0007) COMPLETE 2026-11-16** — all four phases (P0 matching core,
+P1 runtime wiring, P2 Python SDK `tantra.paper`, P3 CSR/WASM, P4 golden parity + docs)
+shipped; the T14 gate (byte-identical fills across backtest / paper / Python / WASM on
+one golden vector) passes.
+Date: 2026-11-16 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crate dependency
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
@@ -119,72 +123,44 @@ Date: 2026-11-16.
   otherwise installs into a stale per-repo venv. Verified: ffi wheel suite (496) and
   adapters suite green through the symlinks; `mkdocs build --strict` green.
 
-## Latest Batch — T14 P0 SHIPPED (matching core + sync port lift + parity)
+## Latest Batch — T14 COMPLETE (Standalone Paper Trading Exchange)
 
-Date: 2026-11-16. Root plan 0007 P0 complete (`tantra-exec/docs/plans/0003`), all three waves
-green (1 subagent/wave, sequential to avoid `Cargo.lock` contention):
-- **Wave 1 (tantra-exec)**: new crate `crates/tantra-exec-paper` — ported
-  `sim/{l2_book,latency,slippage,mis}` verbatim + `lifecycle.rs` (OrderState/WorkingOrder/
-  ExchangeEvent/ExchangeError) + `paper.rs` (`PaperExchange` aggregate: submit/cancel/amend,
-  IOC, GTD `submit_order_gtd`, stop trigger, price-time-priority matching, per-`AccountId`
-  cash/positions via pluggable `FillCostFn`/`ZeroFillCost`) + `executor.rs`
-  (`PaperExchangeExecutor` on `BrokerExecutor` + sync surface). **Recorded scoping decision**:
-  real statutory fee tables + FIFO settlement are NOT pulled into `tantra-exec` in P0 (would
-  add `tantra-market`/`tantra-ledger` deps to the Hand context); `FillCostFn` hook mirrors
-  wheel `tantra.backtest.l2_sim`, real tables injected by runtime wiring (plan 0005 D1/D2).
-  Tests E1–E8: 18 green (`book_tests` 5, `paper_exchange_tests` 8, `executor_tests` 3,
-  `sim_port_tests` 2), wasm32 check green, facade `tantra_exec::paper` wired.
-- **Wave 2 (exec-core + runtime)**: `SimExecutionPort` lifted into `tantra-exec-core::sim`;
-  `PaperExchangeExecutor` implements it; `tantra-runtime-strategy::dispatch::BrokerAdapter` is
-  now a thin re-export. **Gap 0008 closed (option 2)** — runtime gap README moved to Closed.
-- **Wave 3 (tantra-runtime)**: E9 parity — `tests/paper_parity_tests.rs` (4 tests): both books
-  (backtest `sim::l2_book` vs `tantra_exec_paper::book`) produce byte-identical fills on a
-  golden tape (price-time priority + limit walk), end-to-end `PaperExchange` fills match the
-  book-level result, events/fills deterministic on replay. `tantra-runtime-backtest` 35→39.
-- All verify commands green in both repos (prod profile: check/test/clippy -D warnings/fmt/
-  `make prod`). Indexes updated (root + task-list T14.1–T14.4 ✅, exec/runtime plan READMEs,
-  HANDOFFs per repo).
-- **Immediate next step**: P1 (runtime wiring, plan 0005 D1–D5) — swap `NextOpenSim` behind
-  `/orders` and `PaperAdapter` fill math onto the exchange; `/ws/live` push; backtest drives
-  the exchange; `paper serve` daemon.
-- **P1 COMPLETE 2026-11-16** (plan 0005 D1–D5, T14.5–T14.9; 1 subagent/wave sequential,
-  `tantra-runtime` commits `027ebac`/`a9d1d96`/`18be257`/`a1cbeda`/`f70e0e2`, all local,
-  not pushed): D1 REST `/orders` on the exchange (`NextOpenSim` deleted; `ExecGateway` thin
-  adapter; limit/stop/short/IOC; R1/R2/R3/R7 tests); D2 strategy sim adapters delegate to a
-  per-adapter `PaperExchange`; D3 `/ws/live` bidirectional push (R4); D4 backtester drives
-  the exchange (R5 golden parity; **recorded deviation: L2 adverse-fill restore is a
-  follow-on**); D5 `paper-serve` daemon (R6; live feed + calendar gate = follow-ons). Also
-  committed the leftover P0 wave-3 runtime tree (`a005141`: E9 parity + gap 0008 closure).
-  Plan 0005 + plans index → Implemented; per-repo + root task-list/HANDOFFs updated.
-  **Next**: P2 — `tantra-ffi` plan 0003 `tantra.paper` (T14.10/T14.11), then P3
-  (`tantra-ui` plan 0008, T14.12/T14.13), P4 (T14.14/T14.15).
-
-## Prior work — T14 planning (docs only, superseded by the P0 entry above)
-
-Date: 2026-11-15. Per user direction ("analyze… create a paper trading exchange… should be
-able to embed this to python sdk as well as CSR or web ui"): planning artifacts for
-**T14 — Standalone Paper Trading Exchange** were created, no code was written:
-- **Root master plan `docs/plans/0007-paper-trading-exchange.md`** (Proposed): the
-  real-exchange-mimicking paper exchange. Source-verified premise: Tantra has **three
-  divergent simulators** — `PaperAdapter` (`tantra-runtime-strategy::dispatch`, fills at
-  limit/last price, no book), `NextOpenSim` (`tantra-runtime-api-rest::exec`,
-  market-only/long-only), and the backtest's private L2 `OrderBook`
-  (`tantra-runtime-backtest::sim::l2_book`, price-time priority). One engine
-  (`tantra-exec-paper`) replaces all three and serves strategies, REST, backtest, the Python
-  SDK, and CSR/WASM + web; `paper serve` daemon for independent runs. Closes runtime gap
-  0008 option 2 (lift the sync `BrokerAdapter` port into `tantra-exec-core`).
-- Per-repo plans (all Proposed): `tantra-exec` **0003** (matching core — order lifecycle,
-  account isolation, `PaperExchangeExecutor` on `BrokerExecutor` + sync port, WASM),
-  `tantra-runtime` **0005** (REST `/orders` + dispatch on the exchange, `/ws/live` push,
-  backtest unification, `paper serve`), `tantra-ffi` **0003** (`tantra.paper` PyO3 wheel
-  surface; `l2_sim` native backend removes `NotImplementedError`), `tantra-ui` **0008**
-  (in-browser WASM paper session, CSR `PaperPanel`, TUI paper panel, CLI `paper`).
-- Indexes updated: root + 4 repo plan READMEs; root task list T14 track (T14.1–T14.15) +
-  phase table + per-repo summary rows. HANDOFFs updated per repo.
-- Execution NOT started — plans await approval. When approved: P0 (`tantra-exec-paper`) →
-  P1 (runtime wiring) → P2 (backtest unification + Python SDK) → P3 (CSR/WASM) → P4
-  (golden parity suite + docs), mirroring the bottoms-up discipline; gate is T14.14
-  byte-identical fills across backtest / paper / Python / WASM.
+Date: 2026-11-16. Root plan `docs/plans/0007` → Implemented; all 16 tasks green, all
+commits local (not pushed):
+- **P0 matching core** (`tantra-exec` plan 0003, `2fa2fe3`): new crate `tantra-exec-paper`
+  — ported `sim/{l2_book,latency,slippage,mis}` + `lifecycle.rs` + `paper.rs`
+  (`PaperExchange` aggregate: submit/cancel/amend, IOC, GTD, stop trigger, price-time
+  priority, per-`AccountId` cash/positions via pluggable `FillCostFn`) + `executor.rs`
+  (`PaperExchangeExecutor` on `BrokerExecutor` + sync `SimExecutionPort` lifted into
+  `tantra-exec-core` — closes runtime gap 0008 option 2). E1–E9: 18+ tests, wasm32 check
+  green.
+- **P1 runtime wiring** (`tantra-runtime` plan 0005, `027ebac`/`a9d1d96`/`18be257`/
+  `a1cbeda`/`f70e0e2`): REST `/orders` on the exchange (`NextOpenSim` deleted), strategy
+  sim adapters delegate to a per-adapter `PaperExchange`, `/ws/live` push, backtest drives
+  the exchange (golden parity), `paper serve` daemon. Deviations recorded: L2 adverse-fill
+  restore + live feed/calendar gate = follow-ons.
+- **P2 Python SDK** (`tantra-ffi` plan 0003, `c7e90a5`): wheel `tantra.paper` —
+  `PaperExchange` pyclass (seeded, GIL-released engine steps) + `PaperSession` facade +
+  `wire.py::fills_wire`; `l2_sim` `backend="native"` resolves to the compiled engine
+  (no more `NotImplementedError`; coincident-tape parity only — the golden vector is the
+  cross-language oracle); codegen `.pyi` regenerated. Examples: `tantra-examples`
+  `8189fb1` (`examples/basic/06_paper_trading.py`, 6 tests), `tantra-strategies`
+  `13cbae0`. ffi pytest 490 passed.
+- **P3 CSR/WASM** (`tantra-ui` plan 0008, `fad62c3`/`768b375`/`4b2a207`/`b54d2b6`/
+  `870b27b`): `tantra-ui-api-wasm::paper` `PaperSession` (wasm32 check green), CSR
+  `PaperPanel` (`AppRoute::Paper`, embedded + server modes), TUI `/positions` live-stream
+  paper panel, `tantra paper --mode embedded|server` CLI. ui test suites green (OOM
+  workaround: run per-crate `-j 1` under prod LTO).
+- **P4 parity + docs** (T14.14/T14.15): one canonical `paper_golden.json` byte-identical
+  in `tantra-exec` `5714ee2` (+`tests/golden_parity_tests.rs`), `tantra-ui` `5bbd743`,
+  `tantra-ffi` `898f61c` (+cross-embedding byte-identity test); E9 backtest↔paper 4/4
+  green; `tantra-docs` `1157674` — `docs/paper-trading/{index,python,cli,rest-ws,web}.md`,
+  `mkdocs build --strict` green. (Concurrent docs track also landed `c459aba` — headless
+  user guide, docs plan 0005, T14.16.)
+- **Immediate next step**: follow-ons recorded in the plans (runtime L2 adverse-fill
+  restore; `paper serve` live broker feed + NSE calendar gate; ffi `submit_order_gtd`
+  facade exposure). No new track is approved; the next unstarted master plan is root 0005
+  (EE+ platform) whose per-repo plans/gaps are already filed.
 
 ## Prior work — T12.10 (docs slice of the EE+ platform track)
 

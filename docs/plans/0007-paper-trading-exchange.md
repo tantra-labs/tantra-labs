@@ -1,7 +1,10 @@
 # 0007 — Standalone Paper Trading Exchange (Real-Exchange Mimic)
 
-**Status**: Active — **P0 (matching core, `tantra-exec`) + P1 (runtime wiring, `tantra-runtime`)
-both implemented 2026-11-16**; P2 (Python SDK) / P3 (CSR/WASM) / P4 (parity suite + docs) pending.
+**Status**: **IMPLEMENTED — all four phases (P0–P4) shipped 2026-11-16**.
+P0 matching core (`tantra-exec` plan 0003), P1 runtime wiring (`tantra-runtime` plan 0005),
+P2 Python SDK (`tantra-ffi` plan 0003), P3 CSR/WASM (`tantra-ui` plan 0008), P4 golden
+parity suite + docs (T14.14/T14.15) — all green; the T14 gate (byte-identical fills across
+backtest / paper / Python / WASM on one golden vector) passes.
 **Track**: T14 · **Phase**: 3–6 (execution, runtime, SDK, UI)
 **Owning repos**: `tantra-exec` (matching core), `tantra-runtime` (wiring + daemon),
 `tantra-ffi` (Python SDK surface), `tantra-ui` (CSR/WASM + web)
@@ -108,26 +111,26 @@ paper, Python, and the browser.
 | T14.8 | Backtest unification: the backtest engine drives the exchange on historical bars for its fills (replaces its inline book C); byte-identical parity vs paper on golden vectors | `tantra-runtime-backtest` | ✅ `a1cbeda` (L2 adverse-fill restore = follow-on) |
 | T14.9 | Standalone `paper serve` daemon mode (independent process; replay-tape or live broker feed via `tantra-market-dhan`/`zerodha`; trading calendar + MIS 15:20 square-off) | `tantra-runtime-api-rest` / new bin | ✅ `f70e0e2` (replay-tape + MIS shipped; live feed + calendar gate = follow-ons) |
 
-### P2 — Python SDK embedding (`tantra-ffi`)
+### P2 — Python SDK embedding (`tantra-ffi`) — ✅ COMPLETE 2026-11-16
 
 | # | Task | Scope | Status |
 |---|------|-------|--------|
-| T14.10 | Wheel surface `tantra.paper`: PyO3 bindings for the exchange (`PaperExchange` session: `place_order`/`cancel_order`/`amend_order`, `depth`, `fills`, `positions`, `equity`); Arrow zero-copy for bar/depth/fill batches; GIL released during engine steps (`py.allow_threads`) | `tantra-ffi` | Proposed |
-| T14.11 | Deterministic seeded session mode for examples (no broker credentials); `tantra-examples` + `tantra-strategies` examples run against the wheel engine | `tantra-ffi` + `tantra-examples` + `tantra-strategies` | Proposed |
+| T14.10 | Wheel surface `tantra.paper`: PyO3 bindings for the exchange (`PaperExchange` session: `place_order`/`cancel_order`/`amend_order`, `depth`, `fills`, `positions`, `equity`); Arrow zero-copy for bar/depth/fill batches; GIL released during engine steps (`py.allow_threads`) | `tantra-ffi` | ✅ `c7e90a5` |
+| T14.11 | Deterministic seeded session mode for examples (no broker credentials); `tantra-examples` + `tantra-strategies` examples run against the wheel engine | `tantra-ffi` + `tantra-examples` + `tantra-strategies` | ✅ `8189fb1` + `13cbae0` |
 
-### P3 — CSR / WASM + web embedding (`tantra-ui`)
-
-| # | Task | Scope | Status |
-|---|------|-------|--------|
-| T14.12 | `tantra-ui-api-wasm` pure bindings for the exchange core (single-user, in-browser paper session; same engine → same fills as server); compile check `wasm32-unknown-unknown` | `tantra-ui-api-wasm` | Proposed |
-| T14.13 | `tantra-ui-app` (Leptos 0.8 CSR) paper-trading panel + order ticket; connect to server REST `/orders` + `/ws/live`; TUI paper panel parity | `tantra-ui-app`, `tantra-tui` | Proposed |
-
-### P4 — Verification & docs
+### P3 — CSR / WASM + web embedding (`tantra-ui`) — ✅ COMPLETE 2026-11-16
 
 | # | Task | Scope | Status |
 |---|------|-------|--------|
-| T14.14 | Golden vector parity suite (`tests/golden/*.json`): identical fills across backtest / paper / Python wheel / WASM; `make test` (prod profile), clippy/fmt green, ruff + mypy for Python repos | all | Proposed |
-| T14.15 | Docs: paper-trading guide in `tantra-docs` (run a paper session via CLI, REST, Python, and the web app) | `tantra-docs` | Proposed |
+| T14.12 | `tantra-ui-api-wasm` pure bindings for the exchange core (single-user, in-browser paper session; same engine → same fills as server); compile check `wasm32-unknown-unknown` | `tantra-ui-api-wasm` | ✅ `fad62c3` |
+| T14.13 | `tantra-ui-app` (Leptos 0.8 CSR) paper-trading panel + order ticket; connect to server REST `/orders` + `/ws/live`; TUI paper panel parity | `tantra-ui-app`, `tantra-tui` | ✅ `768b375`/`4b2a207`/`b54d2b6` |
+
+### P4 — Verification & docs — ✅ COMPLETE 2026-11-16
+
+| # | Task | Scope | Status |
+|---|------|-------|--------|
+| T14.14 | Golden vector parity suite (`tests/golden/*.json`): identical fills across backtest / paper / Python wheel / WASM; `make test` (prod profile), clippy/fmt green, ruff + mypy for Python repos | all | ✅ `5714ee2`/`5bbd743`/`898f61c` |
+| T14.15 | Docs: paper-trading guide in `tantra-docs` (run a paper session via CLI, REST, Python, and the web app) | `tantra-docs` | ✅ `1157674` |
 
 ---
 

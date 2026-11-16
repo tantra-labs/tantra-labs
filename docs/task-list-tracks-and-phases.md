@@ -23,10 +23,10 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **0 — Topology & Hygiene Foundations** ✅ | Remove stub/duplicate crates, pin facade convention, TDD cleanup, kernel call-site consolidation | T0 | 8 — **complete 2026-11-13** |
 | **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 1 |
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds | T5, T3 (feeds) | 2 |
-| **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor; **paper exchange matching core (T14 P0)** | T4, T14 (P0) | 0 (+T14.1–T14.4) |
+| **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor; **paper exchange matching core (T14 P0) ✅** | T4, T14 (P0) | 0 (+T14.1–T14.4) — **P0 done 2026-11-16** |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling; **paper exchange runtime wiring + backtest unification (T14 P1) ✅** | T6, T7, T14 (P1) | 5 (+T14.5–T14.9) — **P1 done 2026-11-16** |
-| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors; **Python SDK `tantra.paper` (T14 P2)**; **data provisioning library (T15.1–T15.4)** | T8, T9, T14 (P2), T15 | 6 (+T14.10–T14.11) |
-| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference; **CSR/WASM paper panel + docs (T14 P3/P4)**; **provisioning HTTP service (T15.5–T15.6)** | T10, T11, T14 (P3/P4), T15 | 0 (+T14.12–T14.14, T14.16) |
+| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors; **Python SDK `tantra.paper` (T14 P2) ✅**; **data provisioning library (T15.1–T15.4)** | T8, T9, T14 (P2), T15 | 6 (+T14.10–T14.11) — **P2 done 2026-11-16** |
+| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference; **CSR/WASM paper panel + docs (T14 P3/P4) ✅**; **provisioning HTTP service (T15.5–T15.6)** | T10, T11, T14 (P3/P4), T15 | 0 (+T14.12–T14.14, T14.16) — **P3/P4 done 2026-11-16** |
 | **Total** | | | **26** (+15 proposed T14 tasks) (+6 T15 tasks) |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
@@ -357,7 +357,8 @@ partial fills, stop/IOC/GTD, both sides) and is the single fill engine behind st
 backtest, the Python SDK, and CSR/WASM + web. Replaces the three divergent simulators
 (`PaperAdapter` / `NextOpenSim` / backtest's private L2 book) with one `tantra-exec-paper`
 engine (zero-I/O, Decimal, `wasm32`). **P0 (T14.1–T14.4) shipped 2026-11-16; P1 (T14.5–T14.9)
-shipped 2026-11-16**; P2+ pending.
+shipped 2026-11-16; P2 (T14.10/T14.11) + P3 (T14.12/T14.13) + P4 (T14.14/T14.15) shipped
+2026-11-16 — track COMPLETE.**
 
 | Task | Work | Repo / Scope | Phase | Status | Gap / Plan |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -370,11 +371,11 @@ shipped 2026-11-16**; P2+ pending.
 | **T14.7** | ✅ `/ws/live` bidirectional push (orders/fills/depth/positions) — broadcast of exchange events from `ExecGateway`; client subscribe/unsubscribe/place/cancel | `tantra-runtime-api-rest::ws` | 4 | **Done 2026-11-16** | runtime plan 0005 (R4) — `18be257`; tests `ws_live.rs` |
 | **T14.8** | ✅ Backtest unification — backtester drives the exchange on historical bars (inline `sim::l2_book` usage removed; engine keeps latency/slippage-impact/MIS/settlement); R5 golden parity `backtest_paper_parity_tests.rs`; **recorded deviation: L2 adverse-fill restore is a follow-on** | `tantra-runtime-backtest` | 4 | **Done 2026-11-16** | runtime plan 0005 (R5) — `a1cbeda`; E9 `paper_parity_tests.rs` untouched; backtest 40 tests green |
 | **T14.9** | ✅ Standalone `paper serve` daemon — `paper-serve --tape` bin replays a bar tape into the exchange, serves REST + `/ws/live`, exits on tape end; `--mis-square-off HH:MM`; **live broker feed + NSE calendar gate = follow-on** | `tantra-runtime-api-rest` / new bin | 4 | **Done 2026-11-16** | runtime plan 0005 (R6) — `f70e0e2`; tests `paper_serve.rs` |
-| **T14.10** | Python wheel `tantra.paper` — PyO3 `PaperExchange` binding, Arrow zero-copy, GIL released; `l2_sim` native backend replaces `NotImplementedError` | `tantra-ffi` | 5 | Proposed | ffi plan 0003 (P1–P5) |
-| **T14.11** | Deterministic seeded `PaperSession` for examples; `tantra-examples` + `tantra-strategies` paper examples | `tantra-ffi` + `tantra-examples` + `tantra-strategies` | 5 | Proposed | ffi plan 0003 (P3) |
-| **T14.12** | WASM bindings — `tantra-ui-api-wasm::paper` single-user in-browser session (same engine → same fills); `wasm32` check | `tantra-ui-api-wasm` | 6 | Proposed | ui plan 0008 (U1–U2) |
-| **T14.13** | CSR `PaperPanel` in `tantra-ui-app` (embedded + server modes) + TUI paper panel on `/ws/live` + CLI `paper` session | `tantra-ui-app`, `tantra-tui`, `tantra-cli` | 6 | Proposed | ui plan 0008 (U3–U5) |
-| **T14.14** | Golden-vector parity suite across backtest / paper / Python / WASM; prod-profile + clippy/fmt/ruff/mypy gates | all | 3–6 | Proposed | root plan 0007 (P4) |
+| **T14.10** | ✅ Python wheel `tantra.paper` — PyO3 `PaperExchange` binding, Arrow zero-copy, GIL released; `l2_sim` native backend replaces `NotImplementedError` | `tantra-ffi` | 5 | **Done 2026-11-16** | ffi plan 0003 (P1–P5) — `c7e90a5`; `crates/tantra-ffi-py/src/paper.rs` (`PaperExchange` pyclass, seeded) + `python/tantra/paper/` (`PaperSession` + `wire.py::fills_wire`) + `l2_sim.py` `_NativeL2` native backend + codegen `.pyi`; ffi pytest 489→490 (incl. golden tape test) |
+| **T14.11** | ✅ Deterministic seeded `PaperSession` for examples; `tantra-examples` + `tantra-strategies` paper examples | `tantra-ffi` + `tantra-examples` + `tantra-strategies` | 5 | **Done 2026-11-16** | ffi plan 0003 (P3) — examples `8189fb1` (`examples/basic/06_paper_trading.py` + 6 tests), strategies `13cbae0` (`tests/test_paper_session.py`); seeded×2 identical fills |
+| **T14.12** | ✅ WASM bindings — `tantra-ui-api-wasm::paper` single-user in-browser session (same engine → same fills); `wasm32` check | `tantra-ui-api-wasm` | 6 | **Done 2026-11-16** | ui plan 0008 (U1–U2) — `fad62c3`; `src/paper.rs` `PaperSession` over `tantra-exec-paper`; wasm32-unknown-unknown check green; golden `tests/golden/paper_golden.json` |
+| **T14.13** | ✅ CSR `PaperPanel` in `tantra-ui-app` (embedded + server modes) + TUI paper panel on `/ws/live` + CLI `paper` session | `tantra-ui-app`, `tantra-tui`, `tantra-cli` | 6 | **Done 2026-11-16** | ui plan 0008 (U3–U5) — `768b375` (PaperPanel + `AppRoute::Paper`), `4b2a207` (TUI `/positions` live-stream panel), `b54d2b6` (`tantra paper --mode embedded\|server`) |
+| **T14.14** | ✅ Golden-vector parity suite across backtest / paper / Python / WASM; prod-profile + clippy/fmt/ruff/mypy gates | all | 3–6 | **Done 2026-11-16** | root plan 0007 (P4) — canonical `paper_golden.json` byte-identical in `tantra-exec-paper` (`5714ee2` + `tests/golden_parity_tests.rs`), `tantra-ui-api-wasm` (`5bbd743`), `tantra-ffi` (`898f61c` + cross-embedding byte-identity test); E9 backtest↔paper 4/4 green; ffi pytest 490 passed; exec/ui clippy/fmt green |
 | **T14.15** | ✅ Docs: paper-trading guide (CLI / REST / Python / web) | `tantra-docs` | 6 | **Done 2026-11-16** | docs plan 0004 (commit `1157674`) — `docs/paper-trading/` (`index.md`, `python.md`, `cli.md`, `rest-ws.md`, `web.md`); nav + home index wired; `mkdocs build --strict` green |
 | **T14.16** | ✅ Headless user guide + installation rewrite — pre-UI daily-driver manual: `docs/user-guide/` (index, cli, rest-api, python, ai) + rewritten `installation.md` / `first-backtest.md` / `loading-data.md` against the real superproject + shipped APIs | `tantra-docs` | 6 | **Done 2026-11-16** | docs plan 0005 — superproject install (`--recurse-submodules`, `make prepare`, `make prod`), `Tantra.backtest` + synthetic/lakehouse/parquet data paths, no stale `Strategy.backtest` / `tantra data load`; paper trading cross-linked to `docs/paper-trading/` (0004); `mkdocs build --strict` green |
 
@@ -410,20 +411,20 @@ gap 0023); ruff check + format clean; mypy clean on `provision/`. **T15 track co
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
-| `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella), **0005 (EE+ platform, proposed)**, **0006 (dismantle `_kernel` harness, Implemented 2026-11-16 — T13)**, **0007 (paper exchange, proposed — T14)** | T0.1–T0.6 ✅, T12.1–T12.10, T13.1–T13.7 ✅, T14.1–T14.15 |
+| `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella), **0005 (EE+ platform, proposed)**, **0006 (dismantle `_kernel` harness, Implemented 2026-11-16 — T13)**, **0007 (paper exchange, Implemented 2026-11-16 — T14)** | T0.1–T0.6 ✅, T12.1–T12.10, T13.1–T13.7 ✅, T14.1–T14.16 ✅ |
 | `tantra-core` | 1 (0002 EE+) | 0003 (EE+, proposed) | T0.7 ✅ (audit decision), T12.1 |
 | `tantra-ledger` | 1 (0012 EE+) | — | T2.1–T2.11 ✅, T12.7 |
 | `tantra-risk` | 1 (0005 EE+) | 0002 (Implemented) | T1.1–T1.4 ✅, T12.6 |
 | `tantra-market` | 2 (0003, 0005 EE+) | — | T3.1–T3.4 🔶, T12.2 |
-| `tantra-exec` | 1 (0003 EE+ bracket orders) | 0002 (Phase 1 done), **0003 (paper exchange core — P0 shipped 2026-11-16, T14)** | T0.3 ✅, T4.11 ✅, T12.5, T14.1–T14.4 ✅ |
+| `tantra-exec` | 1 (0003 EE+ bracket orders) | 0002 (Phase 1 done), **0003 (paper exchange core — Implemented 2026-11-16, T14)** | T0.3 ✅, T4.11 ✅, T12.5, T14.1–T14.4 ✅, T14.14 (golden vector) ✅ |
 | `tantra-runtime` | 0 (**0008 closed 2026-11-16** — sync port lifted) | 0004 (Implemented), **0005 (paper wiring + backtest unification — P1 D1–D5 Implemented 2026-11-16, T14)** | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅ |
 | `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — all 6 tracks' tool surfaces shipped), 0010 (Implemented), 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.12 ✅, T12.8 |
-| `tantra-ui` | 1 (0007 EE+) | 0003 (Implemented), 0006 (EE+, proposed), **0008 (paper exchange CSR/WASM, proposed — T14)** | T10.1–T10.5 ✅, T12.9, T14.12–T14.13 |
+| `tantra-ui` | 1 (0007 EE+) | 0003 (Implemented), 0006 (EE+, proposed), **0008 (paper exchange CSR/WASM — Implemented 2026-11-16, T14)** | T10.1–T10.5 ✅, T12.9, T14.12–T14.13 ✅, T14.14 (golden vector) ✅ |
 | `tantra-adapters` | 0 | 0002, 0003, 0004 (all Implemented) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006, 0017–0019, 0020–0022 (Implemented) | T5.1–T5.10 ✅, T12.3 |
-| `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅), T14.11 |
-| `tantra-examples` | **0** (all 8 closed: 0001–0008) | **0003 (harness dismantle, Implemented 2026-11-16 — T13)**, **0004 (data provisioning, Implemented 2026-11-16 — T15)** | T9.1–T9.10 all ✅ (T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.10 ✅), T13.6–T13.7 ✅, T14.11, T15.1–T15.6 ✅ |
-| `tantra-ffi` | **0** | **0002 (wheel domain-harness surfaces, Implemented 2026-11-16 — T13)**, **0003 (paper exchange Python SDK, proposed — T14)** | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 |
+| `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅), T14.11 ✅ |
+| `tantra-examples` | **0** (all 8 closed: 0001–0008) | **0003 (harness dismantle, Implemented 2026-11-16 — T13)**, **0004 (data provisioning, Implemented 2026-11-16 — T15)** | T9.1–T9.10 all ✅ (T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.10 ✅), T13.6–T13.7 ✅, T14.11 ✅, T15.1–T15.6 ✅ |
+| `tantra-ffi` | **0** | **0002 (wheel domain-harness surfaces, Implemented 2026-11-16 — T13)**, **0003 (paper exchange Python SDK — Implemented 2026-11-16, T14)** | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 ✅, T14.14 (golden vector) ✅ |
 | `tantra-docs` | — | 0001, 0003 (both Implemented) | T11.1 ✅, T11.2 ✅, T12.10 ✅, T14.15 ✅, T14.16 ✅ |
 
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
