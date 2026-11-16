@@ -116,21 +116,17 @@ green (1 subagent/wave, sequential to avoid `Cargo.lock` contention):
 - **Immediate next step**: P1 (runtime wiring, plan 0005 D1–D5) — swap `NextOpenSim` behind
   `/orders` and `PaperAdapter` fill math onto the exchange; `/ws/live` push; backtest drives
   the exchange; `paper serve` daemon.
-- **P1 dispatch plan (2026-11-16, orchestrator recon done; 1 subagent/wave, sequential to
-  avoid `Cargo.lock` contention)**: Wave 1 = **D1** (REST `/orders` on the exchange,
-  `tantra-runtime-api-rest`; `tantra-exec-paper.workspace = true` dep; `ExecGateway` →
-  thin adapter over `PaperExchangeExecutor`; local `OrderType` gains stop variants; wire
-  `OrdersRequest` `order_type` gains `stop_market`/`stop_limit` mapping `price`→trigger;
-  `tif` `ioc`→`TimeInForce::Ioc`; market order without depth = reject; ledger_id↔broker_id
-  map; drain-fills helper after submit+feed_bar; update `orders_exec.rs` tests
-  `limit_orders_are_not_filled` + `sell_without_a_position_is_rejected_by_the_sim` to the
-  new semantics; delete `NextOpenSim`, drop `lib.rs` re-export, rework
-  `with_execution_sim`). Wave 2 = **D2** (strategy dispatch, `tantra-runtime-strategy`;
-  `PaperAdapter`/`ZerodhaKiteAdapter`/`AngelOneSmartApiAdapter` delegate fills to a
-  per-adapter `PaperExchange`). Wave 3 = **D3** (`/ws/live`, api-rest ws). Wave 4 = **D4**
-  (backtest drives the exchange, `tantra-runtime-backtest::engine`). Wave 5 = **D5**
-  (`paper serve` daemon). Root task-list + index + HANDOFF updates are orchestrated
-  centrally after each verified wave.
+- **P1 COMPLETE 2026-11-16** (plan 0005 D1–D5, T14.5–T14.9; 1 subagent/wave sequential,
+  `tantra-runtime` commits `027ebac`/`a9d1d96`/`18be257`/`a1cbeda`/`f70e0e2`, all local,
+  not pushed): D1 REST `/orders` on the exchange (`NextOpenSim` deleted; `ExecGateway` thin
+  adapter; limit/stop/short/IOC; R1/R2/R3/R7 tests); D2 strategy sim adapters delegate to a
+  per-adapter `PaperExchange`; D3 `/ws/live` bidirectional push (R4); D4 backtester drives
+  the exchange (R5 golden parity; **recorded deviation: L2 adverse-fill restore is a
+  follow-on**); D5 `paper-serve` daemon (R6; live feed + calendar gate = follow-ons). Also
+  committed the leftover P0 wave-3 runtime tree (`a005141`: E9 parity + gap 0008 closure).
+  Plan 0005 + plans index → Implemented; per-repo + root task-list/HANDOFFs updated.
+  **Next**: P2 — `tantra-ffi` plan 0003 `tantra.paper` (T14.10/T14.11), then P3
+  (`tantra-ui` plan 0008, T14.12/T14.13), P4 (T14.14/T14.15).
 
 ## Prior work — T14 planning (docs only, superseded by the P0 entry above)
 
