@@ -11,6 +11,23 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — T15.5 follow-on: provisioning seam wired into screeners + env rename
+
+Date: 2026-11-16. Two cross-repo changes (`tantra-examples` + `tantra-ffi`), no Rust touched:
+- **Plan 0004 per-example runtime prompt shipped** (`tantra-examples`): `ScreenerCLIExample`
+  now offers the interactive download / dummy / Monte-Carlo choice via `provision_catalog()`
+  → `provision.seam.ensure_data_root` when the catalog is absent, then re-runs against the
+  provisioned root. Piped runs (stdin not a TTY) print guidance and stop — no prompt in
+  pipelines, stdout stream stays pure. `--data-dir` now accepts a data root or the catalog
+  dir; the missing-catalog error message was fixed (it named a nonexistent `--catalog-dir`).
+- **Data-root env var renamed `VYAAPAAR_DATA_DIR` → `TANTRA_DATA_DIR`** across the wheel
+  (`tantra-ffi` `tantra.store` `DATA_DIR_ENV`), `tantra_examples/screening/paths.py`,
+  `tantra_examples/provision/layout.py` and all tests in both repos (resolution semantics
+  unchanged; the old name survives only in git history).
+- **Gate**: `tantra-examples/tests/unit` **1018 passed / 1 skipped** (skip = tantra-data gap
+  0023 mutual_funds store surface); `tantra-ffi` `test_store.py` 18 passed; ruff clean on the
+  changed examples code; mypy clean on `provision/` + the changed files.
+
 ## Latest Batch — unit suite fully green (967 passed / 1 skipped) + provisioning scope
 
 Date: 2026-11-16.
@@ -21,7 +38,7 @@ Date: 2026-11-16.
   reworked via a `sys.meta_path` blocker; the **tantra-strategies catalog** shipped its missing
   `registry.json` + `tools/validate_chain.py` (28 pipeline chain/manifest tests un-skipped); the
   1D NSE catalog tests got a canonical synthetic lakehouse (`tests/unit/synthetic_lakehouse.py`,
-  price catalog + `fundamentals.duckdb`) behind the `VYAAPAAR_DATA_DIR` seam. A wheel-API
+  price catalog + `fundamentals.duckdb`) behind the `TANTRA_DATA_DIR` seam. A wheel-API
   regression in `06_multi_broker_dispatch` (paper mocks now `replace=True`) and two integration
   suites re-gated on their true prerequisites. **1 remaining skip is honest**: the MF screener
   needs `tantra_data.store.mutual_funds`, which the provider hasn't shipped — **filed
@@ -71,25 +88,49 @@ Date: 2026-11-16.
   otherwise installs into a stale per-repo venv. Verified: ffi wheel suite (496) and
   adapters suite green through the symlinks; `mkdocs build --strict` green.
 
-## Latest Batch — T14 P0 IN PROGRESS (execution)
+## Latest Batch — T14 P0 SHIPPED (matching core + sync port lift + parity)
 
-Date: 2026-11-16. Implementing root plan 0007 P0 (`tantra-exec/docs/plans/0003`). Wave plan
-(sequential, 1 subagent/wave — A/B/C share the `tantra-exec`+`tantra-runtime` workspace so
-parallel cargo would contend on `Cargo.lock`):
-- **Wave 1 (in flight)**: `tantra-exec` — new crate `crates/tantra-exec-paper` (pure matching
-  engine: port of `sim/l2_book` + `sim/{latency,slippage,mis}`, order lifecycle + events,
-  account isolation with `FillCostFn` fee hook, `PaperExchange` aggregate + `PaperExchangeExecutor`
-  on `BrokerExecutor` + `SimExecutionPort`), facade re-export, tests E1–E8 in `tests/`.
-  **Recorded scoping decision**: statutory fee tables + FIFO settlement are *not* pulled into
-  `tantra-exec` in P0 (would add `tantra-market`/`tantra-ledger` deps to the Hand context); the
-  engine exposes a `FillCostFn`-style hook (mirrors wheel `tantra.backtest.l2_sim`) and the real
-  tables are injected by the runtime wiring slice (`tantra-runtime` plan 0005 D1/D2).
-- **Wave 2**: `tantra-exec-core` sync `SimExecutionPort` trait (lift of runtime `BrokerAdapter`
-  surface) + `tantra-runtime-strategy::dispatch` re-export → **closes gap 0008 (option 2)**.
-- **Wave 3**: E9 parity test in `tantra-runtime-backtest` — same tape through the backtest L2
-  book and the paper exchange → byte-identical fills (golden).
-- After each wave: verify (prod profile) before starting the next; after Wave 3, update plan
-  statuses (exec 0003 P0), task list T14 rows, per-repo HANDOFFs, and the root HANDOFF.
+Date: 2026-11-16. Root plan 0007 P0 complete (`tantra-exec/docs/plans/0003`), all three waves
+green (1 subagent/wave, sequential to avoid `Cargo.lock` contention):
+- **Wave 1 (tantra-exec)**: new crate `crates/tantra-exec-paper` — ported
+  `sim/{l2_book,latency,slippage,mis}` verbatim + `lifecycle.rs` (OrderState/WorkingOrder/
+  ExchangeEvent/ExchangeError) + `paper.rs` (`PaperExchange` aggregate: submit/cancel/amend,
+  IOC, GTD `submit_order_gtd`, stop trigger, price-time-priority matching, per-`AccountId`
+  cash/positions via pluggable `FillCostFn`/`ZeroFillCost`) + `executor.rs`
+  (`PaperExchangeExecutor` on `BrokerExecutor` + sync surface). **Recorded scoping decision**:
+  real statutory fee tables + FIFO settlement are NOT pulled into `tantra-exec` in P0 (would
+  add `tantra-market`/`tantra-ledger` deps to the Hand context); `FillCostFn` hook mirrors
+  wheel `tantra.backtest.l2_sim`, real tables injected by runtime wiring (plan 0005 D1/D2).
+  Tests E1–E8: 18 green (`book_tests` 5, `paper_exchange_tests` 8, `executor_tests` 3,
+  `sim_port_tests` 2), wasm32 check green, facade `tantra_exec::paper` wired.
+- **Wave 2 (exec-core + runtime)**: `SimExecutionPort` lifted into `tantra-exec-core::sim`;
+  `PaperExchangeExecutor` implements it; `tantra-runtime-strategy::dispatch::BrokerAdapter` is
+  now a thin re-export. **Gap 0008 closed (option 2)** — runtime gap README moved to Closed.
+- **Wave 3 (tantra-runtime)**: E9 parity — `tests/paper_parity_tests.rs` (4 tests): both books
+  (backtest `sim::l2_book` vs `tantra_exec_paper::book`) produce byte-identical fills on a
+  golden tape (price-time priority + limit walk), end-to-end `PaperExchange` fills match the
+  book-level result, events/fills deterministic on replay. `tantra-runtime-backtest` 35→39.
+- All verify commands green in both repos (prod profile: check/test/clippy -D warnings/fmt/
+  `make prod`). Indexes updated (root + task-list T14.1–T14.4 ✅, exec/runtime plan READMEs,
+  HANDOFFs per repo).
+- **Immediate next step**: P1 (runtime wiring, plan 0005 D1–D5) — swap `NextOpenSim` behind
+  `/orders` and `PaperAdapter` fill math onto the exchange; `/ws/live` push; backtest drives
+  the exchange; `paper serve` daemon.
+- **P1 dispatch plan (2026-11-16, orchestrator recon done; 1 subagent/wave, sequential to
+  avoid `Cargo.lock` contention)**: Wave 1 = **D1** (REST `/orders` on the exchange,
+  `tantra-runtime-api-rest`; `tantra-exec-paper.workspace = true` dep; `ExecGateway` →
+  thin adapter over `PaperExchangeExecutor`; local `OrderType` gains stop variants; wire
+  `OrdersRequest` `order_type` gains `stop_market`/`stop_limit` mapping `price`→trigger;
+  `tif` `ioc`→`TimeInForce::Ioc`; market order without depth = reject; ledger_id↔broker_id
+  map; drain-fills helper after submit+feed_bar; update `orders_exec.rs` tests
+  `limit_orders_are_not_filled` + `sell_without_a_position_is_rejected_by_the_sim` to the
+  new semantics; delete `NextOpenSim`, drop `lib.rs` re-export, rework
+  `with_execution_sim`). Wave 2 = **D2** (strategy dispatch, `tantra-runtime-strategy`;
+  `PaperAdapter`/`ZerodhaKiteAdapter`/`AngelOneSmartApiAdapter` delegate fills to a
+  per-adapter `PaperExchange`). Wave 3 = **D3** (`/ws/live`, api-rest ws). Wave 4 = **D4**
+  (backtest drives the exchange, `tantra-runtime-backtest::engine`). Wave 5 = **D5**
+  (`paper serve` daemon). Root task-list + index + HANDOFF updates are orchestrated
+  centrally after each verified wave.
 
 ## Prior work — T14 planning (docs only, superseded by the P0 entry above)
 
@@ -148,7 +189,7 @@ mirror and retargeting consumers:
   18 consumers retargeted (`tantra-examples` `6b4e86c`); snippets `9433aa0`.
 - **0003** — `tantra_data.loaders.{amfi,nse,yfinance}` + `domain.quantity` (`tantra-data`
   `54d5b34`); wheel `tantra.screener` (`tantra-ffi` `07b4956`); `_kernel/{data,screener}` +
-  `amfi.py` + `bhavcopy.py` deleted + 32 files retargeted (`eef65a5`). `VYAAPAAR_DATA_DIR`
+  `amfi.py` + `bhavcopy.py` deleted + 32 files retargeted (`eef65a5`). `TANTRA_DATA_DIR`
   seam kept. Env provisioned: `tantra_data`+`polars` into `tantra-ffi/.venv`.
 - **0004** — wheel `tantra.display` + `tantra.markets.india`(costs/settlement) +
   `tantra.markets.india.universes` + `tantra.cli.data` (`tantra-ffi` `e5f40b3` + `723c9c0`);
