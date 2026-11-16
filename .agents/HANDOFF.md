@@ -6,12 +6,62 @@ Level 7 (`tantra-data/0002`, filings breadth) superseded: filings ingestion + th
 `tantra-data` → Rust bridge for filings/corporate actions are both landed (T5 track,
 2026-11-13). Agent-side **plan 0006 (MCP/chat tool catalog expansion) is complete**;
 follow-on breadth tracked under agent plan 0007.
-Date: 2026-11-14 · Workspace: `tantra-labs`
+Date: 2026-11-15 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crate dependency
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — T12.10 (docs slice of the EE+ platform track)
+## Latest Batch — single workspace venv + T13 Thrust A
+
+Date: 2026-11-16.
+- **Single venv (2026-11-16)**: one Python env at the workspace root `.venv`; every
+  Python repo (`tantra-ffi/adapters/data/strategies/examples/docs`) now has a
+  git-ignored `.venv` symlink → `../.venv` (root Makefile `make prepare` provisions:
+  tooling → symlinks → `maturin develop` wheel → editable installs → docs deps;
+  `make venv-link` recreates just the symlinks). `make prepare` **must create the
+  symlinks before** `maturin develop` — maturin auto-detects `.venv` from the CWD and
+  otherwise installs into a stale per-repo venv. Verified: ffi wheel suite (496) and
+  adapters suite green through the symlinks; `mkdocs build --strict` green.
+  ⚠️ **Newly exposed by the complete venv**: `tantra-examples` `test_06_multi_broker_dispatch`
+  (6 tests) now fail — the old ffi venv never installed `tantra-adapters`, so the
+  example's paper fallbacks registered; with `tantra-adapters` installed the wheel
+  facade `resolve_adapter("zerodha", config=...)` calls the real broker factory, whose
+  `BaseRestAdapter.__init__` rejects the `config=` kwarg. Pre-existing cross-repo
+  contract gap (facade `create(name, **config)` ↔ `tantra-adapters` real constructors);
+  the other agent is editing `06_multi_broker_dispatch.py` — track/fix there.
+- **T13 Thrust A (2026-11-15)**: wheel lift shipped in `tantra-ffi` `9b354d5`
+  (`tantra.portfolio/risk/calendar/options/metrics` + tests; `python/tests` 496 green);
+  consumer retarget + `_kernel/` deletion in `tantra-examples` deferred until the
+  other agent's 73-error fix (`1d89fd9`) settles there.
+
+## Latest Batch — T14 PLANNED (docs only; no development)
+
+Date: 2026-11-15. Per user direction ("analyze… create a paper trading exchange… should be
+able to embed this to python sdk as well as CSR or web ui"): planning artifacts for
+**T14 — Standalone Paper Trading Exchange** were created, no code was written:
+- **Root master plan `docs/plans/0007-paper-trading-exchange.md`** (Proposed): the
+  real-exchange-mimicking paper exchange. Source-verified premise: Tantra has **three
+  divergent simulators** — `PaperAdapter` (`tantra-runtime-strategy::dispatch`, fills at
+  limit/last price, no book), `NextOpenSim` (`tantra-runtime-api-rest::exec`,
+  market-only/long-only), and the backtest's private L2 `OrderBook`
+  (`tantra-runtime-backtest::sim::l2_book`, price-time priority). One engine
+  (`tantra-exec-paper`) replaces all three and serves strategies, REST, backtest, the Python
+  SDK, and CSR/WASM + web; `paper serve` daemon for independent runs. Closes runtime gap
+  0008 option 2 (lift the sync `BrokerAdapter` port into `tantra-exec-core`).
+- Per-repo plans (all Proposed): `tantra-exec` **0003** (matching core — order lifecycle,
+  account isolation, `PaperExchangeExecutor` on `BrokerExecutor` + sync port, WASM),
+  `tantra-runtime` **0005** (REST `/orders` + dispatch on the exchange, `/ws/live` push,
+  backtest unification, `paper serve`), `tantra-ffi` **0003** (`tantra.paper` PyO3 wheel
+  surface; `l2_sim` native backend removes `NotImplementedError`), `tantra-ui` **0008**
+  (in-browser WASM paper session, CSR `PaperPanel`, TUI paper panel, CLI `paper`).
+- Indexes updated: root + 4 repo plan READMEs; root task list T14 track (T14.1–T14.15) +
+  phase table + per-repo summary rows. HANDOFFs updated per repo.
+- Execution NOT started — plans await approval. When approved: P0 (`tantra-exec-paper`) →
+  P1 (runtime wiring) → P2 (backtest unification + Python SDK) → P3 (CSR/WASM) → P4
+  (golden parity suite + docs), mirroring the bottoms-up discipline; gate is T14.14
+  byte-identical fills across backtest / paper / Python / WASM.
+
+## Prior work — T12.10 (docs slice of the EE+ platform track)
 
 Date: 2026-11-15. `tantra-docs` only: the EE+ strategy guide gained
 `docs/strategies/elephant-edge/reference.md` — the missing plan-0003 page 6 (parameter

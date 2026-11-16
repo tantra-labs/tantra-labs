@@ -4,7 +4,7 @@ REPOS := tantra-core tantra-risk tantra-ledger tantra-market tantra-exec tantra-
 SSH_SOCK := $(if $(XDG_RUNTIME_DIR),$(XDG_RUNTIME_DIR),/run/user/$(shell id -u))/ssh-agent.sock
 export SSH_AUTH_SOCK ?= $(SSH_SOCK)
 
-.PHONY: default build build-dev build-prod build-release build-debug dev prod release debug check check-dev check-prod test fmt clippy clean
+.PHONY: default build build-dev build-prod build-release build-debug dev prod release debug check check-dev check-prod test fmt clippy clean prepare
 
 # Default build is 'prod' (no debug build unless asked for specifically)
 default: prod
@@ -46,6 +46,47 @@ clippy:
 clean:
 	@for r in $(REPOS); do echo "==> cleaning $$r"; (cd $$r && $(MAKE) clean); done
 	@find . -type d -name target -prune -exec rm -rf {} +
+
+# ---- single Python venv ---------------------------------------------------
+# One workspace venv lives at the repo root (.venv); every Python sub-repo
+# symlinks its own .venv here (git-ignored) so `make`/`pytest`/`ruff`/`mkdocs`
+# resolve to the same interpreter everywhere. `make prepare` builds it.
+.PHONY: prepare venv-link
+
+# Python sub-repos that get a `.venv` symlink -> ../.venv
+PY_REPOS := tantra-ffi tantra-adapters tantra-data tantra-strategies tantra-examples tantra-docs
+
+prepare:
+	@echo "==> preparing single workspace venv at .venv"
+	@test -d .venv || python3 -m venv .venv
+	@.venv/bin/python -m ensurepip --upgrade >/dev/null 2>&1 || true
+	@.venv/bin/python -m pip install --quiet --upgrade pip
+	@echo "==> [1/5] tooling (maturin pytest ruff mypy hypothesis pyarrow pydantic polars duckdb)"
+	@.venv/bin/python -m pip install --quiet maturin pytest ruff mypy hypothesis pyarrow pydantic polars duckdb httpx
+	@echo "==> [2/5] .venv symlinks in $(PY_REPOS) (before wheel build so maturin targets the shared venv)"
+	@for r in $(PY_REPOS); do \
+	  rm -rf "$$r/.venv"; \
+	  ln -s ../.venv "$$r/.venv"; \
+	  echo "    $$r/.venv -> ../.venv"; \
+	done
+	@echo "==> [3/5] tantra wheel (maturin develop)"
+	@cd tantra-ffi && ../.venv/bin/maturin develop
+	@echo "==> [4/5] editable packages (adapters, data, strategies, examples)"
+	@cd tantra-adapters && ../.venv/bin/python -m pip install --quiet --editable .
+	@cd tantra-data && ../.venv/bin/python -m pip install --quiet --editable .
+	@cd tantra-strategies && ../.venv/bin/python -m pip install --quiet --editable .
+	@cd tantra-examples && ../.venv/bin/python -m pip install --quiet --editable .
+	@echo "==> [5/5] docs deps (mkdocs-material)"
+	@cd tantra-docs && ../.venv/bin/python -m pip install --quiet -r requirements.txt
+	@echo "prepare complete: source .venv/bin/activate"
+
+# Re-create the per-repo `.venv` symlinks without reinstalling packages.
+venv-link:
+	@for r in $(PY_REPOS); do \
+	  rm -rf "$$r/.venv"; \
+	  ln -s ../.venv "$$r/.venv"; \
+	  echo "    $$r/.venv -> ../.venv"; \
+	done
 
 # ---- frontends & ui -------------------------------------------------------
 # `dev-ui` starts dev mode on tantra-ui (WASM Studio / CLI / TUI).
