@@ -11,6 +11,28 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — unit suite fully green (967 passed / 1 skipped) + provisioning scope
+
+Date: 2026-11-16.
+- **All 51 unit-suite skips fixed in `tantra-examples`** (`tests/unit` **967 passed / 1 skipped**,
+  from 916 passed / 51 skipped; ruff clean; integration green). Roots fixed: optional deps
+  (`numpy`/`scipy` into the wheel venv + a Decimal-quantize fix in `tantra_data.loaders.amfi.nav_bars`
+  + a float-cast at the numpy boundary in `04_portfolio_optimization`); `test_screening_import`
+  reworked via a `sys.meta_path` blocker; the **tantra-strategies catalog** shipped its missing
+  `registry.json` + `tools/validate_chain.py` (28 pipeline chain/manifest tests un-skipped); the
+  1D NSE catalog tests got a canonical synthetic lakehouse (`tests/unit/synthetic_lakehouse.py`,
+  price catalog + `fundamentals.duckdb`) behind the `VYAAPAAR_DATA_DIR` seam. A wheel-API
+  regression in `06_multi_broker_dispatch` (paper mocks now `replace=True`) and two integration
+  suites re-gated on their true prerequisites. **1 remaining skip is honest**: the MF screener
+  needs `tantra_data.store.mutual_funds`, which the provider hasn't shipped — **filed
+  `tantra-data` gap 0023**.
+- **Data-provisioning microservice scoped (plan, no implementation)**: per user direction
+  ("ask for download, with a choice of dummy or Monte-Carlo data"), `tantra-examples` plan 0004
+  scopes an HTTP microservice offering `download` (delegates to tantra-data ingest CLIs) / `dummy`
+  (fold of `synthetic_lakehouse.py` — one canonical synthetic source) / `monte-carlo`
+  (truly random unless seeded) for all three datasets (NSE 1D catalog, fundamentals,
+  mutual_funds). No new CLI.
+
 ## Latest Batch — T13 COMPLETE + single workspace venv
 
 Date: 2026-11-16.
@@ -49,7 +71,27 @@ Date: 2026-11-16.
   otherwise installs into a stale per-repo venv. Verified: ffi wheel suite (496) and
   adapters suite green through the symlinks; `mkdocs build --strict` green.
 
-## Latest Batch — T14 PLANNED (docs only; no development)
+## Latest Batch — T14 P0 IN PROGRESS (execution)
+
+Date: 2026-11-16. Implementing root plan 0007 P0 (`tantra-exec/docs/plans/0003`). Wave plan
+(sequential, 1 subagent/wave — A/B/C share the `tantra-exec`+`tantra-runtime` workspace so
+parallel cargo would contend on `Cargo.lock`):
+- **Wave 1 (in flight)**: `tantra-exec` — new crate `crates/tantra-exec-paper` (pure matching
+  engine: port of `sim/l2_book` + `sim/{latency,slippage,mis}`, order lifecycle + events,
+  account isolation with `FillCostFn` fee hook, `PaperExchange` aggregate + `PaperExchangeExecutor`
+  on `BrokerExecutor` + `SimExecutionPort`), facade re-export, tests E1–E8 in `tests/`.
+  **Recorded scoping decision**: statutory fee tables + FIFO settlement are *not* pulled into
+  `tantra-exec` in P0 (would add `tantra-market`/`tantra-ledger` deps to the Hand context); the
+  engine exposes a `FillCostFn`-style hook (mirrors wheel `tantra.backtest.l2_sim`) and the real
+  tables are injected by the runtime wiring slice (`tantra-runtime` plan 0005 D1/D2).
+- **Wave 2**: `tantra-exec-core` sync `SimExecutionPort` trait (lift of runtime `BrokerAdapter`
+  surface) + `tantra-runtime-strategy::dispatch` re-export → **closes gap 0008 (option 2)**.
+- **Wave 3**: E9 parity test in `tantra-runtime-backtest` — same tape through the backtest L2
+  book and the paper exchange → byte-identical fills (golden).
+- After each wave: verify (prod profile) before starting the next; after Wave 3, update plan
+  statuses (exec 0003 P0), task list T14 rows, per-repo HANDOFFs, and the root HANDOFF.
+
+## Prior work — T14 planning (docs only, superseded by the P0 entry above)
 
 Date: 2026-11-15. Per user direction ("analyze… create a paper trading exchange… should be
 able to embed this to python sdk as well as CSR or web ui"): planning artifacts for
