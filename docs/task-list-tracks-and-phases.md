@@ -25,9 +25,9 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds | T5, T3 (feeds) | 2 |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor; **paper exchange matching core (T14 P0)** | T4, T14 (P0) | 0 (+T14.1–T14.4) |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling; **paper exchange runtime wiring + backtest unification (T14 P1)** | T6, T7, T14 (P1) | 5 (+T14.5–T14.9) |
-| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors; **Python SDK `tantra.paper` (T14 P2)** | T8, T9, T14 (P2) | 6 (+T14.10–T14.11) |
-| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference; **CSR/WASM paper panel + docs (T14 P3/P4)** | T10, T11, T14 (P3/P4) | 0 (+T14.12–T14.15) |
-| **Total** | | | **26** (+15 proposed T14 tasks) |
+| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors; **Python SDK `tantra.paper` (T14 P2)**; **data provisioning library (T15.1–T15.4)** | T8, T9, T14 (P2), T15 | 6 (+T14.10–T14.11) |
+| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference; **CSR/WASM paper panel + docs (T14 P3/P4)**; **provisioning HTTP service (T15.5–T15.6)** | T10, T11, T14 (P3/P4), T15 | 0 (+T14.12–T14.15) |
+| **Total** | | | **26** (+15 proposed T14 tasks) (+6 T15 tasks) |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -356,14 +356,14 @@ One exchange engine that mimics a real exchange (price-time priority book, order
 partial fills, stop/IOC/GTD, both sides) and is the single fill engine behind strategies, REST,
 backtest, the Python SDK, and CSR/WASM + web. Replaces the three divergent simulators
 (`PaperAdapter` / `NextOpenSim` / backtest's private L2 book) with one `tantra-exec-paper`
-engine (zero-I/O, Decimal, `wasm32`). Planning-only until approved.
+engine (zero-I/O, Decimal, `wasm32`). **P0 (T14.1–T14.4) shipped 2026-11-16**; P1+ pending.
 
 | Task | Work | Repo / Scope | Phase | Status | Gap / Plan |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T14.1** | Extract `sim/l2_book` + `sim/{latency,slippage,mis}` into new `tantra-exec-paper` (pure matching crate, `wasm32`), behavior-identical | `tantra-exec` | 3 | Proposed | exec plan 0003 (E1) |
-| **T14.2** | Order lifecycle + events: Working/Partial/Filled/Cancelled/Rejected/StopTriggered, submit/cancel/amend, both sides, Day/IOC/GTD, Market/Limit/StopLimit/StopMarket | `tantra-exec-paper` | 3 | Proposed | exec plan 0003 (E2–E7) |
-| **T14.3** | Account isolation (cash/positions/orders per `AccountId`) + statutory fees + FIFO settlement | `tantra-exec-paper` | 3 | Proposed | exec plan 0003 |
-| **T14.4** | `PaperExchangeExecutor` implements `BrokerExecutor`; lift sync `BrokerAdapter` port into `tantra-exec-core` (**closes runtime gap 0008, option 2**); `test_identical_fills_paper_vs_backtest` | `tantra-exec` + `tantra-runtime` | 3 | Proposed | runtime gap 0008, exec plan 0003 (E9) |
+| **T14.1** | ✅ Extract `sim/l2_book` + `sim/{latency,slippage,mis}` into new `tantra-exec-paper` (pure matching crate, `wasm32`), behavior-identical | `tantra-exec` | 3 | **Done 2026-11-16** | exec plan 0003 (E1) — `crates/tantra-exec-paper` (book/latency/slippage/mis ported verbatim; `ready_ts` made pub for parity) |
+| **T14.2** | ✅ Order lifecycle + events: Working/Partial/Filled/Cancelled/Rejected/StopTriggered, submit/cancel/amend, both sides, Day/IOC/GTD, Market/Limit/StopLimit/StopMarket | `tantra-exec-paper` | 3 | **Done 2026-11-16** | exec plan 0003 (E2–E7) — `lifecycle.rs` (`OrderState`, `WorkingOrder`, `ExchangeEvent`, `ExchangeError`) + `PaperExchange::submit/cancel/amend`, IOC, GTD (`submit_order_gtd`), stop trigger |
+| **T14.3** | ✅ Account isolation (cash/positions/orders per `AccountId`) + statutory fees + FIFO settlement | `tantra-exec-paper` | 3 | **Done 2026-11-16** | exec plan 0003 — `AccountState` per `AccountId`; fees via pluggable `FillCostFn` (default `ZeroFillCost`); real fee/FIFO tables injected by runtime wiring (P1, plan 0005 D1/D2 — recorded scoping decision) |
+| **T14.4** | ✅ `PaperExchangeExecutor` implements `BrokerExecutor`; lift sync `BrokerAdapter` port into `tantra-exec-core` (**closes runtime gap 0008, option 2**); `test_identical_fills_paper_vs_backtest` | `tantra-exec` + `tantra-runtime` | 3 | **Done 2026-11-16** | runtime gap 0008 (closed), exec plan 0003 (E9) — `tantra-exec-core::sim::SimExecutionPort` lifted; `dispatch.rs::BrokerAdapter` is a re-export; `PaperExchangeExecutor` implements both ports; E9 parity test `tests/paper_parity_tests.rs` (4 tests, byte-identical fills) |
 | **T14.5** | REST `/orders` on the exchange — replace `NextOpenSim`; limit/stop/short support; fills on market advance | `tantra-runtime-api-rest` | 4 | Proposed | runtime plan 0005 (R1–R3, R7) |
 | **T14.6** | Strategy dispatch — `PaperAdapter` becomes a thin driver over the exchange; zerodha/angelone sim-scaffolds delegate to the exchange | `tantra-runtime-strategy::dispatch` | 4 | Proposed | runtime plan 0005 (D2) |
 | **T14.7** | `/ws/live` bidirectional push (orders/fills/depth/positions) | `tantra-runtime-api-rest::ws` | 4 | Proposed | runtime plan 0005 (R4) |
@@ -378,6 +378,29 @@ engine (zero-I/O, Decimal, `wasm32`). Planning-only until approved.
 
 ---
 
+## T15 — Data Provisioning Microservice (download / dummy / Monte-Carlo) · Phase 5–6
+
+**Source**: [`tantra-examples/docs/plans/0004-*.md`](../tantra-examples/docs/plans/0004-data-provisioning-microservice-scope.md)
+(master plan, **In progress — T15.1 shipped 2026-11-16**)
+
+One provisioning path for the canonical data root (`$VYAAPAAR_DATA_DIR` layout) serving every
+consumer — sim (`tantra.backtest.session`), analyser (`algo_analytics.walk_forward`), UI
+(`tantra serve <data_dir>`), screeners, and the wheel store — with an interactive
+download / dummy / Monte-Carlo choice (microservice, not a new CLI). Download delegates to the
+owning tantra-data ingest CLIs; dummy is the fold of `synthetic_lakehouse.py` (one canonical
+synthetic source); Monte-Carlo is seeded-reproducible or truly random.
+
+| Task | Work | Repo / Scope | Phase | Status | Gap / Plan |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **T15.1** | ✅ Milestone 1 — contract + layout + `provision` library: `tantra_examples/provision/` (layout constants + `Dataset`/`Mode`, `ProvisionRequest`/`ProvisionJob`, DECIMAL-canonical dummy generator, `openapi.json`); `tests/unit/synthetic_lakehouse.py` folded to a re-export shim; 23 new tests | `tantra-examples` | 5 | **Done 2026-11-16** | ex plan 0004 (M1) — suite 990 passed / 1 skipped, ruff + mypy clean |
+| **T15.2** | Milestone 2 — dummy mode complete: fold conftest ad-hoc writers onto the provisioner; thin example seam prompting download/dummy/Monte-Carlo when a data root is absent | `tantra-examples` | 5 | In progress | ex plan 0004 (M2) |
+| **T15.3** | Milestone 3 — Monte-Carlo mode: seeded (or truly-random) GBM/regime generator + fundamentals randomizer; golden/seed vectors for determinism | `tantra-examples` | 5 | Proposed | ex plan 0004 (M3) |
+| **T15.4** | Milestone 4 — download mode: background job runner over `tantra_data.cli.ingest_*`; provider failures surface as terminal errors | `tantra-examples` + `tantra-data` | 5 | Proposed | ex plan 0004 (M4) |
+| **T15.5** | Milestone 5 — HTTP microservice: background job store, progress, cancellation; thin client | `tantra-examples` | 6 | Proposed | ex plan 0004 (M5) |
+| **T15.6** | Milestone 6 — example seam + redundant-generator cleanup | `tantra-examples` | 6 | Proposed | ex plan 0004 (M6) |
+
+---
+
 ## Per-repo summary
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
@@ -387,14 +410,14 @@ engine (zero-I/O, Decimal, `wasm32`). Planning-only until approved.
 | `tantra-ledger` | 1 (0012 EE+) | — | T2.1–T2.11 ✅, T12.7 |
 | `tantra-risk` | 1 (0005 EE+) | 0002 (Implemented) | T1.1–T1.4 ✅, T12.6 |
 | `tantra-market` | 2 (0003, 0005 EE+) | — | T3.1–T3.4 🔶, T12.2 |
-| `tantra-exec` | 1 (0003 EE+) | 0002 (Phase 1 done), **0003 (paper exchange core, proposed — T14)** | T0.3 ✅, T4.11 ✅, T12.5, T14.1–T14.4 |
-| `tantra-runtime` | 1 (0008) | 0004 (Implemented), **0005 (paper wiring + backtest unification, proposed — T14)** | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 |
+| `tantra-exec` | 1 (0003 EE+ bracket orders) | 0002 (Phase 1 done), **0003 (paper exchange core — P0 shipped 2026-11-16, T14)** | T0.3 ✅, T4.11 ✅, T12.5, T14.1–T14.4 ✅ |
+| `tantra-runtime` | 0 (**0008 closed 2026-11-16** — sync port lifted) | 0004 (Implemented), **0005 (paper wiring + backtest unification, proposed — T14)** | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 |
 | `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — all 6 tracks' tool surfaces shipped), 0010 (Implemented), 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.12 ✅, T12.8 |
 | `tantra-ui` | 1 (0007 EE+) | 0003 (Implemented), 0006 (EE+, proposed), **0008 (paper exchange CSR/WASM, proposed — T14)** | T10.1–T10.5 ✅, T12.9, T14.12–T14.13 |
 | `tantra-adapters` | 0 | 0002, 0003, 0004 (all Implemented) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006, 0017–0019, 0020–0022 (Implemented) | T5.1–T5.10 ✅, T12.3 |
 | `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅), T14.11 |
-| `tantra-examples` | **0** (all 8 closed: 0001–0008) | **0003 (harness dismantle, Implemented 2026-11-16 — T13)** | T9.1–T9.10 all ✅ (T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.10 ✅), T13.6–T13.7 ✅, T14.11 |
+| `tantra-examples` | **0** (all 8 closed: 0001–0008) | **0003 (harness dismantle, Implemented 2026-11-16 — T13)**, **0004 (data provisioning, In progress 2026-11-16 — T15)** | T9.1–T9.10 all ✅ (T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.10 ✅), T13.6–T13.7 ✅, T14.11, T15.1 ✅ |
 | `tantra-ffi` | **0** | **0002 (wheel domain-harness surfaces, Implemented 2026-11-16 — T13)**, **0003 (paper exchange Python SDK, proposed — T14)** | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 |
 | `tantra-docs` | — | 0001, 0003 (both Implemented) | T11.1 ✅, T11.2 ✅, T12.10 ✅, T14.15 |
 
@@ -535,6 +558,16 @@ engine (zero-I/O, Decimal, `wasm32`). Planning-only until approved.
 > (runner→wheel session, service→tantra_data, testing→wheel replay helper,
 > `fills_equity_curve` Decimal end-to-end). `tantra-examples` + `tantra-ffi` open plans → 0/1
 > (only ffi 0003 T14 remains); phase-5 open → 6 (all T14).
+>
+> T15 track started 2026-11-16 (tantra-examples plan 0004, data provisioning): **T15.1 shipped** —
+> `tantra_examples/provision/` (canonical layout constants, `ProvisionRequest`/`ProvisionJob`
+> contract, DECIMAL-canonical dummy lakehouse — the fold of `tests/unit/synthetic_lakehouse.py`,
+> `openapi.json`); the old synthetic fixture is a re-export shim (one canonical synthetic source);
+> consumer-coverage analysis recorded in the plan (sim/analyser/UI/screeners/wheel all read the
+> same canonical root — zero consumer changes); 23 new tests; examples suite 990 passed / 1 skipped
+> (967 baseline + 23; the skip is honest — `tantra_data.store.mutual_funds` gap 0023), ruff clean,
+> mypy clean on the new package. T15.2–T15.6 pending (dummy seam → Monte-Carlo → download →
+> HTTP service → example seam).
 
 ## Related
 
