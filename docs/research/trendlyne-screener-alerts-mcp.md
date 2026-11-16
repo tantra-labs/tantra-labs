@@ -1,6 +1,6 @@
 # Research — Trendlyne screeners, DVM, Alpha Alerts & MCP → what Tantra should adopt
 
-**Date**: 2026-11-15 · **Scope**: idea source only (native implementation; no Trendlyne data
+**Date**: 2026-11-15 (revised 2026-11-16) · **Scope**: idea source only (native implementation; no Trendlyne data
 dependency, no adapter to its paid MCP) · **Roadmap**: [`docs/plans/0010`](../plans/0010-screener-taxonomy-and-alerts.md)
 
 Trendlyne is an Indian equity research platform (NSE/BSE). Its value for Tantra is not its data
@@ -67,8 +67,10 @@ no imitation of a trademark). Differences that are deliberate improvements:
 
 ## 3. Alpha Alerts catalog
 
-One alert = **one rule over a group** (up to 5 universes: portfolios, watchlists, indices).
-Frequencies 15m / 30m / 1H / Daily. Delivery: push, email (live or digest), WhatsApp.
+One alert = **one rule over 1..N universes** (up to 5+ universes: portfolios, watchlists, indices,
+sectors/industries). Frequencies 15m / 30m / 1H / Daily, plus live & digest delivery (push, email live
+or hourly/daily digest, WhatsApp). Also supports attaching screener enter/exit alerts constrained to
+a portfolio/watchlist.
 
 | Family | Conditions |
 |---|---|
@@ -77,20 +79,21 @@ Frequencies 15m / 30m / 1H / Daily. Delivery: push, email (live or digest), What
 | Volume & delivery | volume shockers, high volume + top gainers/losers; rising / high delivery % (daily) |
 | Breakouts | LTP > R1/R2/R3, LTP < S1/S2/S3 (pivot levels) |
 | Results | declared today (rising/falling revenue, profit YoY/QoQ), post-result outperformance, upcoming results with rising price/delivery |
-| Corporate actions | upcoming dividend, bonus, split |
-| Big deals | insider/SAST buy/sell > 1% of shares (today / yesterday / week / month) |
+| Corporate actions | upcoming dividend, bonus, split, board meetings |
+| Big deals | bulk/block deals, superstar deals, insider/SAST buy/sell > 1% of shares (today / yesterday / week / month) |
 | DVM | strong DVM select, high durability crossover, getting expensive; momentum trap, falling comet, weak; rising / high momentum |
-| Screener | stock **enters** / **exits** a saved screener |
-| Email digests | results, research reports, earnings calls, events, announcements |
+| Screener | stock **enters** / **exits** / **both** a saved screener (optionally scoped to a portfolio/watchlist) |
+| Email digests | results, research reports, earnings/conference calls (hourly/daily), upcoming events, corporate announcements (hourly/daily) |
 
 **Tantra today**: `PriceAlert{instrument_id, price, status}` (`tantra-agent-chat-tools/src/ports/alert.rs`),
 stored per-user via `ProfileStore` (`tantra-runtime-api-rest/src/chat_alerts.rs`). There is **no
-evaluator** for group rules and no edge-triggered (enter/exit) semantics.
+evaluator** for group/event rules, no edge-triggered (enter/exit) semantics, and no digest engine.
 
-**Tantra adaptation**: every alert family above is expressible as
-`AlertRule { universe, condition: ScreenerFilterGroup, frequency, trigger: Enter | Exit | Level }`
-evaluated by a runtime scheduler that diffs consecutive screen results — i.e. **alerts are saved
-screens with edge detection**. One engine replaces N bespoke alert types.
+**Tantra adaptation** (L3 `tantra-runtime` + `tantra-agent` ports, not L0 `tantra-core`): model both
+periodic bar/screen alerts and stream-triggered corporate/deal alerts under one engine:
+- `AlertRule { universes: Vec<UniverseTarget>, condition: ScreenEdge | EventMatch, frequency, delivery: Live | HourlyDigest | DailyDigest | EodSummary, cooldown, snooze }`
+- `ScreenEdge` rules diff consecutive screen match sets (`Enter | Exit | Both | Level`);
+- `EventMatch` rules react directly to ingested corporate actions, results, filings/announcements, research reports, bulk/block/insider deals, and QVM transitions, feeding a shared **Digest Batcher** and bounded `NotificationSink`s.
 
 ## 4. Trendlyne MCP inventory
 
@@ -114,27 +117,30 @@ pull ≤10 named stocks per call; (3) watchlists are first-class agent-writable 
 (4) qualitative research is semantic document search.
 
 **Tantra adaptation** (`tantra-agent-mcp`, hand-written `list_tool_definitions` + `call_tool`
-match arm): `screen_catalog` (browse presets by category), `metric_search` (parameter discovery),
+match arm, over async ports in `tantra-agent-chat-tools`/`tantra-agent-mcp`): `screen_catalog` (browse presets by category), `metric_search` (parameter discovery),
 `screen_run` (full-universe scan → `$tantra/ref` handle for large results), `universe_resolve`,
-`classification_lookup`, `qvm_score`, `alert_rule_{create,list,delete}`, `watchlist_{create,list,add,remove}`.
+`classification_lookup`, `qvm_score`, `alert_preset_{list,subscribe}`, `alert_rule_{create,list,update,snooze,delete}`, `alert_events_list`, `alert_digest_prefs`, `watchlist_{create,list,add,remove}`.
 Tantra already has `FilingsSearch` / `NewsSearch` chat tools for the document-search role.
 
 ## 5. Gap matrix — Trendlyne → Tantra
 
 | # | Capability | Provider repo (tier) | Status in Tantra |
 |---|---|---|---|
-| F1 | Classification value objects (`Sector`/`Industry` 4-level NSE hierarchy, `MarketCapBucket`, `IndexId`, `ScreenCategory`) + `crosses_*` in `FilterOp` | `tantra-core` (L0) | missing |
-| F2 | Instrument master + point-in-time index membership + SEBI cap-bucket list | `tantra-data` (L6) | missing (examples mirror only) |
-| F3 | Unified screen DSL (timeframe, between, AND/OR groups, classification & peer-relative filters) aligned to `tantra-core/src/screener.rs` | `tantra-data` (L6) | partial |
-| F4 | Declarative screen catalog (TOML presets per category, named recipes) | `tantra-data` (L6) | partial (`examples/screening/chains/*.toml`) |
-| F5 | QVM composite score | `tantra-data` (L6) | missing |
+| F1 | Slim market-agnostic classification VOs (`Sector`, `Industry`, `IndexId`, bare `MarketCapBucket`) + converged recursive Screener DSL (`CrossesAbove/Below`, `RelativeTo`, `ClassificationFilter`) | `tantra-core` (L0) | missing / 4-way DSL fork |
+| F2 | Instrument master + NSE 4-level classification + point-in-time index membership + SEBI cap-bucket `from_rank` & history | `tantra-data` (L6) | missing (hand-maintained wheel lists only) |
+| F3 | Unified screen DSL mapping + `VectorizedScreener` v2 + L3 evaluator bridge | `tantra-data` (L6) | partial |
+| F4 | Declarative screen catalog (TOML presets, owning `ScreenCategory` taxonomy, named recipes) | `tantra-data` (L6) | partial (`examples/screening/chains/*.toml`) |
+| F5 | QVM composite score (point-in-time, `Decimal` ranks, open weights, transition flags) | `tantra-data` (L6) | missing |
 | F6 | SDK `StrategyContext.universe / classification / screen` | `tantra-strategies` (L6) | missing |
-| F7 | Group/screener alert rules + evaluator + persistence | `tantra-core` (wire), `tantra-runtime` (L3) | price-only |
-| F8 | MCP screener/universe/alert/watchlist tools | `tantra-agent` (L3) | missing |
-| F9 | Shareholding / pledge / SAST / analyst-estimate ingestion | `tantra-data` (L6) | missing (filed as gap) |
+| F7 | Alpha-style alert rules (`ScreenEdge` + `EventMatch`), multi-universe evaluator, live + digest engine, preset packs, SQLx persistence | `tantra-runtime` (L3) | single-stock `PriceAlert` only |
+| F8 | MCP screener/universe/Alpha-Alerts/watchlist tools (async ports in `chat-tools`/`mcp`) | `tantra-agent` (L3) | missing |
+| F9 | Shareholding / pledge / SAST / analyst-estimate ingestion | `tantra-data` (L6) | missing (filed as gap 0024) |
 
-Tier note: Python packages (L6) consume Rust (L0–L4) via the `tantra` FFI wheel or HTTP; the
-Python classification enums must mirror `tantra-core` wire strings, not fork semantics.
+Tier note: `tantra-core` (L0) owns only slim, jurisdiction-neutral VOs and the converged screener
+wire AST — catalog taxonomy (`ScreenCategory`), India-specific SEBI/NSE rules, and L3 Alpha-Alerts
+state live in `tantra-data` / `tantra-market-finance` / `tantra-runtime`. Python packages (L6)
+consume Rust (L0–L4) via the `tantra` FFI wheel or HTTP and must mirror `tantra-core` wire strings
+without forking semantics.
 
 ## Sources
 
