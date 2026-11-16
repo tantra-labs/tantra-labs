@@ -378,10 +378,10 @@ engine (zero-I/O, Decimal, `wasm32`). **P0 (T14.1–T14.4) shipped 2026-11-16**;
 
 ---
 
-## T15 — Data Provisioning Microservice (download / dummy / Monte-Carlo) · Phase 5–6
+## T15 — Data Provisioning Microservice (download / dummy / Monte-Carlo) · Phase 5–6 — ✅ COMPLETE 2026-11-16
 
 **Source**: [`tantra-examples/docs/plans/0004-*.md`](../tantra-examples/docs/plans/0004-data-provisioning-microservice-scope.md)
-(master plan, **In progress — T15.1 shipped 2026-11-16**)
+(master plan, **Implemented 2026-11-16**)
 
 One provisioning path for the canonical data root (`$VYAAPAAR_DATA_DIR` layout) serving every
 consumer — sim (`tantra.backtest.session`), analyser (`algo_analytics.walk_forward`), UI
@@ -392,12 +392,15 @@ synthetic source); Monte-Carlo is seeded-reproducible or truly random.
 
 | Task | Work | Repo / Scope | Phase | Status | Gap / Plan |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T15.1** | ✅ Milestone 1 — contract + layout + `provision` library: `tantra_examples/provision/` (layout constants + `Dataset`/`Mode`, `ProvisionRequest`/`ProvisionJob`, DECIMAL-canonical dummy generator, `openapi.json`); `tests/unit/synthetic_lakehouse.py` folded to a re-export shim; 23 new tests | `tantra-examples` | 5 | **Done 2026-11-16** | ex plan 0004 (M1) — suite 990 passed / 1 skipped, ruff + mypy clean |
-| **T15.2** | Milestone 2 — dummy mode complete: fold conftest ad-hoc writers onto the provisioner; thin example seam prompting download/dummy/Monte-Carlo when a data root is absent | `tantra-examples` | 5 | In progress | ex plan 0004 (M2) |
-| **T15.3** | Milestone 3 — Monte-Carlo mode: seeded (or truly-random) GBM/regime generator + fundamentals randomizer; golden/seed vectors for determinism | `tantra-examples` | 5 | Proposed | ex plan 0004 (M3) |
-| **T15.4** | Milestone 4 — download mode: background job runner over `tantra_data.cli.ingest_*`; provider failures surface as terminal errors | `tantra-examples` + `tantra-data` | 5 | Proposed | ex plan 0004 (M4) |
-| **T15.5** | Milestone 5 — HTTP microservice: background job store, progress, cancellation; thin client | `tantra-examples` | 6 | Proposed | ex plan 0004 (M5) |
-| **T15.6** | Milestone 6 — example seam + redundant-generator cleanup | `tantra-examples` | 6 | Proposed | ex plan 0004 (M6) |
+| **T15.1** | ✅ Milestone 1 — contract + layout + `provision` library: `tantra_examples/provision/` (layout constants + `Dataset`/`Mode`, `ProvisionRequest`/`ProvisionJob`, DECIMAL-canonical dummy generator, `openapi.json`); `tests/unit/synthetic_lakehouse.py` folded to a re-export shim; 23 new tests | `tantra-examples` | 5 | **Done 2026-11-16** | ex plan 0004 (M1) — `f76428b` |
+| **T15.2** | ✅ Milestone 2 — dummy mode complete: conftest `write_symbol` folded onto `provision.dummy.write_symbol_parquet`; interactive seam (`choose_mode`/`ensure_data_root`) | `tantra-examples` | 5 | **Done 2026-11-16** | ex plan 0004 (M2) — `5cd3897` |
+| **T15.3** | ✅ Milestone 3 — Monte-Carlo mode: seeded (byte-identical) or truly-random (`seed=None`) GBM 1D catalog + deterministic fundamentals; 6 tests incl. reproducibility/seed-vectors | `tantra-examples` | 5 | **Done 2026-11-16** | ex plan 0004 (M3) — `5cd3897` |
+| **T15.4** | ✅ Milestone 4 — download mode: synchronous runner over `tantra_data.cli.ingest_catalog`/`ingest_fundamentals`/`ingest_mutual_funds`; provider failures surface as terminal `"failed"` jobs; cancel flag; 7 tests | `tantra-examples` | 5 | **Done 2026-11-16** | ex plan 0004 (M4) — `7b98b78` |
+| **T15.5** | ✅ Milestone 5 — HTTP microservice: FastAPI `server.py` (POST /provision → 202, GET /provision/jobs/{id}, POST .../cancel, GET /health; background ThreadPoolExecutor, JobStore, pydantic enum validation) + httpx `client.py`; 7 tests | `tantra-examples` | 6 | **Done 2026-11-16** | ex plan 0004 (M5) — `7b98b78` |
+| **T15.6** | ✅ Milestone 6 — example seam + cleanup: per-test duckdb parquet writers folded onto the canonical writer (test_08/test_09); seam `__main__` runtime prompt | `tantra-examples` | 6 | **Done 2026-11-16** | ex plan 0004 (M6) — `36e468f` |
+
+**Gate**: `tests/unit` **1014 passed / 1 skipped** (skip = `tantra_data.store.mutual_funds`
+gap 0023); ruff check + format clean; mypy clean on `provision/`. **T15 track complete.**
 
 ---
 
@@ -417,7 +420,7 @@ synthetic source); Monte-Carlo is seeded-reproducible or truly random.
 | `tantra-adapters` | 0 | 0002, 0003, 0004 (all Implemented) | T4.1–T4.10 ✅ |
 | `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006, 0017–0019, 0020–0022 (Implemented) | T5.1–T5.10 ✅, T12.3 |
 | `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅), T14.11 |
-| `tantra-examples` | **0** (all 8 closed: 0001–0008) | **0003 (harness dismantle, Implemented 2026-11-16 — T13)**, **0004 (data provisioning, In progress 2026-11-16 — T15)** | T9.1–T9.10 all ✅ (T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.10 ✅), T13.6–T13.7 ✅, T14.11, T15.1 ✅ |
+| `tantra-examples` | **0** (all 8 closed: 0001–0008) | **0003 (harness dismantle, Implemented 2026-11-16 — T13)**, **0004 (data provisioning, Implemented 2026-11-16 — T15)** | T9.1–T9.10 all ✅ (T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.10 ✅), T13.6–T13.7 ✅, T14.11, T15.1–T15.6 ✅ |
 | `tantra-ffi` | **0** | **0002 (wheel domain-harness surfaces, Implemented 2026-11-16 — T13)**, **0003 (paper exchange Python SDK, proposed — T14)** | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 |
 | `tantra-docs` | — | 0001, 0003 (both Implemented) | T11.1 ✅, T11.2 ✅, T12.10 ✅, T14.15 |
 
@@ -559,15 +562,17 @@ synthetic source); Monte-Carlo is seeded-reproducible or truly random.
 > `fills_equity_curve` Decimal end-to-end). `tantra-examples` + `tantra-ffi` open plans → 0/1
 > (only ffi 0003 T14 remains); phase-5 open → 6 (all T14).
 >
-> T15 track started 2026-11-16 (tantra-examples plan 0004, data provisioning): **T15.1 shipped** —
-> `tantra_examples/provision/` (canonical layout constants, `ProvisionRequest`/`ProvisionJob`
-> contract, DECIMAL-canonical dummy lakehouse — the fold of `tests/unit/synthetic_lakehouse.py`,
-> `openapi.json`); the old synthetic fixture is a re-export shim (one canonical synthetic source);
-> consumer-coverage analysis recorded in the plan (sim/analyser/UI/screeners/wheel all read the
-> same canonical root — zero consumer changes); 23 new tests; examples suite 990 passed / 1 skipped
-> (967 baseline + 23; the skip is honest — `tantra_data.store.mutual_funds` gap 0023), ruff clean,
-> mypy clean on the new package. T15.2–T15.6 pending (dummy seam → Monte-Carlo → download →
-> HTTP service → example seam).
+> T15 track complete 2026-11-16 (tantra-examples plan 0004, data provisioning, **Implemented**):
+> all six milestones shipped in `f76428b` (M1), `5cd3897` (M2+M3), `7b98b78` (M4+M5),
+> `36e468f` (M6). `tantra_examples/provision/` = canonical layout + contracts + DECIMAL dummy
+> lakehouse + seeded/truly-random GBM Monte-Carlo + download runner over the tantra-data ingest
+> CLIs + FastAPI microservice (background jobs, cancel, health) + httpx client + interactive
+> seam (`python -m tantra_examples.provision.seam`); `tests/unit/synthetic_lakehouse.py` and
+> the per-test duckdb writers folded onto the canonical writer (one synthetic source). Gate:
+> examples suite **1014 passed / 1 skipped** (skip = `tantra_data.store.mutual_funds` gap 0023),
+> ruff clean, mypy clean on `provision/`. Consumer-coverage analysis (sim/analyser/UI/screeners/
+> wheel all read the one canonical root — zero consumer changes) recorded in plan 0004.
+> **T15 track complete.**
 
 ## Related
 
