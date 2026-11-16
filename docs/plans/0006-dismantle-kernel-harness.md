@@ -1,10 +1,29 @@
 # 0006 — Dismantle the `_kernel` Shared Harness (Clean-Architecture Alignment)
 
-**Status**: Proposed (planning only; no development yet).
+**Status**: **Implemented 2026-11-16** (T13.1–T13.7 complete).
 **Track**: T13 · **Phase**: 5 (Python wheel / SDK surface)
 **Owning repos**: `tantra-ffi` (wheel domain surfaces) + `tantra-examples` (harness dismantle)
-**Per-repo plans**: `tantra-ffi/docs/plans/0002-*.md` (Thrust A — wheel lift),
-`tantra-examples/docs/plans/0003-*.md` (Thrust B — harness rename + gate)
+**Per-repo plans**: `tantra-ffi/docs/plans/0002-*.md` (Thrust A — wheel lift, **Implemented**),
+`tantra-examples/docs/plans/0003-*.md` (Thrust B — harness rename + gate, **Implemented**)
+
+## Closing record (2026-11-16)
+
+- **Thrust A (T13.1–T13.5)**: `tantra.portfolio`/`risk`/`options`/`metrics`/`calendar` shipped
+  in the wheel (`tantra-ffi` `9b354d5` + `3d5a1ac` + `f210c8a`; 52 new wheel tests, 480 wheel
+  suite passed). The six `_kernel` domain modules deleted and every consumer retargeted to the
+  wheel (`tantra-examples` `25cb5df`).
+- **Thrust B (T13.6)**: harness renamed `tantra_examples/_kernel/` → `tantra_examples/harness/`
+  (`1acabfb`), facade rewritten to expose only harness names (no wheel re-exports), all ~60
+  `_kernel.*` import sites retargeted, `_kernel/` deleted repo-wide, docs swept (`3c2e5ae`).
+- **Gate (T13.7)**: wheel 480 passed; examples `tests/unit` 909 passed / 51 skipped with **zero
+  new failures** (6 `test_06_multi_broker_dispatch` failures are pre-existing/environmental —
+  the installed `tantra_adapters` entry points bypass the example's paper fallback; reproduce
+  identically on pre-T13 `1d89fd9`); ruff check + format clean; 6 example import-smokes pass.
+  Follow-on consolidation candidates recorded (not required): `harness/runner.py` vs the wheel
+  `tantra.backtest.session`, `harness/service.py` vs `tantra_data`, `harness/testing.py` as a
+  future wheel replay helper, and the end-to-end Decimal conversion of
+  `metrics.fills_equity_curve` + consumers.
+- **No Rust changes** (pure-Python plan); no gaps were filed/closed under this plan.
 
 ## Why
 

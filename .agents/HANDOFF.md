@@ -11,9 +11,35 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
-## Latest Batch — single workspace venv + T13 Thrust A
+## Latest Batch — T13 COMPLETE + single workspace venv
 
 Date: 2026-11-16.
+- **T13 track complete (root plan 0006 Implemented)** — dismantled the `_kernel` shared harness:
+  - **Thrust A (T13.1–T13.5, `tantra-ffi` plan 0002 Implemented)**: wheel
+    `tantra.portfolio`/`risk`/`options`/`metrics`/`calendar` shipped (`9b354d5`/`3d5a1ac`/
+    `f210c8a`/`119061a`; 52 new wheel tests; 480 suite passed; ruff-clean). The six `_kernel`
+    domain modules deleted and all consumers retargeted to the wheel in `tantra-examples`
+    `25cb5df` (Thrust A).
+  - **Thrust B (T13.6, `tantra-examples` plan 0003 Implemented)**: harness renamed
+    `_kernel/` → `tantra_examples/harness/` (`1acabfb`), facade rewritten (harness names only,
+    no wheel re-exports), all ~60 `_kernel.*` import sites retargeted, `_kernel/` deleted
+    repo-wide, docs swept (`3c2e5ae` + `80134a8`).
+  - **Gate (T13.7)**: wheel 480 passed; examples `tests/unit` 909 passed / 51 skipped, **zero new
+    failures** (see the ⚠️ note below for the 6 pre-existing env failures); ruff check + format
+    clean; 6 example import-smokes pass. Follow-on candidates recorded in the plan
+    (runner→wheel session, service→tantra_data, testing→wheel replay helper, `fills_equity_curve`
+    Decimal end-to-end). Root plan 0006 → Implemented; per-repo plan indexes + task list + HANDOFFs
+    updated. All commits local (not pushed).
+  - ⚠️ **Pre-existing env failure (unchanged by T13; verified on pre-T13 `1d89fd9`)**: the
+    workspace root `.venv` now installs `tantra-adapters`, whose real broker entry points
+    (`zerodha`/`angelone`/…) bypass `examples/production/06_multi_broker_dispatch.py`'s
+    `register_adapter(…, PaperBrokerAdapter)` paper fallback, so its `resolve_adapter(broker,
+    config=…)` calls the real factory and fails (`BaseRestAdapter.__init__` rejects the `config`
+    kwarg) — 6 `test_06_multi_broker_dispatch` failures. Pre-existing cross-repo contract gap
+    (wheel `AdapterRegistry.create(name, **config)` ↔ `tantra-adapters` real constructors);
+    run-order dependent (can pass if an earlier test registers a compatible factory). Tracked
+    for a fix in a future batch (candidate: the example should wrap the real adapter or the
+    facade should map `config=` per factory).
 - **Single venv (2026-11-16)**: one Python env at the workspace root `.venv`; every
   Python repo (`tantra-ffi/adapters/data/strategies/examples/docs`) now has a
   git-ignored `.venv` symlink → `../.venv` (root Makefile `make prepare` provisions:
@@ -22,17 +48,6 @@ Date: 2026-11-16.
   symlinks before** `maturin develop` — maturin auto-detects `.venv` from the CWD and
   otherwise installs into a stale per-repo venv. Verified: ffi wheel suite (496) and
   adapters suite green through the symlinks; `mkdocs build --strict` green.
-  ⚠️ **Newly exposed by the complete venv**: `tantra-examples` `test_06_multi_broker_dispatch`
-  (6 tests) now fail — the old ffi venv never installed `tantra-adapters`, so the
-  example's paper fallbacks registered; with `tantra-adapters` installed the wheel
-  facade `resolve_adapter("zerodha", config=...)` calls the real broker factory, whose
-  `BaseRestAdapter.__init__` rejects the `config=` kwarg. Pre-existing cross-repo
-  contract gap (facade `create(name, **config)` ↔ `tantra-adapters` real constructors);
-  the other agent is editing `06_multi_broker_dispatch.py` — track/fix there.
-- **T13 Thrust A (2026-11-15)**: wheel lift shipped in `tantra-ffi` `9b354d5`
-  (`tantra.portfolio/risk/calendar/options/metrics` + tests; `python/tests` 496 green);
-  consumer retarget + `_kernel/` deletion in `tantra-examples` deferred until the
-  other agent's 73-error fix (`1d89fd9`) settles there.
 
 ## Latest Batch — T14 PLANNED (docs only; no development)
 
@@ -72,34 +87,13 @@ their own repos — T12.4 strategy engine (`tantra-strategies` plan 0001), T12.9
 (`tantra-ui` plan 0006), T12.8 `level_map`/`oi_walls` chat tools (`tantra-agent` plan
 0011); the guide's "planned" banners drop when those land. Task list: T12.10 Done.
 
-## Latest Batch — T13 PLANNED (docs only; no development)
+## Prior work — T13 planning (docs only, superseded by the T13 COMPLETE entry above)
 
 Date: 2026-11-15. Per user direction ("create a new set of plan(s) to achieve this… may call it
-Track 13"): planning artifacts for **T13 — Dismantle the `_kernel` shared harness** were
-created, no code was written:
-- **Root master plan** `docs/plans/0006-dismantle-kernel-harness.md` (Proposed): after all 8
-  gap closures, the `_kernel/` package (14 modules, 3,469 lines, ~60 import sites) is mirror
-  residue. Clean-architecture correction in two thrusts — **Thrust A**: lift the 6
-  domain/math modules into the wheel (`tantra.portfolio`/`risk`/`options`/`metrics`/
-  `calendar`) per Consolidation Over Duplication (AGENTS §4.1); **Thrust B**: rename the
-  remaining app-harness to `tantra_examples/harness/` and delete `_kernel/`. Full audit
-  table (module → lines → classification → consumers) is in the plan.
-- **`tantra-ffi/docs/plans/0002-tantra-wheel-domain-harness-surface.md`** (Proposed) — Thrust
-  A phases A1–A5 (T13.1–T13.5), each: promote verbatim → wheel tests → delete mirror →
-  retarget consumers. Includes the recorded decisions: `_kernel/portfolio.py` `Account`/
-  `Portfolio` have no consumers outside the facade (delete-if-unused option); `tantra.risk`
-  keeps the `_native_attr` probe (compiled risk classes still absent); non-goals (no Rust,
-  harness modules not promoted here).
-- **`tantra-examples/docs/plans/0003-tantra-examples-harness-dismantle.md`** (Proposed) —
-  Thrust B (T13.6): rename the 8 harness modules into `harness/`, retarget ~60 sites, delete
-  `_kernel/`, docs sweep; Phase C (T13.7) gate + recorded follow-on candidates (`runner`→
-  wheel session, `service`→tantra_data, `testing.replay`→wheel helper).
-- **Root task list**: `## T13` track added (T13.1–T13.7, Phase 5, all Proposed); per-repo
-  summary rows for root/`tantra-examples`/`tantra-ffi` updated. Plan indexes updated in all
-  three repos. HANDOFFs updated per repo.
-- Execution is NOT started — the plans await approval. When approved, run one subagent per
-  phase (A1–A5 sequential, then B, then C), mirroring the gap-closure program pattern
-  (promote → delete → retarget → verify; unit baseline 841/73/3/50, zero new failures).
+Track 13"): root master plan `docs/plans/0006-dismantle-kernel-harness.md` + per-repo plans
+(`tantra-ffi/docs/plans/0002-*.md` Thrust A, `tantra-examples/docs/plans/0003-*.md` Thrust B)
+were filed (Proposed), T13.1–T13.7 added to the task list, indexes/HANDOFFs updated. **All
+executed 2026-11-16 — see the Latest Batch entry above.**
 
 ## Previous Batch — gap-closure program COMPLETE (all 8 tantra-examples gaps closed)
 
