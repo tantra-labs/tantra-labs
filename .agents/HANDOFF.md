@@ -11,6 +11,37 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — T14.16 docs: headless user guide + installation rewrite
+
+Date: 2026-11-16. Docs-only (`tantra-docs` + root task list; no Rust/Python
+touched):
+- **Headless user guide** (`tantra-docs/docs/user-guide/`, docs plan 0005 →
+  Implemented): `index.md` (four headless surfaces — CLI, REST API, Python
+  SDK, AI/MCP — with a "web UI is not your daily driver yet" banner),
+  `cli.md` (full `tantra` command reference grounded in `tantra-ui`
+  `tantra-cli/src/args.rs`), `rest-api.md` (`tantra serve` + curl workflows;
+  wire reference stays `api/rest.md`), `python.md` (`Tantra.backtest` session
+  orchestrator, indicators, wheel CLI, data sources), `ai.md` (LLM backends
+  `TANTRA_GGUF_PATH` / `TANTRA_LLM_BASE_URL`/`TANTRA_LLM_MODEL`/
+  `TANTRA_LLM_API_KEY`, `ask`/`chat`/`tools`/`mcp config`/`jobs`).
+- **Installation + first-backtest + loading-data rewritten** against reality:
+  superproject `git clone --recurse-submodules` + `make prepare` (single
+  venv + maturin wheel) + `make prod` (canonical prod profile; binary at
+  `tantra-ui/target/prod/tantra`); first backtest now uses the real
+  `Tantra.backtest(...).run()` on synthetic `trending_bars` (the old page
+  taught the non-existent `Strategy.backtest` / `result.print_report()`);
+  loading-data dropped the non-existent `tantra data load` for
+  synthetic / lakehouse (`tantra-data`) / Parquet (`SYMBOL.EXCHANGE.parquet`
+  for `tantra serve`).
+- Paper trading was **already documented** by commit `1157674` (T14.15,
+  `docs/paper-trading/`, plan 0004 Implemented) — the user guide cross-links
+  it instead of duplicating.
+- Gate: `mkdocs build --strict` green (only the known informational
+  `docs/plans/*`-outside-nav warnings). Root task list: T14.15 ✅ + T14.16 ✅;
+  docs plans index: 0004 + 0005 Implemented. tantra-docs HANDOFF updated.
+- **Not committed yet**: all of the above is uncommitted working tree in the
+  `tantra-docs` submodule (root submodule pointer unchanged).
+
 ## Latest Batch — T15.5 follow-on: provisioning seam wired into screeners + env rename
 
 Date: 2026-11-16. Two cross-repo changes (`tantra-examples` + `tantra-ffi`), no Rust touched:

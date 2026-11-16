@@ -26,7 +26,7 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor; **paper exchange matching core (T14 P0)** | T4, T14 (P0) | 0 (+T14.1–T14.4) |
 | **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling; **paper exchange runtime wiring + backtest unification (T14 P1) ✅** | T6, T7, T14 (P1) | 5 (+T14.5–T14.9) — **P1 done 2026-11-16** |
 | **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors; **Python SDK `tantra.paper` (T14 P2)**; **data provisioning library (T15.1–T15.4)** | T8, T9, T14 (P2), T15 | 6 (+T14.10–T14.11) |
-| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference; **CSR/WASM paper panel + docs (T14 P3/P4)**; **provisioning HTTP service (T15.5–T15.6)** | T10, T11, T14 (P3/P4), T15 | 0 (+T14.12–T14.15) |
+| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference; **CSR/WASM paper panel + docs (T14 P3/P4)**; **provisioning HTTP service (T15.5–T15.6)** | T10, T11, T14 (P3/P4), T15 | 0 (+T14.12–T14.14, T14.16) |
 | **Total** | | | **26** (+15 proposed T14 tasks) (+6 T15 tasks) |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
@@ -375,7 +375,8 @@ shipped 2026-11-16**; P2+ pending.
 | **T14.12** | WASM bindings — `tantra-ui-api-wasm::paper` single-user in-browser session (same engine → same fills); `wasm32` check | `tantra-ui-api-wasm` | 6 | Proposed | ui plan 0008 (U1–U2) |
 | **T14.13** | CSR `PaperPanel` in `tantra-ui-app` (embedded + server modes) + TUI paper panel on `/ws/live` + CLI `paper` session | `tantra-ui-app`, `tantra-tui`, `tantra-cli` | 6 | Proposed | ui plan 0008 (U3–U5) |
 | **T14.14** | Golden-vector parity suite across backtest / paper / Python / WASM; prod-profile + clippy/fmt/ruff/mypy gates | all | 3–6 | Proposed | root plan 0007 (P4) |
-| **T14.15** | Docs: paper-trading guide (CLI / REST / Python / web) | `tantra-docs` | 6 | Proposed | root plan 0007 (P4) |
+| **T14.15** | ✅ Docs: paper-trading guide (CLI / REST / Python / web) | `tantra-docs` | 6 | **Done 2026-11-16** | docs plan 0004 (commit `1157674`) — `docs/paper-trading/` (`index.md`, `python.md`, `cli.md`, `rest-ws.md`, `web.md`); nav + home index wired; `mkdocs build --strict` green |
+| **T14.16** | ✅ Headless user guide + installation rewrite — pre-UI daily-driver manual: `docs/user-guide/` (index, cli, rest-api, python, ai) + rewritten `installation.md` / `first-backtest.md` / `loading-data.md` against the real superproject + shipped APIs | `tantra-docs` | 6 | **Done 2026-11-16** | docs plan 0005 — superproject install (`--recurse-submodules`, `make prepare`, `make prod`), `Tantra.backtest` + synthetic/lakehouse/parquet data paths, no stale `Strategy.backtest` / `tantra data load`; paper trading cross-linked to `docs/paper-trading/` (0004); `mkdocs build --strict` green |
 
 ---
 
@@ -423,7 +424,7 @@ gap 0023); ruff check + format clean; mypy clean on `provision/`. **T15 track co
 | `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅), T14.11 |
 | `tantra-examples` | **0** (all 8 closed: 0001–0008) | **0003 (harness dismantle, Implemented 2026-11-16 — T13)**, **0004 (data provisioning, Implemented 2026-11-16 — T15)** | T9.1–T9.10 all ✅ (T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.10 ✅), T13.6–T13.7 ✅, T14.11, T15.1–T15.6 ✅ |
 | `tantra-ffi` | **0** | **0002 (wheel domain-harness surfaces, Implemented 2026-11-16 — T13)**, **0003 (paper exchange Python SDK, proposed — T14)** | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 |
-| `tantra-docs` | — | 0001, 0003 (both Implemented) | T11.1 ✅, T11.2 ✅, T12.10 ✅, T14.15 |
+| `tantra-docs` | — | 0001, 0003 (both Implemented) | T11.1 ✅, T11.2 ✅, T12.10 ✅, T14.15 ✅, T14.16 ✅ |
 
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
 > added, convention pinned, aliases pruned, TDD cleanup done, all workspaces verified. T0.7
