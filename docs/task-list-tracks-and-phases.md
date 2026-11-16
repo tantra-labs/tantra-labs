@@ -407,20 +407,20 @@ gap 0023); ruff check + format clean; mypy clean on `provision/`. **T15 track co
 
 ---
 
-## T13 — Qullamaggie Multi-Market Swing Trading Platform · Phase 0–6
+## T16 — Qullamaggie Multi-Market Swing Trading Platform · Phase 0–6
 
 **Source**: [`docs/plans/0009-qullamaggie-swing-trading-platform.md`](plans/0009-qullamaggie-swing-trading-platform.md) (master plan consolidating primary/secondary research + 34-capability gap audit)
 
 | Task | Work | Repo / Scope | Phase | Status | Gap / Plan |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T13.0** | Close 9 unverified code checks (rows 7, 8, 11, 12, 25, 26, 27, 28, 32) + NSE circular check; file confirmed per-repo gaps | `tantra-labs` (root) + owning repos | 0 | Proposed | root plan 0009 §1–2 |
-| **T13.1** | Market profile contract (`INDIA_NSE_BSE` / `US_EQUITIES`), swing setup/candidate/regime/journal contracts + `DynamicUniverse` trait | `tantra-core`, `tantra-market` | 1 | Proposed | root plan 0009 Ph 1 |
-| **T13.2** | Strategy SDK multi-symbol `universe()`, `equity()`, mixed daily+intraday bars, partial/SMA-trail interfaces | `tantra-strategies` | 1 | Proposed | root plan 0009 Ph 1 |
-| **T13.3** | Full-universe CA-adjusted EOD + delisted history, price-band & F&O history, earnings/fundamentals + pre-open/1m/5m capture (India first; US vendor pending) | `tantra-data`, `tantra-market` | 2 | Proposed | root plan 0009 Ph 2 · `data 0015/0020`, `root 0001` |
-| **T13.4** | `ADR%(20)`, screener metrics + cross-sectional rank evaluator, consolidation/EP/parabolic/ORB detectors, 4-level index regime, breadth | `tantra-market` | 3 | Proposed | root plan 0009 Ph 3 |
-| **T13.5** | Scheduled India EOD/hourly scan jobs, Back Watchlist + forward outcomes, universe backtester, `swing/qm_*` manifests (Parabolic Short last) | `tantra-runtime`, `tantra-strategies` | 3 | Proposed | root plan 0009 Ph 3 |
-| **T13.6** | Overnight delivery (`CNC`), persistent stop-market & SMA-close trailing/partial lifecycle, F&O futures shorts, swing risk gates, US adapter (post Stage E) | `tantra-exec`, `tantra-risk`, `tantra-ledger`, `tantra-adapters` | 4 | Proposed | root plan 0009 Ph 4 |
-| **T13.7** | Grounded catalyst grader (`"unknown"` fallback), focus-list/journal AI tools, leader/back-watchlist/theme UI + chart alerts (`ui 0007`), docs | `tantra-agent`, `tantra-ui` / `tantra-ui-web`, `tantra-docs` | 5–6 | Proposed | root plan 0009 Ph 5–6 |
+| **T16.0** | Close 9 unverified code checks (rows 7, 8, 11, 12, 25, 26, 27, 28, 32) + NSE circular check; file confirmed per-repo gaps | `tantra-labs` (root) + owning repos | 0 | Proposed | root plan 0009 §1–2 |
+| **T16.1** | Market profile contract (`INDIA_NSE_BSE` / `US_EQUITIES`), swing setup/candidate/regime/journal contracts + `DynamicUniverse` trait | `tantra-core`, `tantra-market` | 1 | Proposed | root plan 0009 Ph 1 |
+| **T16.2** | Strategy SDK multi-symbol `universe()`, `equity()`, mixed daily+intraday bars, partial/SMA-trail interfaces | `tantra-strategies` | 1 | Proposed | root plan 0009 Ph 1 |
+| **T16.3** | Full-universe CA-adjusted EOD + delisted history, price-band & F&O history, earnings/fundamentals + pre-open/1m/5m capture (India first; US vendor pending) | `tantra-data`, `tantra-market` | 2 | Proposed | root plan 0009 Ph 2 · `data 0015/0020`, `root 0001` |
+| **T16.4** | `ADR%(20)`, screener metrics + cross-sectional rank evaluator, consolidation/EP/parabolic/ORB detectors, 4-level index regime, breadth | `tantra-market` | 3 | Proposed | root plan 0009 Ph 3 |
+| **T16.5** | Scheduled India EOD/hourly scan jobs, Back Watchlist + forward outcomes, universe backtester, `swing/qm_*` manifests (Parabolic Short last) | `tantra-runtime`, `tantra-strategies` | 3 | Proposed | root plan 0009 Ph 3 |
+| **T16.6** | Overnight delivery (`CNC`), persistent stop-market & SMA-close trailing/partial lifecycle, F&O futures shorts, swing risk gates, US adapter (post Stage E) | `tantra-exec`, `tantra-risk`, `tantra-ledger`, `tantra-adapters` | 4 | Proposed | root plan 0009 Ph 4 |
+| **T16.7** | Grounded catalyst grader (`"unknown"` fallback), focus-list/journal AI tools, leader/back-watchlist/theme UI + chart alerts (`ui 0007`), docs | `tantra-agent`, `tantra-ui` / `tantra-ui-web`, `tantra-docs` | 5–6 | Proposed | root plan 0009 Ph 5–6 |
 
 ---
 
@@ -428,7 +428,7 @@ gap 0023); ruff check + format clean; mypy clean on `provision/`. **T15 track co
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
-| `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella), **0005 (EE+ platform, proposed)**, **0006 (dismantle `_kernel` harness, Implemented 2026-11-16 — T13)**, **0007 (paper exchange, Implemented 2026-11-16 — T14)**, **0009 (Qullamaggie swing, proposed)** | T0.1–T0.6 ✅, T12.1–T12.10, T13.1–T13.7 ✅, T14.1–T14.16 ✅ |
+| `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella), **0005 (EE+ platform, proposed)**, **0006 (dismantle `_kernel` harness, Implemented 2026-11-16 — T13)**, **0007 (paper exchange, Implemented 2026-11-16 — T14)**, **0009 (Qullamaggie swing, proposed — T16)** | T0.1–T0.6 ✅, T12.1–T12.10, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T16.0–T16.7 |
 | `tantra-core` | 1 (0002 EE+) | 0003 (EE+, proposed) | T0.7 ✅ (audit decision), T12.1 |
 | `tantra-ledger` | 1 (0012 EE+) | — | T2.1–T2.11 ✅, T12.7 |
 | `tantra-risk` | 1 (0005 EE+) | 0002 (Implemented) | T1.1–T1.4 ✅, T12.6 |

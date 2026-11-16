@@ -329,5 +329,5 @@ Per `.agents/rules/gap-tracking.md`:
 ## 8. Related
 - Plans Index: [`docs/plans/README.md`](README.md)
 - Precedent Strategy Platform Plan: [`docs/plans/0005-elephant-edge-strategy-platform.md`](0005-elephant-edge-strategy-platform.md)
-- Workspace Task List: [`docs/task-list-tracks-and-phases.md`](../task-list-tracks-and-phases.md) — **Track T13**
+- Workspace Task List: [`docs/task-list-tracks-and-phases.md`](../task-list-tracks-and-phases.md) — **Track T16**
 - Gap Tracking Policy: [`.agents/rules/gap-tracking.md`](../../.agents/rules/gap-tracking.md)
