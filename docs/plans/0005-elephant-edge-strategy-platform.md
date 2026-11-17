@@ -170,6 +170,6 @@ T12 rows are marked done.
 ## 7. Related
 
 - Research: [`docs/research/elephant-edge-strategy.md`](../research/elephant-edge-strategy.md)
-- Strategy spec: [`tantra-strategies/docs/plans/0001-elephant-edge-strategy.md`](../../tantra-strategies/docs/plans/0001-elephant-edge-strategy.md)
+- Strategy spec: [`tantra-strategies` plans index](../../tantra-strategies/docs/plans/README.md) (plan 0001, EE+ strategy — **implemented 2026-11-17, T12.4**)
 - Agent overlap (OI buildup legs): [`tantra-agent/docs/plans/0010-institutional-smart-money-detection-suite.md`](../../tantra-agent/docs/plans/0010-institutional-smart-money-detection-suite.md)
 - Task list: [`docs/task-list-tracks-and-phases.md`](../task-list-tracks-and-phases.md) — track **T12**.

@@ -50,7 +50,7 @@ Per-repo documents:
 
 | # | Deliverable | Plan / gap |
 |---|---|---|
-| P1 | Canonical `TradePlanSpec` / `EntryRule` / `StopRule` / `TrailRule` / `TargetLadder` / `TradePlan` / `ChartPattern`, `TradePlanner::plan`, typed `PlanError`; unify with plan 0003 stop/signal types; extend `RiskBudget` caps | [`tantra-core` plan 0005](../../tantra-core/docs/plans/0005-trade-planner-and-manager.md) (+ [plan 0003](../../tantra-core/docs/plans/0003-intraday-level-map-domain-types.md)) |
+| P1 | Canonical `TradePlanSpec` / `EntryRule` / `StopRule` / `TrailRule` / `TargetLadder` / `TradePlan` / `ChartPattern`, `TradePlanner::plan`, typed `PlanError`; unify with plan 0003 stop/signal types; extend `RiskBudget` caps | [`tantra-core` plan 0005](../../tantra-core/docs/plans/0005-trade-planner-and-manager.md) — **P1 shipped 2026-11-17** (T12 prerequisite); plan 0003 (level-map types) **implemented** (see [`tantra-core` plans index](../../tantra-core/docs/plans/README.md)) |
 | P2 | `TradeManager` pure state machine (`on_entry_fill`, `on_bar`, `on_session_close` → `MoveStop` / `PartialExit` / `ExitAll`), tick-snapping, intrabar policy, canonical preset TOMLs + golden vectors | same |
 | P3 | ADR%(20) and Chandelier exit indicators | [`tantra-market` gap 0007](../../tantra-market/docs/gaps/0007-adr-pct-and-chandelier-exit.md) |
 | P3b | Chart pattern analyzer: geometric + multi-bar candlesticks over `&[Bar]` (`Decimal` geometry + `DateTime<Utc>`, `PatternStage { FormingArmed, BreakoutConfirmed }`, no look-ahead), per-pattern edge stats | [`tantra-market` plan 0002](../../tantra-market/docs/plans/0002-chart-pattern-analyzer.md) (+ `ChartPattern` in core plan 0005 §2a) |
@@ -64,8 +64,8 @@ Plans and gaps this work unblocks or partly closes:
 - Root [plan 0005](0005-elephant-edge-strategy-platform.md) (EE+ SL/TSL/partials/sizing)
 - Root [plan 0009](0009-qullamaggie-swing-trading-platform.md) (ADR% gate, partial exits, close-based trail, `equity()`: gap row 22; flag/VCP/Darvas detection)
 - Root [plan 0010](0010-screener-taxonomy-and-alerts.md) & [`tantra-data` plan 0008](../../tantra-data/docs/plans/0008-screen-dsl-catalog-qvm.md) (Candlestick/Darvas/Pattern screen presets aligned to `tantra-market-signals` codes)
-- [`tantra-risk` gap 0005](../../tantra-risk/docs/gaps/0005-stop-protection-risk-validation.md) (SL/TSL validation over `TradePlan`, plus weight/ADV sizing refusals)
-- [`tantra-exec` gap 0003](../../tantra-exec/docs/gaps/0003-bracket-order-slt-sl-execution.md) and [`tantra-ledger` gap 0012](../../tantra-ledger/docs/gaps/0012-bracket-order-oms-lifecycle.md) (multi-leg bracket contract & OMS lifecycle)
+- [`tantra-risk` gap 0005](../../tantra-risk/docs/gaps/README.md) — **closed 2026-11-17** (T12.6): SL/TSL validation over `TradePlan` + weight/ADV sizing refusals in `trade_plan_gate`
+- [`tantra-exec` gap 0003](../../tantra-exec/docs/gaps/README.md) and [`tantra-ledger` gap 0012](../../tantra-ledger/docs/gaps/README.md) — **closed 2026-11-17** (T12.5/T12.7): multi-leg bracket contract & OMS lifecycle (`BracketTracker` / `BracketOrder`); runtime synthetic-OCO wiring remains a follow-on
 
 ## 2. Component Specifications & Phases (build order)
 
