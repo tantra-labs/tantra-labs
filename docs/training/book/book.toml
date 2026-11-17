@@ -1,0 +1,20 @@
+[book]
+title = "SEBI Capital Markets Professional — Course Book"
+description = "A robust, certification-aligned curriculum for a high school passout entering Indian capital markets. Built on the Tantra platform for hands-on labs."
+authors = ["Tantra Labs (vyapaar)"]
+language = "en"
+multilingual = false
+src = "src"
+
+[build]
+build-dir = "book"
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+git-repository-url = "https://example.invalid/tantra-labs" # replace with the real repo URL
+edit-url-template = "edit/main/{path}"
+
+[output.html.search]
+enable = true
+limit-results = 30
