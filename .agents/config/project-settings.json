@@ -1,5 +1,4 @@
 {
-  "$schema": "https://tantra-labs.local/schemas/project-settings.v1.json",
   "version": "2.0.0",
   "updatedAt": "2026-11-13",
   "toolchain": {
