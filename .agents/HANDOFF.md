@@ -9,16 +9,61 @@ follow-on breadth tracked under agent plan 0007. **T14 (Standalone Paper Trading
 Exchange, root plan 0007) COMPLETE 2026-11-16** — all four phases (P0 matching core,
 P1 runtime wiring, P2 Python SDK `tantra.paper`, P3 CSR/WASM, P4 golden parity + docs)
 shipped; the T14 gate (byte-identical fills across backtest / paper / Python / WASM on
-one golden vector) passes. Implemented plan/gap docs from T13–T15 cleaned up per
-gap-tracking §4 (2026-11-16, see latest batch). **Next unstarted work**: the 15 open
-gaps consolidated under new root plan 0012 — 9 tracked by existing master plans (EE+
-T12, Qullamaggie T16, TSG 0008, Screener 0010, feeds T3.3) and **6 unclaimed gaps under
-the new T18 track** (NSE holiday provider, chat-WS model/multimodal, QuoteTick session
-fields, MF store surface, shareholding/SAST, runnable catalog strategies).
+one golden vector) passes. **T12 (Elephant Edge EE+ platform, root plan 0005) —
+T12.1–T12.8 COMPLETE 2026-11-17, T12.9 partial** (see latest batch). Implemented plan/gap
+docs from T13–T15 cleaned up per gap-tracking §4 (2026-11-16). **Next unstarted work**:
+root plan 0009 (Qullamaggie, T16), the 6 T18 independent gaps (root plan 0012), ui plan
+0006 Studio view + the T12.5/12.7 follow-ons.
 Date: 2026-11-16 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crate dependency
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
+
+## Latest Batch — T12 track: Elephant Edge (EE+) platform (root plan 0005)
+
+Date: 2026-11-17. Executed T12.1–T12.8 with subagents (one slice per wave, ≤2 concurrent,
+dependency-ordered: core → market/data/strategies → exec/risk/ledger → agent/ui). All commits
+local (not pushed):
+- **T12.1 core plan 0003** (`94f3e96`): `src/{levels,options,order_blocks,signals}.rs` —
+  `LevelKind/LevelSide/Level/LevelMap/LevelId`, `OptionChainSnapshot/StrikePositioning/
+  GammaExposure+gamma_flip_strike`, `OrderBlock`, `SignalKind/StrategySignal→Signal/
+  PositionIntent`; `SCHEMA_VERSION` v9; golden vectors + proptests. (wasm32 check is
+  pre-existing-broken in this env via `getrandom`/uuid — verified on the base commit.)
+- **T12.3 data 0016** (`9969337`): `DuckDbOptionChainStore` + `domain/option_chain.py`
+  (`compute_gamma_exposure`) + `OptionsChainReader` port + NSE `option-chain-indices`
+  provider (live-with-fixture fallback; live endpoint returns HTTP 404 in sandbox —
+  documented, never fabricated) + `ingest_option_chain` CLI + `bridge_exporter`
+  `option_chain/{expiry}/*.parquet` + `gex_series.parquet` (Decimal128); 23 tests.
+- **T12.2 market 0005** (`44528ba`): `ElephantZones`/`OiLevels`/`GammaProfile`/`OrderBlock`
+  streaming indicators in `tantra-market-indicators` (Decimal-only; `chrono-tz` added).
+- **T12.4 strategies 0001** (`adcb8d9`): `strategies/elephant_edge.py` `ElephantEdgeStrategy`
+  — level-map + fallback, 0–4 confluence scoring, signals (+Plus-Two, ΔOI trap), SL/TSL
+  (3R/5R, 6-candle time-stop, ATR/swing trail), positioning; 35 unit + sim integration
+  tests; suite 218 passed.
+- **T12.6 risk 0005** (`e9f8148`): `trade_plan_gate` (`validate_trade_plan` + no-widening
+  `validate_stop_update`), new `RiskRefusal`s, `SizingRiskRefusal` weight/ADV caps +
+  multi-currency fmt fix; 21 new tests.
+- **T12.5 exec 0003** (`292185b`): `BracketOrderSpec/BracketTicket/StopUpdate/
+  BracketCapabilities` + `BracketTracker` (deterministic, `{bracket}#stop` ids),
+  `BrokerExecutor::submit_bracket/modify_stop` (non-breaking) + mock; 18 new tests.
+- **T12.7 ledger 0012** (`1e296d7`): `BracketOrder` aggregate + `BracketEvent`s +
+  `OmsSnapshot.open_brackets`; 17 new tests (55 oms total). **Fixed a core-caused break**:
+  `tantra-ledger/crates/tantra-ledger/src/sizing.rs` `RiskBudget{..}` literal needed the new
+  `max_weight_pct`/`max_adv_pct` fields — ledger workspace clippy green.
+- **T12.8 agent 0011** (`e5a5ed4` + runtime): `level_map`/`oi_walls` ReadOnly tools
+  (catalogue 32→34) + `MarketReader` port methods; runtime `FeedMarketReader` honest stubs
+  + seedable `RuntimeMarketReader` setters.
+- **T12.9 partial** (`f597915`): ui gap 0007 chart primitives `LevelLine/ZoneBand/
+  SignalMarker/StopLine` (wasm32 green); the Studio view layer (ui plan 0006) remains.
+- **Cleanup per gap-tracking §4**: closed core 0002 + plan 0003, market 0005, data 0016,
+  strategies plan 0001, exec 0003, risk 0005, ledger 0012, agent plan 0011, ui 0007 (docs
+  removed, indexes updated with closing commits); task list T12 rows + per-repo summary +
+  root plans index (0005 → Active) + HANDOFF updated. Core plan 0005 P1 (TradePlanner —
+  `trade_plan.rs`/`chart_pattern.rs`/`RiskBudget` weight-ADV, `SCHEMA_VERSION` v10) landed
+  as the exec/risk/ledger prerequisite (P2 TradeManager + P3 presets remain).
+- **Follow-ons recorded**: ui plan 0006 Studio view; runtime synthetic-OCO wiring (exec);
+  `portfolio.apply_fill` FIFO bracket P&L (ledger); NSE option-chain live verification (data
+  0016).
 
 ## Latest Batch — docs cleanup of implemented plans/gaps + consolidated gap plan (root 0012 / T18)
 
