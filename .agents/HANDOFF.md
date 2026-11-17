@@ -157,10 +157,16 @@ commits local (not pushed):
   green; `tantra-docs` `1157674` — `docs/paper-trading/{index,python,cli,rest-ws,web}.md`,
   `mkdocs build --strict` green. (Concurrent docs track also landed `c459aba` — headless
   user guide, docs plan 0005, T14.16.)
-- **Immediate next step**: follow-ons recorded in the plans (runtime L2 adverse-fill
-  restore; `paper serve` live broker feed + NSE calendar gate; ffi `submit_order_gtd`
-  facade exposure). No new track is approved; the next unstarted master plan is root 0005
-  (EE+ platform) whose per-repo plans/gaps are already filed.
+- **Follow-ons closed 2026-11-16**: runtime L2 adverse-fill restored on the exchange venue
+  (`tantra-runtime` `edeb0a8`; `tests/adverse_fill_l2_tests.rs`, parity suites unchanged);
+  `paper serve` NSE trading-calendar gate + live-feed seam (`tantra-runtime` `3447cc7`;
+  MIS square-off gated on `NseTradingCalendar::is_trading_day`; `--feed live` channel seam,
+  real broker WS stays `tantra-market` gap 0003); ffi GTD facade (`submit_order_gtd` +
+  `gtd_until` on `PaperSession`) + l2_sim native golden-tape parity & permanent scope note
+  (`tantra-ffi` `930a6bf`/`7dc2419`; pytest 493). Docs: `10cae72` (runtime), `d99e12c` (ffi).
+- **Immediate next step**: T14 track and its follow-ons are fully closed. No new track is
+  approved; the next unstarted master plan is root 0005 (EE+ platform) whose per-repo
+  plans/gaps are already filed.
 
 ## Prior work — T12.10 (docs slice of the EE+ platform track)
 
