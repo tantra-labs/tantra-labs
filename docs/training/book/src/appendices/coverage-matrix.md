@@ -3,6 +3,33 @@
 Every topic in the four source syllabi (`docs/training/tmp/`) is mapped to a
 module in this book. **C** = covered fully, **P** = partial/preview, **T** = track (S5).
 
+## How to read this appendix
+
+This matrix is the **traceability contract** between the source syllabi and the
+book. It answers one question: *"if a topic appears in a syllabus, where in the
+book is it taught?"* Use it as a navigation map and as a revision checklist:
+
+- Read a row left-to-right: the syllabus topic → the module(s) that teach it.
+- Module codes read **Semester–Module**: `S2-M4` = Semester 2, Module 4
+  (Technical Indicators). Module numbers are stable across the book.
+- A module can carry many topics (see `S3-M1`, which owns all of macro
+  economics), and a topic can map to several modules (compare NIFM ch. 16 and
+  ch. 21 in the first table — same theme, different depth).
+- Before any exam, work the matrix **as a checklist**: for NISM XV prep, tick
+  off the 70-item IFMC table below; for CFTe I, tick the CFTe/CMT table. Every
+  row still blank on the day before the exam is a known gap — close it.
+
+## Legend
+
+- **C** — covered fully in the named module(s).
+- **P** — partial or preview; the topic appears but is completed in a later
+  module, or in Semester 5.
+- **T** — track (Semester 5): covered inside a capstone track rather than the
+  core semesters.
+- `S1-M3` — Semester 1, Module 3 (module-numbering scheme explained above).
+- `(Assessment system)` — not a teaching module: the topic is handled by the
+  examination machinery of [Assessment & Grading](../front/assessment.md).
+
 ## NIFM Research Analyst (39 chapters)
 
 | Ch | Chapter | Module |
