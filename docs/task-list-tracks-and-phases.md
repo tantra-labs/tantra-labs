@@ -424,21 +424,34 @@ gap 0023); ruff check + format clean; mypy clean on `provision/`. **T15 track co
 
 ---
 
+## T17 — Unified Data Catalog & Git-Style CAS Lakehouse (v3) · Phase 2–4
+
+**Source**: [`docs/design/0004-data-catalog-lakehouse-layout.md`](design/0004-data-catalog-lakehouse-layout.md) · [`docs/plans/0011-unified-data-catalog-lakehouse-v3.md`](plans/0011-unified-data-catalog-lakehouse-v3.md)
+
+| Task | Work | Repo / Scope | Phase | Status | Gap / Plan |
+| :--- | :--- | :--- | :---: | :--- | :--- |
+| **T17.1** | Logical v3 taxonomy (`market/`, `derivatives/`, `reference/`, `fundamentals/`, `disclosures/`), `(instrument_uid, ts)` row-group sorting, `reference/aliases`, and `0016` option-chain path alignment | `tantra-data` | 2 | Proposed | data plan 0009 (Ph A) · data 0016, 0025 |
+| **T17.2** | Content-addressed `objects/sha256` store, `catalog.duckdb` manifest + staging/main/tag refs, `tantra-catalog` compaction/GC/migration CLI | `tantra-data` | 2 | Proposed | data plan 0009 (Ph B–C) · data 0025 |
+| **T17.3** | Rust `ManifestResolver`, post-close `TickRecorder` compaction, `CatalogInstrumentMaster` `Float64 → Decimal128(18, 4)` migration, `ParquetOpenInterestStore` + projection v3 alignment | `tantra-market` | 2–3 | Proposed | market 0008 |
+| **T17.4** | `CatalogLoader` `data_ref`/`commit_sha` snapshot pinning, `reference/aliases` resolution, row-group predicate pushdown, `data_commit_sha` recorded in backtest journals | `tantra-runtime` | 4 | Proposed | runtime 0011 |
+
+---
+
 ## Per-repo summary
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
-| `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella), **0005 (EE+ platform, proposed)**, **0006 (dismantle `_kernel` harness, Implemented 2026-11-16 — T13)**, **0007 (paper exchange, Implemented 2026-11-16 — T14)**, **0009 (Qullamaggie swing, proposed — T16)** | T0.1–T0.6 ✅, T12.1–T12.10, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T16.0–T16.7 |
+| `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella), **0005 (EE+ platform, proposed)**, **0006 (dismantle `_kernel` harness, Implemented 2026-11-16 — T13)**, **0007 (paper exchange, Implemented 2026-11-16 — T14)**, **0009 (Qullamaggie swing, proposed — T16)**, **0011 (Unified Lakehouse v3, proposed — T17)** | T0.1–T0.6 ✅, T12.1–T12.10, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T16.0–T16.7, T17.1–T17.4 |
 | `tantra-core` | 1 (0002 EE+) | 0003 (EE+, proposed) | T0.7 ✅ (audit decision), T12.1 |
 | `tantra-ledger` | 1 (0012 EE+) | — | T2.1–T2.11 ✅, T12.7 |
 | `tantra-risk` | 1 (0005 EE+) | 0002 (Implemented) | T1.1–T1.4 ✅, T12.6 |
-| `tantra-market` | 2 (0003, 0005 EE+) | — | T3.1–T3.4 🔶, T12.2 |
+| `tantra-market` | 4 (0003, 0005 EE+, 0007, 0008 Lakehouse v3) | 0002 (Chart patterns, proposed) | T3.1–T3.4 🔶, T12.2, T17.3 |
 | `tantra-exec` | 1 (0003 EE+ bracket orders) | 0002 (Phase 1 done), **0003 (paper exchange core — Implemented 2026-11-16, T14)** | T0.3 ✅, T4.11 ✅, T12.5, T14.1–T14.4 ✅, T14.14 (golden vector) ✅ |
-| `tantra-runtime` | 0 (**0008 closed 2026-11-16** — sync port lifted) | 0004 (Implemented), **0005 (paper wiring + backtest unification — P1 D1–D5 Implemented 2026-11-16, T14)** | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅ |
+| `tantra-runtime` | 3 (0009, 0010, 0011 Backtest catalog pinning) | 0004–0005 (Implemented), 0006–0007 (proposed) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅, T17.4 |
 | `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — all 6 tracks' tool surfaces shipped), 0010 (Implemented), 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.12 ✅, T12.8 |
 | `tantra-ui` | 1 (0007 EE+) | 0003 (Implemented), 0006 (EE+, proposed), **0008 (paper exchange CSR/WASM — Implemented 2026-11-16, T14)** | T10.1–T10.5 ✅, T12.9, T14.12–T14.13 ✅, T14.14 (golden vector) ✅ |
 | `tantra-adapters` | 0 | 0002, 0003, 0004 (all Implemented) | T4.1–T4.10 ✅ |
-| `tantra-data` | 2 (0015 holiday provider, 0016 EE+ option-chain snapshot) | 0003–0006, 0017–0019, 0020–0022 (Implemented) | T5.1–T5.10 ✅, T12.3 |
+| `tantra-data` | 5 (0015 holiday, 0016 option-chain, 0023 MF store, 0024 shareholding, 0025 legacy catalog fragmentation) | 0003–0006 (Implemented), 0007–0009 (proposed) | T5.1–T5.10 ✅, T12.3, T17.1–T17.2 |
 | `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅), T14.11 ✅ |
 | `tantra-examples` | **0** (all 8 closed: 0001–0008) | **0003 (harness dismantle, Implemented 2026-11-16 — T13)**, **0004 (data provisioning, Implemented 2026-11-16 — T15)** | T9.1–T9.10 all ✅ (T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.10 ✅), T13.6–T13.7 ✅, T14.11 ✅, T15.1–T15.6 ✅ |
 | `tantra-ffi` | **0** | **0002 (wheel domain-harness surfaces, Implemented 2026-11-16 — T13)**, **0003 (paper exchange Python SDK — Implemented 2026-11-16, T14)** | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 ✅, T14.14 (golden vector) ✅ |
