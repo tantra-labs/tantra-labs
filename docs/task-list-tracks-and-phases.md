@@ -22,12 +22,12 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | :--- | :--- | :--- | :--- |
 | **0 — Topology & Hygiene Foundations** ✅ | Remove stub/duplicate crates, pin facade convention, TDD cleanup, kernel call-site consolidation | T0 | 8 — **complete 2026-11-13** |
 | **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 1 |
-| **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds | T5, T3 (feeds) | 2 |
+| **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds; **T18 data items (holiday provider, shareholding/SAST)** | T5, T3 (feeds), T18 | 2 (+T18.1, T18.5) |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor; **paper exchange matching core (T14 P0) ✅** | T4, T14 (P0) | 0 (+T14.1–T14.4) — **P0 done 2026-11-16** |
-| **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling; **paper exchange runtime wiring + backtest unification (T14 P1) ✅** | T6, T7, T14 (P1) | 5 (+T14.5–T14.9) — **P1 done 2026-11-16** |
-| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors; **Python SDK `tantra.paper` (T14 P2) ✅**; **data provisioning library (T15.1–T15.4)** | T8, T9, T14 (P2), T15 | 6 (+T14.10–T14.11) — **P2 done 2026-11-16** |
-| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference; **CSR/WASM paper panel + docs (T14 P3/P4) ✅**; **provisioning HTTP service (T15.5–T15.6)** | T10, T11, T14 (P3/P4), T15 | 0 (+T14.12–T14.14, T14.16) — **P3/P4 done 2026-11-16** |
-| **Total** | | | **26** (+15 proposed T14 tasks) (+6 T15 tasks) |
+| **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling; **paper exchange runtime wiring (T14 P1) ✅**; **T18 runtime items (chat-WS model/multimodal, QuoteTick fields)** | T6, T7, T14 (P1), T18 | 5 (+T14.5–T14.9, T18.2, T18.3) — **P1 done 2026-11-16** |
+| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors; **Python SDK `tantra.paper` (T14 P2) ✅**; **data provisioning (T15) ✅**; **T18 SDK items (MF store, runnable catalog strategies)** | T8, T9, T14 (P2), T15, T18 | 6 (+T14.10–T14.11, T15.1–T15.6, T18.4, T18.6) — **P2 done 2026-11-16** |
+| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference; **CSR/WASM paper panel + docs (T14 P3/P4) ✅**; **provisioning HTTP service (T15.5–T15.6) ✅** | T10, T11, T14 (P3/P4), T15 | 0 (+T14.12–T14.14, T14.16, T15.5–T15.6) — **P3/P4 done 2026-11-16** |
+| **Total** | | | **26** (+15 proposed T14 tasks) (+6 T15 tasks) (+6 proposed T18 tasks) |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -321,10 +321,9 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 
 ## T13 — Dismantle the `_kernel` shared harness · Phase 5 — ✅ COMPLETE 2026-11-16 (T13.1–T13.7)
 
-**Source**: [root plan 0006](plans/0006-dismantle-kernel-harness.md) (master, **Implemented**) ·
-[`tantra-ffi/docs/plans/0002-*.md`](../tantra-ffi/docs/plans/0002-tantra-wheel-domain-harness-surface.md)
-(Thrust A, **Implemented**) · [`tantra-examples/docs/plans/0003-*.md`](../tantra-examples/docs/plans/0003-tantra-examples-harness-dismantle.md)
-(Thrust B, **Implemented**)
+**Source**: [root plans index](plans/README.md) (plan 0006 — **Implemented**) ·
+[`tantra-ffi` plans index](../tantra-ffi/docs/plans/README.md) (0002 Thrust A, **Implemented**) ·
+[`tantra-examples` plans index](../tantra-examples/docs/plans/README.md) (0003 Thrust B, **Implemented**)
 
 Clean-architecture + tantra-philosophy cleanup: with all 8 `_kernel` mirror gaps closed, the
 `_kernel/` package is pure residue. The 6 domain/math modules were lifted into the wheel
@@ -345,12 +344,11 @@ Clean-architecture + tantra-philosophy cleanup: with all 8 `_kernel` mirror gaps
 
 ## T14 — Paper Trading Exchange (real-exchange mimic) · Phase 3–6
 
-**Source**: [root plan 0007](plans/0007-paper-trading-exchange.md) (master) ·
-[`tantra-exec/docs/plans/0003-*.md`](../tantra-exec/docs/plans/0003-paper-exchange-matching-core.md)
-(P0) · [`tantra-runtime/docs/plans/0005-*.md`](../tantra-runtime/docs/plans/0005-paper-exchange-runtime-wiring.md)
-(P1/P2) · [`tantra-ffi/docs/plans/0003-*.md`](../tantra-ffi/docs/plans/0003-python-sdk-paper-exchange-embedding.md)
-(P2 SDK) · [`tantra-ui/docs/plans/0008-*.md`](../tantra-ui/docs/plans/0008-paper-exchange-csr-web-embedding.md)
-(P3)
+**Source**: [root plans index](plans/README.md) (plan 0007 — **Implemented**) ·
+[`tantra-exec` plans index](../tantra-exec/docs/plans/README.md) (0003 P0, **Implemented**) ·
+[`tantra-runtime` plans index](../tantra-runtime/docs/plans/README.md) (0005 P1, **Implemented**) ·
+[`tantra-ffi` plans index](../tantra-ffi/docs/plans/README.md) (0003 P2 SDK, **Implemented**) ·
+[`tantra-ui` plans index](../tantra-ui/docs/plans/README.md) (0008 P3, **Implemented**)
 
 One exchange engine that mimics a real exchange (price-time priority book, order lifecycle,
 partial fills, stop/IOC/GTD, both sides) and is the single fill engine behind strategies, REST,
@@ -383,8 +381,7 @@ shipped 2026-11-16; P2 (T14.10/T14.11) + P3 (T14.12/T14.13) + P4 (T14.14/T14.15)
 
 ## T15 — Data Provisioning Microservice (download / dummy / Monte-Carlo) · Phase 5–6 — ✅ COMPLETE 2026-11-16
 
-**Source**: [`tantra-examples/docs/plans/0004-*.md`](../tantra-examples/docs/plans/0004-data-provisioning-microservice-scope.md)
-(master plan, **Implemented 2026-11-16**)
+**Source**: [`tantra-examples` plans index](../tantra-examples/docs/plans/README.md) (plan 0004, **Implemented 2026-11-16**)
 
 One provisioning path for the canonical data root (`$TANTRA_DATA_DIR` layout) serving every
 consumer — sim (`tantra.backtest.session`), analyser (`algo_analytics.walk_forward`), UI
@@ -437,25 +434,47 @@ gap 0023); ruff check + format clean; mypy clean on `provision/`. **T15 track co
 
 ---
 
+## T18 — Remaining Open Gaps: Independent Fixes · Phase 0–6 — Proposed
+
+**Source**: [root plan 0012](plans/0012-remaining-gap-closure-and-independent-fixes.md) (consolidated
+open-gap inventory, 2026-11-16; renumbered from `0011`/T17 on the 2026-11-17 pull rebase when
+upstream took `0011`/T17 for the Lakehouse v3 track) · per-repo gap indexes (`tantra-data`,
+`tantra-runtime`, `tantra-strategies`)
+
+The gaps with **no governing master-plan track** (EE+ T12, Qullamaggie T16, TSG 0008, Screener
+0010, feeds T3.3). Each row ships the missing capability in the owning repo; rows are mutually
+independent (one per wave under the 2-subagent ceiling).
+
+| Task | Work | Repo / Scope | Phase | Status | Gap |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **T18.1** | NSE trading-holiday provider — provider/reader + DuckDB store (mirror the economic-calendar pipeline), wired into `tantra-runtime-backtest::NseTradingCalendar`, replacing `seed_standard_holidays` (2025/2026 table + Muhurat sessions) | `tantra-data` → `tantra-runtime-backtest` | 2 | Proposed | data 0015 |
+| **T18.2** | `/ws/chat` per-turn `model` override + multimodal image attachments — extend `ChatClientMessage` (`model: Option<String>`, `attachments: Option<Vec<ChatAttachmentInput>>`), route overrides, pass image parts through `tantra-agent-chat` / `tantra-agent-llm` | `tantra-runtime-api-rest::chat` → `tantra-agent-llm` | 4 | Proposed | runtime 0009 |
+| **T18.3** | `QuoteTick` session summary fields — `last_price` / `day_high` / `day_low` / `prev_close` / `volume` on the wire (`/quotes` or a `/quotes/summary` schema), OpenAPI regen, `dayHigh`/`dayLow` mapped in `tantra-ui-web` | `tantra-runtime-api::wire`, `tantra-runtime-api-rest` → `tantra-ui-web` | 4 | Proposed | runtime 0010 |
+| **T18.4** | `tantra_data.store.mutual_funds` DuckDB store surface — `DuckDbMutualFundsStore`: `mf_holdings.isin ↔ companies.isin_code` lookthrough (weighted ROCE/P/E, market-cap), NAV/AUM/TER/category/plan/option, overlap; un-skips the MF screener (examples 1 remaining skip) | `tantra-data` → `tantra-examples` | 5 | Proposed | data 0023 |
+| **T18.5** | Shareholding / pledge / SAST / insider / analyst-estimate ingestion — verify a free source first, then `ShareholdingPattern`/`PledgeRecord`/`InsiderDisclosure` domain + store + reader, point-in-time by filing date, Parquet bridge (pattern of gaps 0017–0019); analyst estimates only if a licensable source exists | `tantra-data` | 2 | Proposed | data 0024 |
+| **T18.6** | Runnable catalog strategies — real `Strategy` subclasses with declarative `Parameter`s for `alpha30_factor` (+ `equal_weight`) with `config.toml` + `step.toml` in the loader layout; chains become runnable (un-skips `test_07_alpha30_backtest` + `test_run_chain`) | `tantra-strategies` → `tantra-examples` | 5 | Proposed | strategies 0007 |
+
+---
+
 ## Per-repo summary
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
-| `tantra-labs` (root) | 3 (0001, 0002, 0006 — 0001/0002 feature trackers) | 0001 (umbrella), **0005 (EE+ platform, proposed)**, **0006 (dismantle `_kernel` harness, Implemented 2026-11-16 — T13)**, **0007 (paper exchange, Implemented 2026-11-16 — T14)**, **0009 (Qullamaggie swing, proposed — T16)**, **0011 (Unified Lakehouse v3, proposed — T17)** | T0.1–T0.6 ✅, T12.1–T12.10, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T16.0–T16.7, T17.1–T17.4 |
-| `tantra-core` | 1 (0002 EE+) | 0003 (EE+, proposed) | T0.7 ✅ (audit decision), T12.1 |
+| `tantra-labs` (root) | 1 (0001 broker-feed feature tracker) | 0001 (umbrella), **0005 (EE+ platform, proposed — T12)**, **0008 (trade signal generator, proposed)**, **0009 (Qullamaggie swing, proposed — T16)**, **0010 (screener, P1 implemented / P2–P9 proposed)**, **0011 (Unified Lakehouse v3, proposed — T17)**, **0012 (remaining-gap inventory, proposed — T18)** | T0.1–T0.7 ✅, T12.1–T12.10, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T15.1–T15.6 ✅, T16.0–T16.7, T17.1–T17.4, T18.1–T18.6 |
+| `tantra-core` | 1 (0002 EE+) | 0003 (EE+, proposed), 0005 (TradePlanner, proposed) | T0.7 ✅ (audit decision), T12.1 |
 | `tantra-ledger` | 1 (0012 EE+) | — | T2.1–T2.11 ✅, T12.7 |
-| `tantra-risk` | 1 (0005 EE+) | 0002 (Implemented) | T1.1–T1.4 ✅, T12.6 |
-| `tantra-market` | 4 (0003, 0005 EE+, 0007, 0008 Lakehouse v3) | 0002 (Chart patterns, proposed) | T3.1–T3.4 🔶, T12.2, T17.3 |
-| `tantra-exec` | 1 (0003 EE+ bracket orders) | 0002 (Phase 1 done), **0003 (paper exchange core — Implemented 2026-11-16, T14)** | T0.3 ✅, T4.11 ✅, T12.5, T14.1–T14.4 ✅, T14.14 (golden vector) ✅ |
-| `tantra-runtime` | 3 (0009, 0010, 0011 Backtest catalog pinning) | 0004–0005 (Implemented), 0006–0007 (proposed) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅, T17.4 |
-| `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — all 6 tracks' tool surfaces shipped), 0010 (Implemented), 0011 (EE+, proposed) | T0.8 ✅, T6.1–T6.12 ✅, T12.8 |
-| `tantra-ui` | 1 (0007 EE+) | 0003 (Implemented), 0006 (EE+, proposed), **0008 (paper exchange CSR/WASM — Implemented 2026-11-16, T14)** | T10.1–T10.5 ✅, T12.9, T14.12–T14.13 ✅, T14.14 (golden vector) ✅ |
-| `tantra-adapters` | 0 | 0002, 0003, 0004 (all Implemented) | T4.1–T4.10 ✅ |
-| `tantra-data` | 5 (0015 holiday, 0016 option-chain, 0023 MF store, 0024 shareholding, 0025 legacy catalog fragmentation) | 0003–0006 (Implemented), 0007–0009 (proposed) | T5.1–T5.10 ✅, T12.3, T17.1–T17.2 |
-| `tantra-strategies` | **0** | 0001 (EE+, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅), T14.11 ✅ |
-| `tantra-examples` | **0** (all 8 closed: 0001–0008) | **0003 (harness dismantle, Implemented 2026-11-16 — T13)**, **0004 (data provisioning, Implemented 2026-11-16 — T15)** | T9.1–T9.10 all ✅ (T9.4 ✅, T9.5 ✅, T9.6 ✅, T9.10 ✅), T13.6–T13.7 ✅, T14.11 ✅, T15.1–T15.6 ✅ |
-| `tantra-ffi` | **0** | **0002 (wheel domain-harness surfaces, Implemented 2026-11-16 — T13)**, **0003 (paper exchange Python SDK — Implemented 2026-11-16, T14)** | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 ✅, T14.14 (golden vector) ✅ |
-| `tantra-docs` | — | 0001, 0003 (both Implemented) | T11.1 ✅, T11.2 ✅, T12.10 ✅, T14.15 ✅, T14.16 ✅ |
+| `tantra-risk` | 1 (0005 EE+) | — (plan 0002 Implemented) | T1.1–T1.4 ✅, T12.6 |
+| `tantra-market` | 4 (0003 feeds, 0005 EE+, 0007 ADR%/Chandelier, 0008 Lakehouse v3) | 0002 (chart-pattern analyzer, proposed) | T3.1–T3.4 🔶, T12.2, T16.4, T17.3 (feeds tracked by T3.3) |
+| `tantra-exec` | 1 (0003 EE+ bracket orders) | — (0002, 0003 Implemented) | T0.3 ✅, T4.11 ✅, T12.5, T14.1–T14.4 ✅, T14.14 ✅ |
+| `tantra-runtime` | 3 (0009 chat-WS model/multimodal, 0010 QuoteTick fields, 0011 Backtest catalog pinning) | 0006 (trade manager, proposed), 0007 (group alerts, proposed) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅, T17.4, T18.2, T18.3 |
+| `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — master guide), 0011 (EE+ chat tools, proposed), 0012 (persona roster, approved), 0013 (screener MCP, proposed), 0014 (trade-plan MCP, proposed) | T0.8 ✅, T6.1–T6.12 ✅, T12.8 |
+| `tantra-ui` | 1 (0007 EE+ charts) | 0002 (UX ref), 0006 (EE+ Studio, proposed), 0007 (agent desk, proposed) — 0001/0003/0008 Implemented (docs retained as references) | T10.1–T10.5 ✅, T12.9, T14.12–T14.13 ✅, T14.14 ✅ |
+| `tantra-adapters` | 0 | — (0002–0004 Implemented) | T4.1–T4.10 ✅ |
+| `tantra-data` | 5 (0015 holiday provider, 0016 EE+ chain lakehouse, 0023 MF store, 0024 shareholding/SAST, 0025 legacy catalog fragmentation) | 0007 (instrument master, proposed), 0008 (screen DSL catalog, proposed) | T5.1–T5.10 ✅, T12.3, T16.3 (partial), T17.1–T17.2, T18.1, T18.4, T18.5 |
+| `tantra-strategies` | 1 (0007 runnable catalog strategies) | 0001 (EE+, proposed), 0002 (universe/screen context, proposed), 0003 (trade-plan SDK, proposed) | T8.1–T8.5 ✅, T12.4 (SDK surface ✅), T14.11 ✅, T18.6 |
+| `tantra-examples` | **0** (all 8 closed: 0001–0008) | 0005 (categorized examples, proposed) — 0003/0004 Implemented | T9.1–T9.10 all ✅, T13.6–T13.7 ✅, T14.11 ✅, T15.1–T15.6 ✅ |
+| `tantra-ffi` | **0** | 0004 (trade-planner bindings, proposed) — 0002/0003 Implemented | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 ✅, T14.14 ✅ |
+| `tantra-docs` | — | — (0001–0005 Implemented) | T11.1 ✅, T11.2 ✅, T12.10 ✅, T14.15 ✅, T14.16 ✅ |
 
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
 > added, convention pinned, aliases pruned, TDD cleanup done, all workspaces verified. T0.7

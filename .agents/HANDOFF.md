@@ -9,11 +9,38 @@ follow-on breadth tracked under agent plan 0007. **T14 (Standalone Paper Trading
 Exchange, root plan 0007) COMPLETE 2026-11-16** — all four phases (P0 matching core,
 P1 runtime wiring, P2 Python SDK `tantra.paper`, P3 CSR/WASM, P4 golden parity + docs)
 shipped; the T14 gate (byte-identical fills across backtest / paper / Python / WASM on
-one golden vector) passes.
+one golden vector) passes. Implemented plan/gap docs from T13–T15 cleaned up per
+gap-tracking §4 (2026-11-16, see latest batch). **Next unstarted work**: the 15 open
+gaps consolidated under new root plan 0012 — 9 tracked by existing master plans (EE+
+T12, Qullamaggie T16, TSG 0008, Screener 0010, feeds T3.3) and **6 unclaimed gaps under
+the new T18 track** (NSE holiday provider, chat-WS model/multimodal, QuoteTick session
+fields, MF store surface, shareholding/SAST, runnable catalog strategies).
 Date: 2026-11-16 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crate dependency
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
+
+## Latest Batch — docs cleanup of implemented plans/gaps + consolidated gap plan (root 0012 / T18)
+
+Date: 2026-11-16. Docs-only (no Rust/Python touched). Two deliverables:
+- **Gap scrape + new master plan**: every open gap doc in the workspace snapshotted into new
+  root plan `docs/plans/0012-remaining-gap-closure-and-independent-fixes.md` (15 gaps; 9 tracked
+  by existing master plans — T12 EE+, T16 Qullamaggie, plan 0008 TSG, plan 0010 Screener, T3.3
+  feeds — and **6 unclaimed gaps moved to new T18 track**: data 0015 NSE holiday provider,
+  runtime 0009 chat-WS model/multimodal, runtime 0010 QuoteTick session fields, data 0023 MF
+  store surface, data 0024 shareholding/SAST, strategies 0007 runnable catalog strategies).
+  T18 rows added to `docs/task-list-tracks-and-phases.md`; plans index + per-repo summary
+  refreshed to the scrape. (Renumbered from `0011`/T17 on the 2026-11-17 pull rebase — upstream
+  `b4c4edf` took `0011`/T17 for the Lakehouse v3 catalog, per the `df37955` precedent.)
+- **Implemented-doc cleanup** (gap-tracking §4): removed 14 implemented plan/gap docs and
+  unlinked their index rows — root `0006` (T13 `_kernel` dismantle) + `0007` (T14 paper
+  exchange); `tantra-adapters` 0003/0004; `tantra-docs` 0004/0005; `tantra-examples` 0003/0004;
+  `tantra-ffi` 0002/0003; `tantra-runtime` plan 0005 + gap 0008 (closed); `tantra-ui` 0008;
+  `tantra-exec` 0003 (moved Active → Implemented). Task-list T13/T14/T15 "Source" links re-pointed
+  to the per-repo README indexes; runtime plan-0005 row records the D4/D5 follow-on closures.
+- **Gate**: link sweep — no remaining references to any deleted doc in `docs/`, per-repo
+  `docs/plans|gaps/` indexes, or task list. All changes committed per repo (local, not pushed);
+  root submodule pointers advanced.
 
 ## Latest Batch — T14.16 docs: headless user guide + installation rewrite
 
