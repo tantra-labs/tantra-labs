@@ -1,6 +1,6 @@
 # 0010 — Screener Taxonomy, QVM Score, Alpha-Style Group Alerts & Screener MCP (Trendlyne-inspired, native)
 
-**Status**: Proposed (revised 2026-11-16 after architectural review)
+**Status**: Active — **P1 Implemented 2026-11-17** (`tantra-core` 0004 + `tantra-ffi` + Rust DSL migrations); P2–P9 Proposed (revised 2026-11-16 after architectural review)
 
 Research basis: [`docs/research/trendlyne-screener-alerts-mcp.md`](../research/trendlyne-screener-alerts-mcp.md).
 Decision (2026-11-15): implement **natively**. Trendlyne is an idea source only; no Trendlyne
@@ -19,11 +19,11 @@ LLM agents as MCP tools that scan the full market, which Trendlyne's MCP cannot 
 
 ## 1. Context & Gaps Covered
 
-The pieces Tantra has today don't fit together:
-- **Four divergent screener DSLs** exist across the workspace: [`tantra-core/src/screener.rs`](../../tantra-core/src/screener.rs) (flat `predicates`/`match_all`, no nesting, no crossing ops), [`tantra-runtime-api/src/screener.rs`](../../tantra-runtime/crates/tantra-runtime-api/src/screener.rs) (recursive `operator`/`items`, stringly ops, no `tantra_core::screener` import), [`tantra-ffi/python/tantra/wire/screener.py`](../../tantra-ffi/python/tantra/wire/screener.py) (13 ops with `neq`, different `ScreenerScanRequest`), and [`tantra-market-indicators/src/screener.rs`](../../tantra-market/crates/tantra-market-indicators/src/screener.rs) (uses `f64`).
-- Python `ScreenQuery`/`VectorizedScreener` only reads candle columns; `tantra-examples` has its own DuckDB screeners and a mirror that covers only Nifty50 and Alpha30.
-- Alerts are single-stock `PriceAlert` records stored in `ProfileStore` (and browser-polled in `tantra-ui-web`); there are no multi-universe group rules, no enter/exit edge detection, no corporate-event/filing/deal triggers, no digest engine, and no Web UI rule builder.
-- There is no instrument master and no universe in `StrategyContext`.
+- **P1 Delivered (2026-11-17)**: Converged the four divergent screener DSLs onto one canonical recursive `Decimal` AST in [`tantra-core/src/screener.rs`](../../tantra-core/src/screener.rs), added slim market-agnostic classification value objects in [`tantra-core/src/classification.rs`](../../tantra-core/src/classification.rs), exported 12 new schemas via `tantra-ffi-codegen` and `tantra.wire.screener`, and migrated `tantra-market-indicators` (removing the `f64` fork), `tantra-runtime-api`, and `tantra-ui` onto the canonical contracts.
+- **Remaining Gaps**:
+  - Python `ScreenQuery`/`VectorizedScreener` only reads candle columns; `tantra-examples` has its own DuckDB screeners and a mirror that covers only Nifty50 and Alpha30.
+  - Alerts are single-stock `PriceAlert` records stored in `ProfileStore` (and browser-polled in `tantra-ui-web`); there are no multi-universe group rules, no enter/exit edge detection, no corporate-event/filing/deal triggers, no digest engine, and no Web UI rule builder (UI foundation slice started in [`tantra-ui-web/docs/plans/0014-alpha-alerts-and-screener-ui.md`](../../tantra-ui-web/docs/plans/0014-alpha-alerts-and-screener-ui.md)).
+  - There is no instrument master and no universe in `StrategyContext`.
 
 ### Architectural Boundary Decisions (2026-11-16 Review)
 
@@ -37,7 +37,7 @@ The pieces Tantra has today don't fit together:
 
 | # | Capability | Plan / gap (provider repo) |
 |---|---|---|
-| F1 | Market-agnostic classification VOs (`Sector`, `Industry`, `IndexId`, bare `MarketCapBucket`) + converged recursive Screener DSL (`CrossesAbove/Below`, `RelativeTo`, `ClassificationFilter`) | [`tantra-core` plan 0004](../../tantra-core/docs/plans/0004-classification-and-alert-wire-types.md) |
+| F1 | Market-agnostic classification VOs (`Sector`, `Industry`, `IndexId`, bare `MarketCapBucket`) + converged recursive Screener DSL (`CrossesAbove/Below`, `RelativeTo`, `ClassificationFilter`) | [`tantra-core` plan 0004 (Implemented 2026-11-17)](../../tantra-core/docs/plans/README.md#implemented-plans) |
 | F2 | Instrument master, NSE 4-level classification, point-in-time index membership, SEBI/AMFI cap-bucket history & `from_rank` | [`tantra-data` plan 0007](../../tantra-data/docs/plans/0007-instrument-master-index-membership.md) |
 | F3 + F4 + F5 | Unified screen DSL mapping, screener v2 joins, TOML screen catalog (`ScreenCategory` taxonomy), QVM score | [`tantra-data` plan 0008](../../tantra-data/docs/plans/0008-screen-dsl-catalog-qvm.md) |
 | F9 | Shareholding / pledge / SAST / analyst estimates (no source yet) | [`tantra-data` gap 0024](../../tantra-data/docs/gaps/0024-shareholding-sast-estimates.md) |
@@ -57,7 +57,7 @@ superseded for their universe portion by `tantra-data` plan 0007.
 
 | Phase | Tier | Deliverable | Depends on |
 |---|---|---|---|
-| P1 | L0 | `tantra-core` 0004: slim classification VOs (`Sector`, `Industry`, `IndexId`, `MarketCapBucket`), DSL convergence (recursive `ScreenerFilterGroup`, unified `FilterOp`, `CrossesAbove/Below`, `RelativeTo`, `ClassificationFilter`), schemars, golden JSON, `tantra-ffi-codegen` export | — |
+| **P1** (**Implemented 2026-11-17**) | L0 | `tantra-core` 0004: slim classification VOs (`Sector`, `Industry`, `IndexId`, `MarketCapBucket`), DSL convergence (recursive `ScreenerFilterGroup`, unified `FilterOp`, `CrossesAbove/Below`, `RelativeTo`, `ClassificationFilter`), schemars, golden JSON, `tantra-ffi-codegen` export + Python SDK & downstream Rust migrations (`tantra-market`, `tantra-runtime`, `tantra-ui`) | — |
 | P2 | L6 | `tantra-data` 0007: instrument master, NSE 4-level hierarchy, SEBI cap-bucket `from_rank`, point-in-time universes (`UniverseReader.resolve(name, as_of)`), Parquet projections | P1 wire strings |
 | P3 | L6 | `tantra-data` 0008 A–C: DSL unification onto converged core schema, screener v2, TOML screen catalog (`ScreenCategory` taxonomy) | P1, P2 |
 | P4 | L6 | `tantra-data` 0008 D: QVM score (point-in-time, open weights, G/M/B combo labels) | P3 |
