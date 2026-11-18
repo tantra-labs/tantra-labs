@@ -24,6 +24,22 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — Reading-List study book (`docs/reading-list/`) docs-only, COMPLETE 2026-11-17
+
+Docs-only (no Rust/Python touched). New mdBook `docs/reading-list/` — "The Investor's
+Study": merges the curated 126-title investing library (`/tmp/opencode/some-investment-books`,
+124 file-collection titles + 2 user-requested Bulkowski *Evolution of a Trader* volumes)
+into a **macro→micro** curriculum, 8 parts / 22 chapters + 5 appendices (annotated catalog,
+reading plans, ratings index, duplicates archive, the source README's original curated
+categorized reading list). **AI study-companion layer** per user request: every book
+annotation carries a "Model refresh" note + a dedicated `ai-companion.md` prompt template for
+having larger models expand older editions from their training data (e.g. Natenberg 1994→2013,
+Edwards & Magee 9th ed. 2007→10th ed. 2012, Bulkowski 2nd ed. 2005→3rd ed. 2016). Chapters
+authored by 14 subagents (7 waves, ≤2 concurrent) against a binding `CONTENT-SPEC.md` +
+exemplar chapter; zero fabricated facts (6 unverifiable authors/editions deliberately left "—"
+with AI-fill-in notes). Gate: `mdbook build docs/reading-list` clean, 263/263 internal links
+resolve, `docs/training/README.md` index row added. Uncommitted (working tree).
+
 ## Latest Batch — Lakehouse v3 storage-taxonomy redesign (tantra-data plan 0009 / ADR 0004) COMPLETE
 
 Date: 2026-11-17. **Design docs restored first**: the root rebase's submodule resolution had

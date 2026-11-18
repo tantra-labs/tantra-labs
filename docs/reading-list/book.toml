@@ -1,0 +1,24 @@
+[book]
+title = "The Investor's Study — A Curated Reading Guide to 200+ Investing Books"
+description = "A macro-to-micro study book that merges a curated collection of 126 trading & investing books (plus archive editions) into one curriculum: markets, philosophy, fundamentals, technical analysis, trading systems, styles, advanced topics, and the stories behind them. Includes an AI study-companion layer for refreshing older editions against larger models' training data."
+authors = ["Tantra Labs (vyapaar)"]
+language = "en"
+multilingual = false
+src = "src"
+
+[build]
+build-dir = "book"
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+git-repository-url = "https://example.invalid/tantra-labs" # replace with the real repo URL
+edit-url-template = "edit/main/{path}"
+
+[output.html.search]
+enable = true
+limit-results = 50
+
+[output.html.fold]
+enable = true
+level = 1
