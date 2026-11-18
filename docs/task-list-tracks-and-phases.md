@@ -21,13 +21,13 @@ with the dependency layering of `docs/future-work-bottoms-up-build-order.md`.
 | Phase | Focus | Tracks | Task count |
 | :--- | :--- | :--- | :--- |
 | **0 — Topology & Hygiene Foundations** ✅ | Remove stub/duplicate crates, pin facade convention, TDD cleanup, kernel call-site consolidation | T0 | 8 — **complete 2026-11-13** |
-| **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI; **T19 FIRE domain/allocation (proposed)** | T1, T2, T3 (compute), T19 (P0) | 1 (+1 proposed T19) |
+| **1 — Domain Engines (Risk, Ledger, Market compute)** | Enforce declared risk controls; allocation/performance/settlement engines; options chain & OI | T1, T2, T3 (compute) | 1 |
 | **2 — Data Lakehouse, Market Feeds & Disclosure** | Data ingestion + Rust bridges; real broker WS feeds; **T18 data items ✅ (holiday provider, shareholding/SAST)** | T5, T3 (feeds), T18 | 2 (+T18.1, T18.5) — **T18 data items done 2026-11-17** |
 | **3 — Execution & Broker Adapters** | Adapter contract parity, WS streaming, TOTP auth, Angel One executor; **paper exchange matching core (T14 P0) ✅** | T4, T14 (P0) | 0 (+T14.1–T14.4) — **P0 done 2026-11-16** |
-| **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling; **paper exchange runtime wiring (T14 P1) ✅**; **T18 runtime items ✅ (chat-WS model/multimodal, QuoteTick fields)**; **T19 FIRE REST + chat/MCP (proposed)** | T6, T7, T14 (P1), T18, T19 (P1–P2) | 5 (+T14.5–T14.9, T18.2, T18.3) (+2 proposed T19) — **P1 done 2026-11-16; T18 runtime items done 2026-11-17** |
-| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors; **Python SDK `tantra.paper` (T14 P2) ✅**; **data provisioning (T15) ✅**; **T18 SDK items ✅ (MF store, runnable catalog strategies)**; **T19 FIRE FFI & strategy templates (proposed)** | T8, T9, T14 (P2), T15, T18, T19 (P3, P6) | 6 (+T14.10–T14.11, T15.1–T15.6, T18.4, T18.6) (+2 proposed T19) — **P2 done 2026-11-16; T18 SDK items done 2026-11-17** |
-| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference; **CSR/WASM paper panel + docs (T14 P3/P4) ✅**; **provisioning HTTP service (T15.5–T15.6) ✅**; **T19 FIRE Web + Workstation UI (proposed)** | T10, T11, T14 (P3/P4), T15, T19 (P4–P5) | 0 (+T14.12–T14.14, T14.16, T15.5–T15.6) (+2 proposed T19) — **P3/P4 done 2026-11-16** |
-| **Total** | | | **26** (+15 T14 ✅) (+6 T15 ✅) (+6 T18 ✅) (+7 proposed T19 tasks) |
+| **4 — Agent & Runtime Applications** | MCP ecosystem, persistent memory, smart-money suite; REST/chat tooling; **paper exchange runtime wiring (T14 P1) ✅**; **T18 runtime items ✅ (chat-WS model/multimodal, QuoteTick fields)** | T6, T7, T14 (P1), T18 | 5 (+T14.5–T14.9, T18.2, T18.3) — **P1 done 2026-11-16; T18 runtime items done 2026-11-17** |
+| **5 — Strategies & Python Wheel Surface** | Strategy lifecycle gaps; FFI CLI; example wheel-mirrors; **Python SDK `tantra.paper` (T14 P2) ✅**; **data provisioning (T15) ✅**; **T18 SDK items ✅ (MF store, runnable catalog strategies)** | T8, T9, T14 (P2), T15, T18 | 6 (+T14.10–T14.11, T15.1–T15.6, T18.4, T18.6) — **P2 done 2026-11-16; T18 SDK items done 2026-11-17** |
+| **6 — Workstations, UI & Docs** | Leptos view layer, TUI panels, CLI reports; docs reference; **CSR/WASM paper panel + docs (T14 P3/P4) ✅**; **provisioning HTTP service (T15.5–T15.6) ✅** | T10, T11, T14 (P3/P4), T15 | 0 (+T14.12–T14.14, T14.16, T15.5–T15.6) — **P3/P4 done 2026-11-16** |
+| **Total** | | | **26** (+15 proposed T14 tasks) (+6 T15 tasks) (**6 T18 tasks complete 2026-11-17**) |
 
 > Status legend: **Open** (gap filed, no work started) · **Ready** (plan approved for
 > implementation) · **In progress** (partially shipped) · **Proposed** (plan written, not
@@ -456,48 +456,24 @@ independent (one per wave under the 2-subagent ceiling).
 
 ---
 
-## T19 — FIRE Planning, Cashflow & Retirement Platform (`Elicherla01/fireapp`) · Phase 1, 4–6 — P0 Done 2026-11-18 / P1–P6 Pending
-
-**Source**: [root plan 0013](plans/0013-fire-planning-and-cashflow-platform.md) (full-stack L1–L6 incorporation of [`Elicherla01/fireapp`](https://github.com/Elicherla01/fireapp/tree/main); **`tantra-core` untouched**) ·
-[`tantra-ledger` 0006 (Implemented)](../tantra-ledger/docs/plans/README.md#implemented-plans) ·
-[`tantra-runtime` 0008](../tantra-runtime/docs/plans/0008-fire-planning-persistence-and-rest-api.md) ·
-[`tantra-agent` 0015](../tantra-agent/docs/plans/0015-fire-planning-chat-and-mcp-tools.md) ·
-[`tantra-ffi` 0005](../tantra-ffi/docs/plans/0005-fire-planning-python-bindings.md) ·
-[`tantra-ui-web` 0015](../tantra-ui-web/docs/plans/0015-fire-works-simulator-and-cashflow-ui.md) ·
-[`tantra-ui` 0009](../tantra-ui/docs/plans/0009-fire-planning-workstation-cli-tui-wasm.md) ·
-[`tantra-strategies` 0004](../tantra-strategies/docs/plans/0004-fire-cashflow-theta-and-compounding-templates.md)
-
-| Task | Work | Repo / Scope | Phase | Status | Plan / Depends |
-| :--- | :--- | :--- | :---: | :--- | :--- |
-| **T19.1** | ✅ `tantra-ledger-allocation::{fire, fire_buckets}` & `tantra-ledger-performance::swr` — zero-float `Decimal` FIRE simulator, 5 archetypes, 3-bucket cashflow & glidepaths, `SplitMix64` SoRR bootstrap, SWR metrics, 15 golden + proptests (`zero tantra-core edits`) | `tantra-ledger` | 1 | **Done 2026-11-18** | ledger plan 0006 (closed) — ledger `a735aa3` |
-| **T19.2** | `tantra-runtime-api::fire` (`schemars`), `Profile.fire_plans` CAS persistence (`MAX_FIRE_PLANS`), `/api/{v1,v2}/planning/fire/{plans,simulate,from-portfolio}`, live ledger/Greeks/Finance Act 2025 tax hydration, OpenAPI regen | `tantra-runtime` | 4 | Proposed | runtime plan 0008 (P1) · ← T19.1 |
-| **T19.3** | `fire_simulate` & `fire_portfolio_check` (`tantra-agent-chat-tools`), MCP gateway tools (`tantra-agent-mcp`, Rule R4 compliant), R1–R4 tests | `tantra-agent` | 4 | Proposed | agent plan 0015 (P2) · ← T19.1, T19.2 |
-| **T19.4** | `tantra.wire.fire` codegen + `tantra.fire` PyO3 bindings over `tantra-ledger-allocation::fire` (GIL-released SoRR, `decimal.Decimal` strictness, `from_backtest_result`) | `tantra-ffi` | 5 | Proposed | ffi plan 0005 (P3) · ← T19.1 |
-| **T19.5** | `vyapaar-ui-web-wasm` (`tantra-ledger-allocation`) + `/fire` route, Workspace `"fire"` tab, Portfolio Detail `FIRE Runway` tab, full 6-step `fireapp` UI parity (`decimal.js` + dark/gold theme) | `tantra-ui-web` | 6 | Proposed | ui-web plan 0015 (P4) · ← T19.1, T19.2 |
-| **T19.6** | `tantra-ui-core` `FirePlannerViewModel`, `AppRoute::Fire` Leptos CSR view, `tantra fire` CLI (`DisplayBlock`), TUI FIRE panel | `tantra-ui` | 6 | Proposed | ui plan 0009 (P5) · ← T19.1, T19.2 |
-| **T19.7** | 3-bucket `manifests/fire_barbell_basket.toml` (`Alpha30Factor` equity + arbitrage runway + OTM theta strangles) & `fire_bridge.py` empirical yield export | `tantra-strategies` | 5 | Proposed | strategies plan 0004 (P6) · ← T19.1, T19.4 |
-
----
-
 ## Per-repo summary
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
-| `tantra-labs` (root) | 1 (0001 broker-feed feature tracker) | 0001 (umbrella), **0005 (EE+ platform, Active — T12.1–T12.10 COMPLETE 2026-11-17)**, **0008 (trade signal generator, proposed)**, **0009 (Qullamaggie swing, proposed — T16)**, **0010 (screener, P1 implemented / P2–P9 proposed)**, **0011 (Unified Lakehouse v3, Active — Phases 1–3 ✅ / Phase 4 legacy deprecation remains)**, **0012 (remaining-gap inventory, T18.1–T18.6 COMPLETE 2026-11-17)**, **0013 (FIRE planning & cashflow platform, Active — T19.1 ✅ / P1–P6 remaining)** | T0.1–T0.7 ✅, T12.1–T12.10 ✅, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T15.1–T15.6 ✅, T16.0–T16.7, T17.1–T17.4 ✅, T18.1–T18.6 ✅, T19.1 ✅ / T19.2–T19.7 |
-| `tantra-core` | **0** (0002 closed) | 0005 (TradePlanner, **P1 done / P2–P3 remain**) — 0003/0004 Implemented *(untouched by T19)* | T0.7 ✅ (audit decision), T12.1 ✅ |
-| `tantra-ledger` | **0** (0012 closed) | — (plans 0001–0006 Implemented) | T2.1–T2.11 ✅, T12.7 ✅, T19.1 ✅ |
+| `tantra-labs` (root) | 1 (0001 broker-feed feature tracker) | 0001 (umbrella), **0005 (EE+ platform, Active — T12.1–T12.10 COMPLETE 2026-11-17)**, **0008 (trade signal generator, proposed)**, **0009 (Qullamaggie swing, proposed — T16)**, **0010 (screener, P1 implemented / P2–P9 proposed)**, **0011 (Unified Lakehouse v3, Active — Phases 1–3 ✅ / Phase 4 legacy deprecation remains)**, **0012 (remaining-gap inventory, T18.1–T18.6 COMPLETE 2026-11-17)** | T0.1–T0.7 ✅, T12.1–T12.10 ✅, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T15.1–T15.6 ✅, T16.0–T16.7, T17.1–T17.4 ✅, T18.1–T18.6 ✅ |
+| `tantra-core` | **0** (0002 closed) | 0005 (TradePlanner, **P1 done / P2–P3 remain**) — 0003 Implemented | T0.7 ✅ (audit decision), T12.1 ✅ |
+| `tantra-ledger` | **0** (0012 closed) | — | T2.1–T2.11 ✅, T12.7 ✅ |
 | `tantra-risk` | **0** (0005 closed) | — (plan 0002 Implemented) | T1.1–T1.4 ✅, T12.6 ✅ |
 | `tantra-market` | 2 (0003 feeds, 0007 ADR%/Chandelier) | 0002 (chart-pattern analyzer, proposed) | T3.1–T3.4 🔶, T12.2 ✅, T16.4, T17.3 ✅ (feeds tracked by T3.3) |
 | `tantra-exec` | **0** (0003 closed) | — (0002, 0003 Implemented) | T0.3 ✅, T4.11 ✅, T12.5 ✅, T14.1–T14.4 ✅, T14.14 ✅ |
-| `tantra-runtime` | **0** (0011 closed) | 0006 (trade manager, proposed), 0007 (group alerts, proposed), 0008 (FIRE planning persistence & REST, proposed — T19.2) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅, T17.4 ✅, T18.2 ✅, T18.3 ✅, T19.2 |
-| `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — master guide), 0012 (persona roster, approved), 0013 (screener MCP, proposed), 0014 (trade-plan MCP, proposed), 0015 (FIRE chat & MCP tools, proposed — T19.3) — 0011 Implemented | T0.8 ✅, T6.1–T6.12 ✅, T12.8 ✅, T19.3 |
-| `tantra-ui` | **0** (0007 closed) | 0002 (UX ref), 0006 (EE+ Studio, **Implemented 2026-11-17 — T12.9**), 0007 (agent desk, proposed), 0009 (FIRE workstation/CLI/TUI, proposed — T19.6) — 0001/0003/0008 Implemented (docs retained as references) | T10.1–T10.5 ✅, T12.9 ✅, T14.12–T14.13 ✅, T14.14 ✅, T19.6 |
+| `tantra-runtime` | **0** (0011 closed) | 0006 (trade manager, proposed), 0007 (group alerts, proposed) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅, T17.4 ✅, T18.2 ✅, T18.3 ✅ |
+| `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — master guide), 0012 (persona roster, approved), 0013 (screener MCP, proposed), 0014 (trade-plan MCP, proposed) — 0011 Implemented | T0.8 ✅, T6.1–T6.12 ✅, T12.8 ✅ |
+| `tantra-ui` | **0** (0007 closed) | 0002 (UX ref), 0006 (EE+ Studio, **Implemented 2026-11-17 — T12.9**), 0007 (agent desk, proposed) — 0001/0003/0008 Implemented (docs retained as references) | T10.1–T10.5 ✅, T12.9 ✅, T14.12–T14.13 ✅, T14.14 ✅ |
 | `tantra-adapters` | 0 | — (0002–0004 Implemented) | T4.1–T4.10 ✅ |
 | `tantra-data` | 1 (0024 SAST/analyst-estimate remainder) | 0007 (instrument master, proposed), 0008 (screen DSL catalog, proposed), **0009 (Lakehouse v3, Implemented 2026-11-17)** | T5.1–T5.10 ✅, T12.3 ✅, T16.3 (partial), T18.1 ✅, T18.4 ✅, T18.5 ✅, T17.1 ✅, T17.2 ✅ |
-| `tantra-strategies` | **0** (0007 closed) | 0002 (universe/screen context, proposed), 0003 (trade-plan SDK, proposed), 0004 (FIRE compounding & theta templates, proposed — T19.7) — 0001 (EE+) Implemented | T8.1–T8.5 ✅, T12.4 ✅, T14.11 ✅, T18.6 ✅, T19.7 |
+| `tantra-strategies` | **0** (0007 closed) | 0002 (universe/screen context, proposed), 0003 (trade-plan SDK, proposed) — 0001 (EE+) Implemented | T8.1–T8.5 ✅, T12.4 ✅, T14.11 ✅, T18.6 ✅ |
 | `tantra-examples` | **0** (all 8 closed: 0001–0008) | 0005 (categorized examples, proposed) — 0003/0004 Implemented | T9.1–T9.10 all ✅, T13.6–T13.7 ✅, T14.11 ✅, T15.1–T15.6 ✅ |
-| `tantra-ffi` | **0** | 0004 (trade-planner bindings, proposed), 0005 (FIRE Python bindings, proposed — T19.4) — 0002/0003 Implemented | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 ✅, T14.14 ✅, T19.4 |
-| `tantra-ui-web` | see `tantra-ui-web/docs/gaps/README.md` | 0001 (roadmap), 0002 (desk ref), 0014 (alpha alerts & screener UI, proposed), 0015 (FIRE Works UI + WASM, proposed — T19.5) | T16.7, T18.3 ✅, T19.5 |
+| `tantra-ffi` | **0** | 0004 (trade-planner bindings, proposed) — 0002/0003 Implemented | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 ✅, T14.14 ✅ |
 | `tantra-docs` | — | — (0001–0005 Implemented) | T11.1 ✅, T11.2 ✅, T12.10 ✅, T14.15 ✅, T14.16 ✅ |
 
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
