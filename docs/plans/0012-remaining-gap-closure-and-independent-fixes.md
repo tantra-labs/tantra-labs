@@ -5,10 +5,11 @@
 > the T17 Lakehouse track, so this plan was renumbered to `0012` and its track to **T18** per
 > the repo's `df37955` precedent (upstream keeps the number; local renumbers).
 
-**Status**: Proposed — inventory of every open `docs/gaps/XXXX-*.md` across the workspace,
-snapshotted 2026-11-16 from the per-repo gap indexes. Gaps already claimed by an active
-master plan keep their track; the unclaimed gaps become the new **T18 independent-fixes
-track** in `docs/task-list-tracks-and-phases.md`.
+**Status**: **T18.1–T18.6 Implemented 2026-11-17** — all six independent-fixes track rows landed
+(see the task list), and the owning gaps are closed in their repos:
+`tantra-data` 0015/0023/0024, `tantra-runtime` 0009/0010, `tantra-strategies` 0007. This document
+is retained as the consolidated inventory + completion record; the T18 rows in
+`docs/task-list-tracks-and-phases.md` carry the closing commits.
 **Scope**: workspace-wide (every repo with an open gap)
 **Owning repos**: `tantra-data`, `tantra-market`, `tantra-runtime`, `tantra-strategies`,
 `tantra-core`, `tantra-exec`, `tantra-risk`, `tantra-ledger`, `tantra-ui` (+ root gap 0001)

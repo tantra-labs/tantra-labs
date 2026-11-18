@@ -10,14 +10,57 @@ Exchange, root plan 0007) COMPLETE 2026-11-16** — all four phases (P0 matching
 P1 runtime wiring, P2 Python SDK `tantra.paper`, P3 CSR/WASM, P4 golden parity + docs)
 shipped; the T14 gate (byte-identical fills across backtest / paper / Python / WASM on
 one golden vector) passes. **T12 (Elephant Edge EE+ platform, root plan 0005) —
-T12.1–T12.8 COMPLETE 2026-11-17, T12.9 partial** (see latest batch). Implemented plan/gap
-docs from T13–T15 cleaned up per gap-tracking §4 (2026-11-16). **Next unstarted work**:
-root plan 0009 (Qullamaggie, T16), the 6 T18 independent gaps (root plan 0012), ui plan
-0006 Studio view + the T12.5/12.7 follow-ons.
-Date: 2026-11-16 · Workspace: `tantra-labs`
+T12.1–T12.10 COMPLETE 2026-11-17** (Studio view `013a5d6` + synthetic-OCO `fc4a5a6` +
+FIFO bracket P&L `697b428` landed). **T18 (remaining-gap independent fixes, root plan 0012)
+T18.1–T18.6 COMPLETE 2026-11-17** (data 0015/0023/0024, runtime 0009/0010, strategies 0007
+closed). Implemented plan/gap docs from T13–T15 cleaned up per gap-tracking §4 (2026-11-16).
+**Next unstarted work**: root plan 0009 (Qullamaggie, T16.0 – close the 9 unverified code
+checks first), the Lakehouse v3 catalog (root plan 0011, T17).
+Date: 2026-11-17 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crate dependency
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
+
+## Latest Batch — T12.9 Studio + T18 independent-fixes track COMPLETE 2026-11-17 (post-rebase)
+
+Date: 2026-11-17. Root `git pull` rebase onto `b4c4edf` **resolved** (upstream took plan
+`0011`/track `T17` for the Unified Lakehouse v3 catalog; local remaining-gap plan renumbered
+`0011`→`0012`, track `T17`→`T18` per the `df37955` precedent; submodule gitlinks advanced to
+today's heads). Then executed the remaining batch slices (one per wave, ≤2 subagents):
+- **T12.9 complete** (`tantra-ui` `013a5d6`): EE+ Strategy Studio view layer — `studio_ee`
+  helpers (level-map canvas, signals/stops/positioning), TUI positioning tab, CLI `elephant`
+  report (plan 0006 Phases 2–4). Chart primitives (gap 0007) had landed earlier.
+- **T18.1 data 0015** (`39cdef1`/`f79d368` + runtime `d876fac`): NSE trading-holiday provider
+  + DuckDB store + bridge; `NseTradingCalendar` reads the data root (seed table stays as the
+  documented offline fallback).
+- **T18.2 runtime 0009** (`432c302` + agent `91629e2`): `/ws/chat` per-turn `model` override +
+  multimodal image attachments (`MessagePart::Image`, base64 end-to-end); text-only providers
+  return an honest capability notice.
+- **T18.3 runtime 0010** (`0f5f4ac`/`b1f0541` + docs `344a685`): `QuoteTick` session summary
+  fields (`last_price`/`day_high`/`day_low`/`prev_close`/`volume`, all optional); OpenAPI regen;
+  `dayHigh`/`dayLow` mapping tracked in `tantra-ui-web` (repo not checked out).
+- **T18.4 data 0023** (`5f93f78` + examples `af39796`): `DuckDbMutualFundsStore` (holdings
+  lookthrough, NAV/AUM/TER, overlap); MF screener un-skipped — last examples skip removed
+  (1027 passed / 0 skipped).
+- **T18.5 data 0024** (`282f4a9`): BSE shareholding + NSE pledge/PIT **verified live**; domain
+  + store + reader + Parquet bridge; SAST + analyst estimates kept open-and-documented (no
+  licensable source verified).
+- **T18.6 strategies 0007** (`4437afa` + examples `e1e2a2b`): runnable `EqualWeight` +
+  `Alpha30Factor` catalog strategies; `test_07_alpha30_backtest` un-skipped.
+- **Plan 0005 P2+P3 placement decision** (user-directed): `TradeManager` state machine →
+  `tantra-ledger-oms` (`ff73eaa`, 15 tests + proptest); canonical TOML presets →
+  `tantra-runtime-config` (`6649737`, 5 tests incl. golden); `tantra-core` stays P1-only
+  (`08dffea`, `SCHEMA_VERSION` back to 10).
+- **T12.5/12.7 follow-ons landed**: runtime synthetic-OCO on exec `BracketTracker`
+  (`fc4a5a6`, `SyntheticOco`/`dispatch_bracket`, 8 tests); `portfolio.apply_bracket_exits`
+  FIFO bracket P&L (`697b428`, 8 tests).
+- **NSE option-chain verification** (`40cc389`): legacy `option-chain-indices` is a dead
+  endpoint (404); current `option-chain-v3` is Akamai JS-sensor-gated (200-empty) — live stays
+  **unverifiable in this sandbox**, honestly documented with `LIVE_VERIFICATION`, never
+  fabricated.
+- **Gate**: per-repo `cargo fmt --check` + `clippy -D warnings` + targeted `test --profile prod`
+  green (ledger, runtime, runtime-config, core); data/examples ruff + format + `pytest -q` green;
+  ui per-crate tests green. **Not pushed** (user directive: no `make push` this turn).
 
 ## Latest Batch — T12 track: Elephant Edge (EE+) platform (root plan 0005)
 
