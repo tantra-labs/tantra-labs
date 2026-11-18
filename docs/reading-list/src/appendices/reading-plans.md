@@ -42,11 +42,11 @@ ever read 20 books from this library.
 | 13 | Come Into My Trading Room | [Ch. 11](../part4/11-systems-money-management.md) | Complete system |
 | 14 | Trade Your Way to Financial Freedom | [Ch. 11](../part4/11-systems-money-management.md) | Position sizing math |
 | 15 | Way of the Turtle | [Ch. 12](../part4/12-trend-following.md) | A public, tested system |
-| 16 | Market Wizards | [Ch. 21](../part7/21-stories-biographies.md) | The best interviews |
-| 17 | Reminiscences of a Stock Operator | [Ch. 21](../part7/21-stories-biographies.md) | The timeless trader story |
+| 16 | Market Wizards | [Ch. 21](../part7/21-market-wizards.md) | The best interviews |
+| 17 | Reminiscences of a Stock Operator | [Ch. 22](../part7/22-legends-crashes.md) | The timeless trader story |
 | 18 | Option Volatility & Pricing | [Ch. 19](../part6/19-options.md) | Options bible |
-| 19 | When Genius Failed | [Ch. 21](../part7/21-stories-biographies.md) | Risk management horror story |
-| 20 | The Big Short | [Ch. 21](../part7/21-stories-biographies.md) | Bubbles, up close |
+| 19 | When Genius Failed | [Ch. 22](../part7/22-legends-crashes.md) | Risk management horror story |
+| 20 | The Big Short | [Ch. 22](../part7/22-legends-crashes.md) | Bubbles, up close |
 
 ## Plan 3 · By style (read the general book, then the specialist books)
 
@@ -99,3 +99,4 @@ For each chapter you want to study:
 - [Appendix C · Ratings index](ratings.md) — the highest-rated books first
 - [Appendix D · Duplicates archive](duplicates.md) — what you can safely delete
 - [Appendix E · The original phase-by-phase reading list](reading-list.md)
+- [Appendix F · The Little Books, Big Profits Series](little-books.md) — quick-entry companions mapped to the chapters

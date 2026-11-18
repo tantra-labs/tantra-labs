@@ -1,6 +1,6 @@
 # Appendix A — The Full Annotated Catalog
 
-> Every unique book in the collection: **126 titles**, grouped by the chapter it is studied in. Ratings are Goodreads averages from the collection's `_info.json`. `Model refresh` lines are the hooks for the [AI Study Companion](../ai-companion.md).
+> Every unique book in the collection: **124 titles**, grouped by the chapter it is studied in. Ratings are Goodreads averages from the collection's `_info.json`. `Model refresh` lines are the hooks for the [AI Study Companion](../ai-companion.md).
 
 ## Part I — The Macro Lens: Markets, Money & Philosophy
 
@@ -224,32 +224,42 @@
 
 ## Part VII — The Story: History, Biographies & Interviews
 
-### Chapter 21 · Market Stories, Biographies & the Wizards
+### Chapter 21 · The Wizards: Interviews with the Greatest Traders
 
 | Title | Author | Ed. | ★ | Model refresh |
 |---|---|---|---|---|
 | The New Market Wizards | Jack D. Schwager | 1992 | 4.5 | current — AI can expand |
+| Stock Market Wizards | Jack D. Schwager | 2003 | 4.2 | current — AI can expand |
+| Millionaire Traders | Kathy Lien & Boris Schlossberg | 2007 | — | current — AI can expand |
+| Market Wizards | Jack D. Schwager | 2012 | 4.5 | current — AI can expand |
+
+### Chapter 22 · Legends, Crashes & Cautionary Tales
+
+| Title | Author | Ed. | ★ | Model refresh |
+|---|---|---|---|---|
 | Jesse Livermore | Richard Smitten | 2001 | 4.3 | current — AI can expand |
 | When Genius Failed | Roger Lowenstein | 2001 | 4.6 | current — AI can expand |
-| Stock Market Wizards | Jack D. Schwager | 2003 | 4.2 | current — AI can expand |
 | Reminiscences of a Stock Operator | Edwin Lefèvre | 2006 | 4.5 | newer ed.: annotated ed., 2015 |
 | Adventures of a Currency Trader | Rob Booker | 2007 | 4.0 | current — AI can expand |
-| Millionaire Traders | Kathy Lien & Boris Schlossberg | 2007 | — | current — AI can expand |
 | Buffett | Roger Lowenstein | 2008 | 4.7 | current — AI can expand |
 | The Snowball | Alice Schroeder | 2009 | 4.4 | current — AI can expand |
 | The Big Short | Michael Lewis | 2011 | 4.6 | current — AI can expand |
-| Market Wizards | Jack D. Schwager | 2012 | 4.5 | current — AI can expand |
 | Liar's Poker | Michael Lewis | 2014 | 4.4 | current — AI can expand |
 | Flash Boys | Michael Lewis | 2015 | 4.5 | current — AI can expand |
 
 ## Part VIII — Beyond the Market
 
-### Chapter 22 · Books That Aren't About Trading (But Help)
+### Chapter 23 · Thinking in Mispriced Markets
 
 | Title | Author | Ed. | ★ | Model refresh |
 |---|---|---|---|---|
 | Moneyball | Michael Lewis | 2004 | 4.6 | newer ed.: updated ed., 2012 |
-| The Broker | John Grisham | 2005 | 4.1 | current — AI can expand |
 | The Blind Side | Michael Lewis | 2007 | 4.4 | current — AI can expand |
+
+### Chapter 24 · Macroeconomics, Fiction & Leisure
+
+| Title | Author | Ed. | ★ | Model refresh |
+|---|---|---|---|---|
+| The Broker | John Grisham | 2005 | 4.1 | current — AI can expand |
 | Boomerang | Michael Lewis | 2012 | 4.3 | current — AI can expand |
 | The New New Thing | Michael Lewis | 2014 | 4.1 | current — AI can expand |

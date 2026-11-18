@@ -148,5 +148,5 @@ edition; a new edition followed in 2003.
 
 ## Cross-links
 
-**Next:** [Chapter 21 · Market Stories, Biographies & the Wizards](../part7/21-stories-biographies.md) ·
+**Next:** [Chapter 21 · The Wizards: Interviews with the Greatest Traders](../part7/21-market-wizards.md) ·
 **Back:** [Chapter 19](19-options.md)

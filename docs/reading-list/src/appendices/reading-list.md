@@ -149,20 +149,20 @@ Read these only after Phases 0–3. They are dense, mathematical, or highly spec
 
 ## Optional — Stories, interviews & history · `06-Stories-Biographies/`
 
-- **Market Wizards** → **The New Market Wizards** → **Stock Market Wizards** (Schwager) — the best trading interviews ever published · [Ch. 21](../part7/21-stories-biographies.md)
-- **Reminiscences of a Stock Operator** — the timeless classic about Jesse Livermore · [Ch. 21](../part7/21-stories-biographies.md)
-- **Jesse Livermore — World's Greatest Stock Trader** — the biography behind the classic · [Ch. 21](../part7/21-stories-biographies.md)
-- **Millionaire Traders** — everyday people who made it · [Ch. 21](../part7/21-stories-biographies.md)
-- **When Genius Failed** — how Long-Term Capital Management (Nobel laureates!) blew up · [Ch. 21](../part7/21-stories-biographies.md)
-- **The Big Short** · **Flash Boys** · **Liar's Poker** — Wall Street's follies, entertaining and educational · [Ch. 21](../part7/21-stories-biographies.md)
-- **Adventures of a Currency Trader** — trading lessons disguised as a fable · [Ch. 21](../part7/21-stories-biographies.md)
-- **The Snowball** · **Buffett — The Making of an American Capitalist** — Buffett's story · [Ch. 21](../part7/21-stories-biographies.md)
+- **Market Wizards** → **The New Market Wizards** → **Stock Market Wizards** (Schwager) — the best trading interviews ever published · [Ch. 21](../part7/21-market-wizards.md)
+- **Reminiscences of a Stock Operator** — the timeless classic about Jesse Livermore · [Ch. 22](../part7/22-legends-crashes.md)
+- **Jesse Livermore — World's Greatest Stock Trader** — the biography behind the classic · [Ch. 22](../part7/22-legends-crashes.md)
+- **Millionaire Traders** — everyday people who made it · [Ch. 21](../part7/21-market-wizards.md)
+- **When Genius Failed** — how Long-Term Capital Management (Nobel laureates!) blew up · [Ch. 22](../part7/22-legends-crashes.md)
+- **The Big Short** · **Flash Boys** · **Liar's Poker** — Wall Street's follies, entertaining and educational · [Ch. 22](../part7/22-legends-crashes.md)
+- **Adventures of a Currency Trader** — trading lessons disguised as a fable · [Ch. 22](../part7/22-legends-crashes.md)
+- **The Snowball** · **Buffett — The Making of an American Capitalist** — Buffett's story · [Ch. 22](../part7/22-legends-crashes.md)
 
 ## Not trading books · `07-Not-Trading/`
 
 Included for completeness, but **not part of the trading path**: Moneyball, The
 Blind Side, Boomerang, The New New Thing, The Broker (fiction) ·
-[Ch. 22](../part8/22-beyond-trading.md).
+[Ch. 23](../part8/23-mispriced-markets.md) and [Ch. 24](../part8/24-macro-fiction-leisure.md).
 
 ## Duplicates archive · `08-Duplicates-Archive/`
 

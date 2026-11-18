@@ -24,14 +24,14 @@ questions, and cross-links that a folder of files cannot.
 ## Macro → micro structure
 
 ```
-Part I   The Macro Lens  — markets, money, investing philosophy
-Part II  The Company     — fundamentals, valuation, growth systems
-Part III The Chart       — trends/Dow, candlesticks, patterns, volume & price action
-Part IV  The Trader      — psychology, systems, money management, trend following
-Part V   Styles & Markets— day/swing, forex, binary options (⚠ warning)
-Part VI  The Deep End    — professional price action, evidence/algo, options, specialized
-Part VII The Story       — market histories, biographies, Wizards interviews
-Part VIII Beyond Markets — adjacent non-trading books
+Part I    The Macro Lens  — markets, money, investing philosophy (ch. 1–3)
+Part II   The Company     — fundamentals, valuation, growth systems (ch. 4–5)
+Part III  The Chart       — trends/Dow, candlesticks, patterns, volume & price action (ch. 6–9)
+Part IV   The Trader      — psychology, systems, money management, trend following (ch. 10–12)
+Part V    Styles & Markets— day/swing, forex, binary options (⚠ warning) (ch. 13–15)
+Part VI   The Deep End    — professional price action, evidence/algo, options, specialized (ch. 16–20)
+Part VII  The Story       — Wizards interviews, legends, crashes & cautionary tales (ch. 21–22)
+Part VIII Beyond Markets  — mispriced markets, macro, fiction & leisure (ch. 23–24)
 ```
 
 Each part descends from the **widest lens** (the whole market) to the **narrowest**
@@ -45,6 +45,9 @@ Each part descends from the **widest lens** (the whole market) to the **narrowes
   `_info.text` (title, year, Goodreads rating & review counts for ~128 titles).
 - **This book's catalog appendix** — `src/appendices/catalog.md` (every title,
   author, edition, rating, and model-refresh note, generated from the metadata).
+- **Little Books, Big Profits series catalogue** — Wiley's
+  `little-books-asia.pdf` (contents/topics/summaries of ~31 Little Books;
+  catalogued and mapped to chapters in `src/appendices/little-books.md`).
 - **AI study companion** — `src/ai-companion.md` (how to use a larger model to
   refresh older editions from its training data).
 - **Training curriculum** (this workspace's SEBI-certification mdBook) —

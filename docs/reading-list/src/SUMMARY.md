@@ -43,11 +43,13 @@
 
 # Part VII — The Story: History, Biographies & Interviews
 
-- [21 · Market Stories, Biographies & the Wizards](part7/21-stories-biographies.md)
+- [21 · The Wizards: Interviews with the Greatest Traders](part7/21-market-wizards.md)
+- [22 · Legends, Crashes & Cautionary Tales](part7/22-legends-crashes.md)
 
 # Part VIII — Beyond the Market
 
-- [22 · Books That Aren't About Trading (But Help)](part8/22-beyond-trading.md)
+- [23 · Thinking in Mispriced Markets](part8/23-mispriced-markets.md)
+- [24 · Macroeconomics, Fiction & Leisure](part8/24-macro-fiction-leisure.md)
 
 # Appendices
 
@@ -56,3 +58,4 @@
 - [C · Ratings Index](appendices/ratings.md)
 - [D · Duplicates Archive](appendices/duplicates.md)
 - [E · The Original Curated Categorized Reading List](appendices/reading-list.md)
+- [F · The Little Books, Big Profits Series](appendices/little-books.md)
