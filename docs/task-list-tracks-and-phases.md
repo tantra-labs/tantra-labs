@@ -421,7 +421,7 @@ gap 0023); ruff check + format clean; mypy clean on `provision/`. **T15 track co
 
 ---
 
-## T17 — Unified Data Catalog & Git-Style CAS Lakehouse (v3) · Phase 2–4 — ✅ T17.1–T17.2 (data) DONE 2026-11-17; T17.3–T17.4 pending (Rust)
+## T17 — Unified Data Catalog & Git-Style CAS Lakehouse (v3) · Phase 2–4 — ✅ T17.1–T17.4 COMPLETE 2026-11-18 (Phase 4 legacy deprecation remains)
 
 **Source**: [`docs/design/0004-data-catalog-lakehouse-layout.md`](design/0004-data-catalog-lakehouse-layout.md) · [`docs/plans/0011-unified-data-catalog-lakehouse-v3.md`](plans/0011-unified-data-catalog-lakehouse-v3.md)
 
@@ -429,8 +429,8 @@ gap 0023); ruff check + format clean; mypy clean on `provision/`. **T15 track co
 | :--- | :--- | :--- | :---: | :--- | :--- |
 | **T17.1** | ✅ Logical v3 taxonomy (`market/`, `derivatives/`, `reference/`, `fundamentals/`, `disclosures/`), `(instrument_uid, ts)` row-group sorting, `reference/aliases`, and `0016` option-chain path alignment | `tantra-data` | 2 | **Done 2026-11-17** | data plan 0009 (Ph A, `ee802e9`) · data 0025 |
 | **T17.2** | ✅ Content-addressed `objects/sha256` store, `catalog.duckdb` manifest + staging/main/tag refs, `tantra-catalog` compaction/GC/migration CLI | `tantra-data` | 2 | **Done 2026-11-17** | data plan 0009 (Ph B–C, `398eeb7`/`d64c877`) · data 0025 (closed) |
-| **T17.3** | Rust `ManifestResolver`, post-close `TickRecorder` compaction, `CatalogInstrumentMaster` `Float64 → Decimal128(18, 4)` migration, `ParquetOpenInterestStore` + projection v3 alignment | `tantra-market` | 2–3 | Proposed | market 0008 |
-| **T17.4** | `CatalogLoader` `data_ref`/`commit_sha` snapshot pinning, `reference/aliases` resolution, row-group predicate pushdown, `data_commit_sha` recorded in backtest journals | `tantra-runtime` | 4 | Proposed | runtime 0011 |
+| **T17.3** | ✅ Rust `ManifestResolver` (`refs/`/`commits/`/`trees/`/`objects/`/`views/` fallback + `reference/aliases`), post-close `TickRecorder` CAS compaction preserving tags, `CatalogInstrumentMaster` `Decimal128(18, 4)` migration, `ParquetOpenInterestStore` + 9 projection readers v3-aligned | `tantra-market` | 2–3 | **Done 2026-11-18** | market 0008 (closed) |
+| **T17.4** | ✅ `CatalogLoader` `data_ref`/`commit_sha` pinning, O(\|aliases\|) `reference/aliases` continuity, `(instrument_uid, ts)` RowGroup pruning & `load_v3_bars_grouped`, `NseTradingCalendar::from_data_root_at`, `BacktestRequest.data_ref` + `RunManifest.{data_commit_sha, data_as_of_ist}`, `tantra serve` v3 detection | `tantra-runtime` | 4 | **Done 2026-11-18** | runtime 0011 (closed) |
 
 ---
 
@@ -460,13 +460,13 @@ independent (one per wave under the 2-subagent ceiling).
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
-| `tantra-labs` (root) | 1 (0001 broker-feed feature tracker) | 0001 (umbrella), **0005 (EE+ platform, Active — T12.1–T12.10 COMPLETE 2026-11-17)**, **0008 (trade signal generator, proposed)**, **0009 (Qullamaggie swing, proposed — T16)**, **0010 (screener, P1 implemented / P2–P9 proposed)**, **0011 (Unified Lakehouse v3, Active — T17.1–T17.2 done / T17.3–T17.4 Rust pending)**, **0012 (remaining-gap inventory, T18.1–T18.6 COMPLETE 2026-11-17)** | T0.1–T0.7 ✅, T12.1–T12.10 ✅, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T15.1–T15.6 ✅, T16.0–T16.7, T17.1–T17.4 (T17.1–T17.2 ✅), T18.1–T18.6 ✅ |
+| `tantra-labs` (root) | 1 (0001 broker-feed feature tracker) | 0001 (umbrella), **0005 (EE+ platform, Active — T12.1–T12.10 COMPLETE 2026-11-17)**, **0008 (trade signal generator, proposed)**, **0009 (Qullamaggie swing, proposed — T16)**, **0010 (screener, P1 implemented / P2–P9 proposed)**, **0011 (Unified Lakehouse v3, Active — Phases 1–3 ✅ / Phase 4 legacy deprecation remains)**, **0012 (remaining-gap inventory, T18.1–T18.6 COMPLETE 2026-11-17)** | T0.1–T0.7 ✅, T12.1–T12.10 ✅, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T15.1–T15.6 ✅, T16.0–T16.7, T17.1–T17.4 ✅, T18.1–T18.6 ✅ |
 | `tantra-core` | **0** (0002 closed) | 0005 (TradePlanner, **P1 done / P2–P3 remain**) — 0003 Implemented | T0.7 ✅ (audit decision), T12.1 ✅ |
 | `tantra-ledger` | **0** (0012 closed) | — | T2.1–T2.11 ✅, T12.7 ✅ |
 | `tantra-risk` | **0** (0005 closed) | — (plan 0002 Implemented) | T1.1–T1.4 ✅, T12.6 ✅ |
-| `tantra-market` | 3 (0003 feeds, 0007 ADR%/Chandelier, 0008 Lakehouse v3) | 0002 (chart-pattern analyzer, proposed) | T3.1–T3.4 🔶, T12.2 ✅, T16.4, T17.3 (feeds tracked by T3.3) |
+| `tantra-market` | 2 (0003 feeds, 0007 ADR%/Chandelier) | 0002 (chart-pattern analyzer, proposed) | T3.1–T3.4 🔶, T12.2 ✅, T16.4, T17.3 ✅ (feeds tracked by T3.3) |
 | `tantra-exec` | **0** (0003 closed) | — (0002, 0003 Implemented) | T0.3 ✅, T4.11 ✅, T12.5 ✅, T14.1–T14.4 ✅, T14.14 ✅ |
-| `tantra-runtime` | 2 (0009 chat-WS model/multimodal, 0010 QuoteTick fields) | 0006 (trade manager, proposed), 0007 (group alerts, proposed) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅, T18.2 ✅, T18.3 ✅, T17.4 |
+| `tantra-runtime` | **0** (0011 closed) | 0006 (trade manager, proposed), 0007 (group alerts, proposed) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅, T17.4 ✅, T18.2 ✅, T18.3 ✅ |
 | `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — master guide), 0012 (persona roster, approved), 0013 (screener MCP, proposed), 0014 (trade-plan MCP, proposed) — 0011 Implemented | T0.8 ✅, T6.1–T6.12 ✅, T12.8 ✅ |
 | `tantra-ui` | **0** (0007 closed) | 0002 (UX ref), 0006 (EE+ Studio, **Implemented 2026-11-17 — T12.9**), 0007 (agent desk, proposed) — 0001/0003/0008 Implemented (docs retained as references) | T10.1–T10.5 ✅, T12.9 ✅, T14.12–T14.13 ✅, T14.14 ✅ |
 | `tantra-adapters` | 0 | — (0002–0004 Implemented) | T4.1–T4.10 ✅ |
@@ -625,6 +625,8 @@ independent (one per wave under the 2-subagent ceiling).
 > ruff clean, mypy clean on `provision/`. Consumer-coverage analysis (sim/analyser/UI/screeners/
 > wheel all read the one canonical root — zero consumer changes) recorded in plan 0004.
 > **T15 track complete.**
+>
+> T17 track (Phases 1–3) complete 2026-11-18 (root plan 0011): Python atomic `trees/<hash>.json` export (`tantra-data` `test_cas_manifest` 13 green); **T17.3** (`tantra-market` gap 0008 closed: `ManifestResolver`, CAS compaction preserving tags, `Decimal128(18, 4)` instruments, OI + 9 projection readers; `lakehouse_v3` + `instruments` + `chain_oi_tests` + doctests + `make prod` green); **T17.4** (`tantra-runtime` gap 0011 closed: `CatalogLoader` `data_ref` pinning + RowGroup stats pruning + O(\|aliases\|) alias continuity + `load_v3_bars_grouped`, `BacktestRequest.data_ref` + `RunManifest.{data_commit_sha, data_as_of_ist}`, `AppState::from_lakehouse_v3` ignoring `catalog/.gitkeep`, `prepare_server` v3→catalog→parquet detection, live `tantra-data/data/` read-only smoke test + `tantra-runtime-api` 28 + backtest 19 + REST 88 + `make prod` green). Phase 4 (legacy fallback removal) remains.
 
 ## Related
 

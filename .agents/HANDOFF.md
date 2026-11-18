@@ -641,6 +641,17 @@ Date: 2026-11-14. Executed the T6 track from `docs/task-list-tracks-and-phases.m
   `aee1a54`, data `a3223a0`, root `16889d7`; T6.10 commit SHAs follow this batch's per-repo
   commits. All pushed.
 
+## Latest Batch — T17.3–T17.4 complete: Lakehouse v3 Rust support & `tantra serve` snapshot pinning
+
+Date: 2026-11-18. Completed Phase 3 of root plan `0011` (`docs/plans/0011-unified-data-catalog-lakehouse-v3.md`):
+- **`tantra-data` (`ManifestStore`)**: Added atomic `{root}/trees/{tree_hash}.json` export and rollback cleanup (`tantra_data/adapters/manifest_store.py`, `tests/test_cas_manifest.py` 13/13 passed, ruff clean).
+- **`tantra-market` (`tantra-market` gap `0008` closed)**: Added [`ManifestResolver`](../tantra-market/crates/tantra-market-store/src/manifest.rs) (`refs/{heads,tags}/*`, `commits/*.json`, `trees/*.json`, `objects/sha256`, `views/` fallback on `main`, `reference/aliases` continuity, `arrow_utf8_array` `Utf8`/`LargeUtf8` decoding), post-close CAS compaction (`Lakehouse::compact_v3`), `CatalogInstrumentMaster` `Decimal128(18, 4)` schema migration (`open_legacy_float64` opt-in), `ParquetOpenInterestStore` (`derivatives/open_interest`), and wired all 9 projection readers (`block_deals`, `corporate_actions`, `delivery`, `economic_calendar`, `filings`, `fundamentals`, `funds_ipos`, `institutional_flows`, `news`). Verified `lakehouse_v3` (3) + `instruments` (5) + `chain_oi_tests` (10) + doctests (2) + `fmt --check` + `clippy -D warnings` + `make prod`.
+- **`tantra-runtime` (`tantra-runtime` gap `0011` closed + `tantra serve` v3)**:
+  - `tantra-runtime-backtest`: `CatalogLoader` (`with_ref`, `with_legacy_fallback`, `resolved_commit`, `load_bars_with_stats`, O(|aliases|) `reference/aliases` rename continuity `ZOMATO → ETERNAL`, Parquet `(instrument_uid, ts)` RowGroup min/max statistics pruning, single-pass `load_v3_bars_grouped`, `CatalogVerificationReport` commit metadata); `NseTradingCalendar::from_data_root_at`.
+  - `tantra-runtime-api` + `tantra-runtime-api-rest`: `BacktestRequest.data_ref` (422 on empty), `RunManifest.{data_commit_sha, data_as_of_ist}`, `load_lakehouse_v3`, `AppState::has_lakehouse_v3` / `from_lakehouse_v3` (and `has_catalog` ignores placeholder `.gitkeep`), `prepare_server` v3→catalog→parquet detection, `BacktestExecutor` pinned execution + cache-key partitioning + `data_ref_not_found` mapping.
+  - Verified live read-only smoke test against `tantra-data/data/` (`commit=1f161caa...`, 3,768 instruments, RowGroup pruning 2/18 on `RELIANCE`), `tantra-runtime-api` (28), `tantra-runtime-backtest` (19), `tantra-runtime-api-rest` (88 tests across 9 suites incl. `lakehouse_v3_serve` and `openapi_conformance`), `fmt --check` + `clippy -D warnings` + `make prod`.
+- **Docs**: Closed `tantra-market` gap `0008` and `tantra-runtime` gap `0011` per `.agents/rules/gap-tracking.md` §4, updated `docs/plans/0011-...md`, `docs/plans/README.md`, and `docs/task-list-tracks-and-phases.md`. Phase 4 (legacy fallback removal) remains.
+
 ## Latest Batch — Elephant Edge (EE+) strategy platform docs (research + plans/gaps)
 
 Date: 2026-11-13. Research + documentation batch (no code changes):

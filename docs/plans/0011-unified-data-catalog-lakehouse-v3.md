@@ -1,6 +1,6 @@
 # 0011 — Unified Data Catalog & Git-Style Content-Addressed Lakehouse (v3)
 
-**Status**: **Phases 1–2 Implemented 2026-11-17** (Python provider engine, `tantra-data` plan `0009` Phases A–C: domain types + `CatalogRepository` ref surface `ee802e9`, CAS object store + `catalog.duckdb` manifest `398eeb7`, `tantra-catalog` CLI + `migrate-v3` `d64c877`; gap `0025` closed, 359 tests green). Phase 3 (Rust consumers) tracked by `tantra-market` gap `0008` + `tantra-runtime` gap `0011`; Phase 4 (legacy deprecation) follows.  
+**Status**: **Phases 1–3 Implemented 2026-11-18** — Phases 1–2 Python provider engine (`tantra-data` plan `0009` A–C: `ee802e9`/`398eeb7`/`d64c877`, gap `0025` closed, + atomic `trees/<hash>.json` export in `ManifestStore`); **Phase 3 Rust consumers & `tantra serve` Implemented 2026-11-18** (`tantra-market` gap `0008` closed: `ManifestResolver`, post-close compaction, `CatalogInstrumentMaster` `Decimal128(18, 4)`, OI & projection readers; `tantra-runtime` gap `0011` closed: `CatalogLoader` `data_ref` pinning + `reference/aliases` continuity + `(instrument_uid, ts)` RowGroup pruning + `load_v3_bars_grouped`, `BacktestRequest.data_ref` + `RunManifest.{data_commit_sha, data_as_of_ist}`, `AppState::has_lakehouse_v3` ignoring `catalog/.gitkeep` & `prepare_server` auto-detection). Phase 4 (legacy `*.NSE.parquet` & un-indexed `catalog/` deprecation) remains.  
 **ADR**: [`docs/design/0004-data-catalog-lakehouse-layout.md`](../design/0004-data-catalog-lakehouse-layout.md)
 
 ## 0. Executive Summary & Objective
@@ -14,11 +14,11 @@ Replace `tantra-labs`'s four divergent on-disk data layouts (`*.NSE.parquet`, `c
 
 | Capability | Current State | Tracking Doc |
 |---|---|---|
-| Per-symbol & flat Parquet fragmentation | `tantra-data/data/` mixes `*.NSE.parquet`, `catalog/{1D,5M}/NSE/<SYM>/<YYYY>.parquet`, and flat `catalog/<projection>/*.parquet` | [`tantra-data` gap 0025](../../tantra-data/docs/gaps/0025-legacy-catalog-layout-and-flat-parquet-fragmentation.md) |
-| Option-chain intraday snapshots | Planned `option_chain/{expiry}/YYYY-MM-DD-HHMM.parquet` would create thousands of small files; realigned to `date=YYYY-MM-DD` sorted by `(expiry, strike, option_type, as_of_ts)` | [`tantra-data` gap 0016](../../tantra-data/docs/gaps/0016-intraday-option-chain-snapshot-lakehouse.md) |
-| CAS object store, manifests, compaction & CLI | No `objects/sha256`, `refs/`, `commits/`, or `catalog.duckdb` manifest engine exists | [`tantra-data` plan 0009](../../tantra-data/docs/plans/0009-unified-lakehouse-v3-and-cas-manifest.md) |
-| Rust Lakehouse v3 + Decimal `instruments` schema | `tantra-market-store::lakehouse` only covers v2 `ticks/`+`bars/`; `CatalogInstrumentMaster` reads/writes `Float64`; `ParquetOpenInterestStore` uses separate `{root}/open_interest/` | [`tantra-market` gap 0008](../../tantra-market/docs/gaps/0008-lakehouse-v3-manifest-and-snapshot-reader.md) |
-| Deterministic backtest data pinning | `tantra-runtime-backtest::CatalogLoader` walks raw `{TF}/{EX}/{SYM}` directories without commit/ref pinning | [`tantra-runtime` gap 0011](../../tantra-runtime/docs/gaps/0011-backtest-catalog-manifest-pinning.md) |
+| Per-symbol & flat Parquet fragmentation | **Closed** — migrated to v3 hierarchy & CAS manifests | [`tantra-data` gap 0025 (closed)](../../tantra-data/docs/gaps/README.md#closed-gaps) |
+| Option-chain intraday snapshots | Aligned to `date=YYYY-MM-DD` sorted by `(expiry, strike, option_type, as_of_ts)` | [`tantra-data` gap 0016](../../tantra-data/docs/gaps/0016-intraday-option-chain-snapshot-lakehouse.md) |
+| CAS object store, manifests, compaction & CLI | **Implemented** — `objects/sha256`, `refs/`, `commits/`, `trees/`, `views/`, `catalog.duckdb` + CLI | [`tantra-data` plan 0009](../../tantra-data/docs/plans/0009-unified-lakehouse-v3-and-cas-manifest.md) |
+| Rust Lakehouse v3 + Decimal `instruments` schema | **Closed 2026-11-18** — `ManifestResolver`, post-close CAS compaction, `CatalogInstrumentMaster` `Decimal128(18, 4)`, OI & projection readers | [`tantra-market` gap 0008 (closed)](../../tantra-market/docs/gaps/README.md#closed-gaps) |
+| Deterministic backtest data pinning & `tantra serve` v3 | **Closed 2026-11-18** — `CatalogLoader` `data_ref`/alias/RowGroup pruning, `BacktestRequest.data_ref`, `RunManifest` provenance, `prepare_server` v3 detection | [`tantra-runtime` gap 0011 (closed)](../../tantra-runtime/docs/gaps/README.md#closed-gaps) |
 
 Dependencies & synergies:
 - Pairs with [`tantra-data` plan 0007](../../tantra-data/docs/plans/0007-instrument-master-index-membership.md) (supplies `instruments`, `aliases`, NSE 4-level classification, index membership, and SEBI/AMFI cap buckets stored under `reference/`).
@@ -26,24 +26,24 @@ Dependencies & synergies:
 
 ## 2. Component Specifications & Phases (Build Order)
 
-1. **Phase 1 — Unified v3 Logical Taxonomy & Decimal Schema Alignment (`tantra-data` plan `0009` §P1 + gap `0025` + `tantra-market` gap `0008`):**
+1. **Phase 1 — Unified v3 Logical Taxonomy & Decimal Schema Alignment (`tantra-data` plan `0009` §P1 + gap `0025` + `tantra-market` gap `0008`):** ✅
    - Pin canonical logical paths (`market/`, `derivatives/`, `reference/`, `fundamentals/`, `disclosures/`, `derived/`) and right-sized time buckets (`year=YYYY` for 1D, `year=YYYY/month=MM` for intraday/OI/disclosures, `date=YYYY-MM-DD` IST for ticks & option chains).
    - Migrate `CatalogInstrumentMaster` numeric columns (`lot_size`, `tick_size`, `freeze_qty`, `strike`) from `Float64` to `Decimal128(18, 4)`.
    - Align `tantra-data` gap `0016` option-chain snapshots to `derivatives/option_chain/exchange={EX}/underlying={SYM}/date=YYYY-MM-DD/` sorted by `(expiry, strike, option_type, as_of_ts)`.
-2. **Phase 2 — Git-Style CAS & `catalog.duckdb` Manifest Engine (`tantra-data` plan `0009` §P2–P3):**
-   - Implement CAS writer (`objects/sha256/<2-char>/<hash>.parquet`), staging commits (`refs/heads/staging/*` → atomic fast-forward to `refs/heads/main`), immutable `commits/<sha>.json`, and `refs/tags/*`.
+2. **Phase 2 — Git-Style CAS & `catalog.duckdb` Manifest Engine (`tantra-data` plan `0009` §P2–P3):** ✅
+   - Implement CAS writer (`objects/sha256/<2-char>/<hash>.parquet`), staging commits (`refs/heads/staging/*` → atomic fast-forward to `refs/heads/main`), immutable `commits/<sha>.json` + `trees/<tree_hash>.json`, and `refs/tags/*`.
    - Build `catalog.duckdb` manifest + symbology alias resolution (`ticker → instrument_uid`) + coverage derivation from active commit manifests.
    - Ship `tantra-catalog` CLI (`status`, `log`, `tag`, `verify`, `compact`, `gc`, `materialize-views`) and one-shot migration tool from v1/v2 `data/catalog/` → v3 CAS.
-3. **Phase 3 — Cross-Repo Rust Store & Backtest Pinning (`tantra-market` gap `0008` + `tantra-runtime` gap `0011`):**
-   - Extend `tantra-market-store` to resolve partition objects by `commit_sha` / `ref` (with read-only Hive fallback during deprecation) and compact live `TickRecorder` flushes (`part-NNNN.parquet`) into sorted CAS objects after market close.
-   - Update `tantra-runtime-backtest::CatalogLoader` and run journals to accept `--data-ref` / `commit_sha` and persist the exact `data_commit_sha` in backtest artifacts.
-4. **Phase 4 — Legacy Deprecation & Verification:**
+3. **Phase 3 — Cross-Repo Rust Store, Backtest Pinning & `tantra serve` (`tantra-market` gap `0008` + `tantra-runtime` gap `0011`):** ✅
+   - Extended `tantra-market-store` (`ManifestResolver`, post-close CAS compaction preserving pinned tags, `Decimal128(18, 4)` instrument snapshots, OI & all 9 projection readers with `views/` fallback on `main`).
+   - Updated `tantra-runtime-backtest::CatalogLoader`, `NseTradingCalendar::from_data_root_at`, `BacktestRequest.data_ref` / `RunManifest.{data_commit_sha, data_as_of_ist}`, and `tantra serve` (`AppState::from_lakehouse_v3` + `prepare_server` v3→catalog→parquet detection ignoring `catalog/.gitkeep`).
+4. **Phase 4 — Legacy Deprecation & Verification:** *(Remaining)*
    - Remove fallback readers for `*.NSE.parquet` and un-indexed `{TF}/{EX}/{SYM}` once `tantra-data/data/`, `tantra-examples/provision/`, and runtime tests pass exclusively on v3.
 
 ## 3. Verification & Acceptance Gates
 
-- **Python (`tantra-data`):** Round-trip Arrow/Polars/DuckDB parity on `Decimal128(18, 4)`, atomic commit crash-safety test, row-group pruning benchmark (single-symbol scan vs universe scan), compaction preservation of older tagged commits, and `make -C tantra-data check`.
-- **Rust (`tantra-market`, `tantra-runtime`):** Golden cross-language Parquet read parity (Python CAS writer → Rust `Lakehouse` / `CatalogLoader`), `Decimal128(18, 4)` round-trip for instruments/OI/bars/ticks, and `cargo test --profile prod` + `clippy -D warnings` clean.
+- **Python (`tantra-data`):** Round-trip Arrow/Polars/DuckDB parity on `Decimal128(18, 4)`, atomic commit crash-safety & tree export (`test_cas_manifest.py` 13 passed), row-group pruning, compaction preservation of older tagged commits.
+- **Rust (`tantra-market`, `tantra-runtime`):** Cross-language Parquet read/write parity (`tantra-market-store` `lakehouse_v3` 3 + `instruments` 5 + `chain_oi_tests` 10 + doctests 2), pinned REST + backtest determinism (`tantra-runtime-backtest` `lakehouse_v3_pinning` 3 + `catalog_tests` 1 + `catalog_and_settlement_tests` 7 + `calendar_tests` 8; `tantra-runtime-api` 28; `tantra-runtime-api-rest` `lakehouse_v3_serve` 1 + `openapi_conformance` 3 + `bootstrap` 16 + `market_data` 29 + `runs` 12 + `runs_cache` 3 + `runs_store` 13 + `journal_tests` 7 + `block_deals_tests` 4), live read-only smoke test against `tantra-data/data/`, `cargo fmt --check` + `clippy --workspace --all-targets --profile prod -- -D warnings` + `make prod` green.
 
 ## 4. Referenced Docs
 
@@ -51,5 +51,5 @@ Dependencies & synergies:
 - [`tantra-data/docs/plans/0009-unified-lakehouse-v3-and-cas-manifest.md`](../../tantra-data/docs/plans/0009-unified-lakehouse-v3-and-cas-manifest.md)
 - [`tantra-data/docs/gaps/0025-legacy-catalog-layout-and-flat-parquet-fragmentation.md`](../../tantra-data/docs/gaps/0025-legacy-catalog-layout-and-flat-parquet-fragmentation.md)
 - [`tantra-data/docs/gaps/0016-intraday-option-chain-snapshot-lakehouse.md`](../../tantra-data/docs/gaps/0016-intraday-option-chain-snapshot-lakehouse.md)
-- [`tantra-market/docs/gaps/0008-lakehouse-v3-manifest-and-snapshot-reader.md`](../../tantra-market/docs/gaps/0008-lakehouse-v3-manifest-and-snapshot-reader.md)
-- [`tantra-runtime/docs/gaps/0011-backtest-catalog-manifest-pinning.md`](../../tantra-runtime/docs/gaps/0011-backtest-catalog-manifest-pinning.md)
+- [`tantra-market/docs/gaps/README.md#closed-gaps`](../../tantra-market/docs/gaps/README.md#closed-gaps) (gap `0008`)
+- [`tantra-runtime/docs/gaps/README.md#closed-gaps`](../../tantra-runtime/docs/gaps/README.md#closed-gaps) (gap `0011`)
