@@ -456,25 +456,42 @@ independent (one per wave under the 2-subagent ceiling).
 
 ---
 
+## T20 — Experimental-Analysis Multi-Asset Statistical & Event Study Workbench · Phases 1–3 — Proposed 2026-11-18
+
+**Source**: [`docs/plans/0014-experimental-analysis-statistical-workbench.md`](plans/0014-experimental-analysis-statistical-workbench.md) (master track T20; zero `tantra-core` edits)
+
+Multi-asset empirical return, streak & `6×6` Markov regime equilibrium, percentile/10-bps/probability-level distributions, conditional forward moves, Abraham Wald survivability outliers + dated news lookup, `5m` intraday/gap/ORB-15, cycle progress (`0–100%`), cross-asset correlation, covered-call/premium lab, analog forecasting, and Buyback/Earnings/F&O-Exclusion event studies across **F&O, Indices, ETFs, Equities, Forex, and Commodities**.
+
+| Task | Work | Repo / Scope | Phase | Status | Plan |
+| :--- | :--- | :--- | :---: | :--- | :--- |
+| **T20.1** | ETF/Indices/Continuous-F&O/FX/Commodities Lakehouse v3 continuity (`1d`+`5m` bars, session clocks) + Buyback, Earnings & F&O-Exclusion event tables | `tantra-data` | 2 | Proposed | [`data 0010`](../tantra-data/docs/plans/0010-experimental-analysis-multi-asset-and-events.md) |
+| **T20.2** | Regime-aware `PeriodSchedule` (`Fri→Thu` → `Wed→Tue` NSE Sep 3 2025 cutover, ISO calendar, FX/MCX) + `tantra-market-finance::studies` pure `Decimal` (`wasm32`) return, streak, `6×6` Markov, percentile/10-bps/probability-level, outlier, ORB-15, correlation & CAR engine | `tantra-market` | 1–3 | Proposed | [`market 0003`](../tantra-market/docs/plans/0003-experimental-analysis-period-and-markov-engine.md) |
+| **T20.3** | `tantra-runtime-api::experimental_analysis` `schemars` OpenAPI v2 DTOs + `/api/v2/experimental-analysis/{catalog,returns,intraday,correlation,options-overlay,events,outlier-news}` REST handlers + live adapter option-chain wiring | `tantra-runtime` | 4 | Proposed | [`runtime 0009`](../tantra-runtime/docs/plans/0009-experimental-analysis-statistical-rest-api.md) |
+| **T20.4** | `experimental_study_summary` & `historical_outlier_news` read-only chat/MCP tools + grounded persona instructions & catalog count pins | `tantra-agent` | 4 | Proposed | [`agent 0016`](../tantra-agent/docs/plans/0016-experimental-analysis-copilot-and-event-news.md) |
+| **T20.5** | `Experimental-Analysis` workspace tab (`WorkspaceShell` + `?open=experimental-analysis`), asset-class-adaptive control rail, 3 modes, 13 study sub-tabs, SVG charts (`Lollipop+Bubble/Bar+MA`, `Survivability Scatter`, `Markov Heatmap`) & `ChartCanvas` OHLC reuse (`decimal.js`) | `tantra-ui-web` | 6 | Proposed | [`ui-web 0016`](../tantra-ui-web/docs/plans/0016-experimental-analysis-workbench-ui.md) |
+
+---
+
 ## Per-repo summary
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
-| `tantra-labs` (root) | 1 (0001 broker-feed feature tracker) | 0001 (umbrella), **0005 (EE+ platform, Active — T12.1–T12.10 COMPLETE 2026-11-17)**, **0008 (trade signal generator, proposed)**, **0009 (Qullamaggie swing, proposed — T16)**, **0010 (screener, P1 implemented / P2–P9 proposed)**, **0011 (Unified Lakehouse v3, Active — Phases 1–3 ✅ / Phase 4 legacy deprecation remains)**, **0012 (remaining-gap inventory, T18.1–T18.6 COMPLETE 2026-11-17)** | T0.1–T0.7 ✅, T12.1–T12.10 ✅, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T15.1–T15.6 ✅, T16.0–T16.7, T17.1–T17.4 ✅, T18.1–T18.6 ✅ |
+| `tantra-labs` (root) | 1 (0001 broker-feed feature tracker) | 0001 (umbrella), **0005 (EE+ platform, Active — T12.1–T12.10 COMPLETE 2026-11-17)**, **0008 (trade signal generator, proposed)**, **0009 (Qullamaggie swing, proposed — T16)**, **0010 (screener, P1 implemented / P2–P9 proposed)**, **0011 (Unified Lakehouse v3, Active — Phases 1–3 ✅ / Phase 4 legacy deprecation remains)**, **0012 (remaining-gap inventory, T18.1–T18.6 COMPLETE 2026-11-17)**, **0014 (`Experimental-Analysis` workbench, proposed — T20)** | T0.1–T0.7 ✅, T12.1–T12.10 ✅, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T15.1–T15.6 ✅, T16.0–T16.7, T17.1–T17.4 ✅, T18.1–T18.6 ✅, T20.1–T20.5 |
 | `tantra-core` | **0** (0002 closed) | 0005 (TradePlanner, **P1 done / P2–P3 remain**) — 0003 Implemented | T0.7 ✅ (audit decision), T12.1 ✅ |
 | `tantra-ledger` | **0** (0012 closed) | — | T2.1–T2.11 ✅, T12.7 ✅ |
 | `tantra-risk` | **0** (0005 closed) | — (plan 0002 Implemented) | T1.1–T1.4 ✅, T12.6 ✅ |
-| `tantra-market` | 2 (0003 feeds, 0007 ADR%/Chandelier) | 0002 (chart-pattern analyzer, proposed) | T3.1–T3.4 🔶, T12.2 ✅, T16.4, T17.3 ✅ (feeds tracked by T3.3) |
+| `tantra-market` | 2 (0003 feeds, 0007 ADR%/Chandelier) | 0002 (chart-pattern analyzer, proposed), 0003 (`Experimental-Analysis` period & Markov engine, proposed) | T3.1–T3.4 🔶, T12.2 ✅, T16.4, T17.3 ✅, T20.2 (feeds tracked by T3.3) |
 | `tantra-exec` | **0** (0003 closed) | — (0002, 0003 Implemented) | T0.3 ✅, T4.11 ✅, T12.5 ✅, T14.1–T14.4 ✅, T14.14 ✅ |
-| `tantra-runtime` | **0** (0011 closed) | 0006 (trade manager, proposed), 0007 (group alerts, proposed) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅, T17.4 ✅, T18.2 ✅, T18.3 ✅ |
-| `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — master guide), 0012 (persona roster, approved), 0013 (screener MCP, proposed), 0014 (trade-plan MCP, proposed) — 0011 Implemented | T0.8 ✅, T6.1–T6.12 ✅, T12.8 ✅ |
+| `tantra-runtime` | **0** (0011 closed) | 0006 (trade manager, proposed), 0007 (group alerts, proposed), 0009 (`Experimental-Analysis` REST API, proposed) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅, T17.4 ✅, T18.2 ✅, T18.3 ✅, T20.3 |
+| `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — master guide), 0012 (persona roster, approved), 0013 (screener MCP, proposed), 0014 (trade-plan MCP, proposed), 0016 (`Experimental-Analysis` assistant/news, proposed) — 0011 Implemented | T0.8 ✅, T6.1–T6.12 ✅, T12.8 ✅, T20.4 |
 | `tantra-ui` | **0** (0007 closed) | 0002 (UX ref), 0006 (EE+ Studio, **Implemented 2026-11-17 — T12.9**), 0007 (agent desk, proposed) — 0001/0003/0008 Implemented (docs retained as references) | T10.1–T10.5 ✅, T12.9 ✅, T14.12–T14.13 ✅, T14.14 ✅ |
 | `tantra-adapters` | 0 | — (0002–0004 Implemented) | T4.1–T4.10 ✅ |
-| `tantra-data` | 1 (0024 SAST/analyst-estimate remainder) | 0007 (instrument master, proposed), 0008 (screen DSL catalog, proposed), **0009 (Lakehouse v3, Implemented 2026-11-17)** | T5.1–T5.10 ✅, T12.3 ✅, T16.3 (partial), T18.1 ✅, T18.4 ✅, T18.5 ✅, T17.1 ✅, T17.2 ✅ |
+| `tantra-data` | 1 (0024 SAST/analyst-estimate remainder) | 0007 (instrument master, proposed), 0008 (screen DSL catalog, proposed), **0009 (Lakehouse v3, Implemented 2026-11-17)**, 0010 (`Experimental-Analysis` multi-asset/events, proposed) | T5.1–T5.10 ✅, T12.3 ✅, T16.3 (partial), T18.1 ✅, T18.4 ✅, T18.5 ✅, T17.1 ✅, T17.2 ✅, T20.1 |
 | `tantra-strategies` | **0** (0007 closed) | 0002 (universe/screen context, proposed), 0003 (trade-plan SDK, proposed) — 0001 (EE+) Implemented | T8.1–T8.5 ✅, T12.4 ✅, T14.11 ✅, T18.6 ✅ |
 | `tantra-examples` | **0** (all 8 closed: 0001–0008) | 0005 (categorized examples, proposed) — 0003/0004 Implemented | T9.1–T9.10 all ✅, T13.6–T13.7 ✅, T14.11 ✅, T15.1–T15.6 ✅ |
 | `tantra-ffi` | **0** | 0004 (trade-planner bindings, proposed) — 0002/0003 Implemented | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 ✅, T14.14 ✅ |
 | `tantra-docs` | — | — (0001–0005 Implemented) | T11.1 ✅, T11.2 ✅, T12.10 ✅, T14.15 ✅, T14.16 ✅ |
+| `tantra-ui-web` | per `tantra-ui-web/docs/gaps/README.md` | 0001 (roadmap, active), 0002 (desk UI, ref), 0014 (alerts/screener UI, proposed), 0016 (`Experimental-Analysis` workbench UI, proposed) | T16.7, T20.5 |
 
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
 > added, convention pinned, aliases pruned, TDD cleanup done, all workspaces verified. T0.7
