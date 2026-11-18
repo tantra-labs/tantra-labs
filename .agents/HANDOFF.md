@@ -13,13 +13,36 @@ one golden vector) passes. **T12 (Elephant Edge EE+ platform, root plan 0005) �
 T12.1–T12.10 COMPLETE 2026-11-17** (Studio view `013a5d6` + synthetic-OCO `fc4a5a6` +
 FIFO bracket P&L `697b428` landed). **T18 (remaining-gap independent fixes, root plan 0012)
 T18.1–T18.6 COMPLETE 2026-11-17** (data 0015/0023/0024, runtime 0009/0010, strategies 0007
+closed). **T17 (Unified Lakehouse v3, root plan 0011) Phases 1–2 COMPLETE 2026-11-17**
+(tantra-data plan 0009 A–C: CAS + `catalog.duckdb` manifest + `tantra-catalog` CLI; gap 0025
 closed). Implemented plan/gap docs from T13–T15 cleaned up per gap-tracking §4 (2026-11-16).
 **Next unstarted work**: root plan 0009 (Qullamaggie, T16.0 – close the 9 unverified code
-checks first), the Lakehouse v3 catalog (root plan 0011, T17).
+checks first), then the Lakehouse v3 Rust consumers (T17.3 `tantra-market` 0008 + T17.4
+`tantra-runtime` 0011).
 Date: 2026-11-17 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crate dependency
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
+
+## Latest Batch — Lakehouse v3 storage-taxonomy redesign (tantra-data plan 0009 / ADR 0004) COMPLETE
+
+Date: 2026-11-17. **Design docs restored first**: the root rebase's submodule resolution had
+dropped the upstream design commits (`d93536c`/`840ad99`/`339df08`) — cherry-picked back onto the
+local branches (`5382cda` data, `f92be45` market, `8e84fc7` runtime) and root pointers advanced
+(`f551c36`). Then implemented the phased redesign (subagents, A+B parallel then C):
+- **Phase A** (`ee802e9`): `domain/lakehouse.py` types (`CatalogRef`/`CommitRecord`/`ManifestEntry`/
+  `InstrumentAlias`) + `CatalogRepository` ref surface (`resolve_ref`/`commit`/`tag`,
+  `as_of_ref="main"`).
+- **Phase B** (`398eeb7`): CAS writer (`objects/sha256/<ab>/<sha>.parquet`, Zstd, 100K row-groups,
+  `(instrument_uid, ts)` sort, Decimal128, atomic promote, dedup) + `catalog.duckdb` manifest
+  (`commits`/`manifest_entries`/`refs`/`instrument_aliases`, staging→main fast-forward, tags,
+  `reference/aliases` rename resolution) + dual-read `ParquetCatalog`/`LakehouseBridgeExporter`.
+- **Phase C** (`d64c877`): `tantra-catalog` CLI (`status`/`log`/`tag`/`verify`/`compact`/`gc`/
+  `materialize-views`/`migrate-v3`) with verified 100% bar + Decimal parity. Gap `0025` closed
+  (`1534a62`); plan `0009` Implemented; HANDOFF updated (`8846bfc`). 359 tests green (5 env skips).
+- **Cross-repo Phase 3 (Rust) remains**: `tantra-market` gap `0008` (ManifestResolver, compaction,
+  `CatalogInstrumentMaster` Decimal migration) + `tantra-runtime` gap `0011` (`CatalogLoader`
+  `data_ref`/`commit_sha` pinning) — tracked as T17.3/T17.4.
 
 ## Latest Batch — T12.9 Studio + T18 independent-fixes track COMPLETE 2026-11-17 (post-rebase)
 

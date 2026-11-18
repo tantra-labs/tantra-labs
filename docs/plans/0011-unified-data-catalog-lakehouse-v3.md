@@ -1,6 +1,6 @@
 # 0011 — Unified Data Catalog & Git-Style Content-Addressed Lakehouse (v3)
 
-**Status**: Proposed — 2026-11-17  
+**Status**: **Phases 1–2 Implemented 2026-11-17** (Python provider engine, `tantra-data` plan `0009` Phases A–C: domain types + `CatalogRepository` ref surface `ee802e9`, CAS object store + `catalog.duckdb` manifest `398eeb7`, `tantra-catalog` CLI + `migrate-v3` `d64c877`; gap `0025` closed, 359 tests green). Phase 3 (Rust consumers) tracked by `tantra-market` gap `0008` + `tantra-runtime` gap `0011`; Phase 4 (legacy deprecation) follows.  
 **ADR**: [`docs/design/0004-data-catalog-lakehouse-layout.md`](../design/0004-data-catalog-lakehouse-layout.md)
 
 ## 0. Executive Summary & Objective

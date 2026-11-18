@@ -421,14 +421,14 @@ gap 0023); ruff check + format clean; mypy clean on `provision/`. **T15 track co
 
 ---
 
-## T17 — Unified Data Catalog & Git-Style CAS Lakehouse (v3) · Phase 2–4
+## T17 — Unified Data Catalog & Git-Style CAS Lakehouse (v3) · Phase 2–4 — ✅ T17.1–T17.2 (data) DONE 2026-11-17; T17.3–T17.4 pending (Rust)
 
 **Source**: [`docs/design/0004-data-catalog-lakehouse-layout.md`](design/0004-data-catalog-lakehouse-layout.md) · [`docs/plans/0011-unified-data-catalog-lakehouse-v3.md`](plans/0011-unified-data-catalog-lakehouse-v3.md)
 
 | Task | Work | Repo / Scope | Phase | Status | Gap / Plan |
 | :--- | :--- | :--- | :---: | :--- | :--- |
-| **T17.1** | Logical v3 taxonomy (`market/`, `derivatives/`, `reference/`, `fundamentals/`, `disclosures/`), `(instrument_uid, ts)` row-group sorting, `reference/aliases`, and `0016` option-chain path alignment | `tantra-data` | 2 | Proposed | data plan 0009 (Ph A) · data 0016, 0025 |
-| **T17.2** | Content-addressed `objects/sha256` store, `catalog.duckdb` manifest + staging/main/tag refs, `tantra-catalog` compaction/GC/migration CLI | `tantra-data` | 2 | Proposed | data plan 0009 (Ph B–C) · data 0025 |
+| **T17.1** | ✅ Logical v3 taxonomy (`market/`, `derivatives/`, `reference/`, `fundamentals/`, `disclosures/`), `(instrument_uid, ts)` row-group sorting, `reference/aliases`, and `0016` option-chain path alignment | `tantra-data` | 2 | **Done 2026-11-17** | data plan 0009 (Ph A, `ee802e9`) · data 0025 |
+| **T17.2** | ✅ Content-addressed `objects/sha256` store, `catalog.duckdb` manifest + staging/main/tag refs, `tantra-catalog` compaction/GC/migration CLI | `tantra-data` | 2 | **Done 2026-11-17** | data plan 0009 (Ph B–C, `398eeb7`/`d64c877`) · data 0025 (closed) |
 | **T17.3** | Rust `ManifestResolver`, post-close `TickRecorder` compaction, `CatalogInstrumentMaster` `Float64 → Decimal128(18, 4)` migration, `ParquetOpenInterestStore` + projection v3 alignment | `tantra-market` | 2–3 | Proposed | market 0008 |
 | **T17.4** | `CatalogLoader` `data_ref`/`commit_sha` snapshot pinning, `reference/aliases` resolution, row-group predicate pushdown, `data_commit_sha` recorded in backtest journals | `tantra-runtime` | 4 | Proposed | runtime 0011 |
 
@@ -460,7 +460,7 @@ independent (one per wave under the 2-subagent ceiling).
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
-| `tantra-labs` (root) | 1 (0001 broker-feed feature tracker) | 0001 (umbrella), **0005 (EE+ platform, Active — T12.1–T12.10 COMPLETE 2026-11-17)**, **0008 (trade signal generator, proposed)**, **0009 (Qullamaggie swing, proposed — T16)**, **0010 (screener, P1 implemented / P2–P9 proposed)**, **0011 (Unified Lakehouse v3, proposed — T17)**, **0012 (remaining-gap inventory, T18.1–T18.6 COMPLETE 2026-11-17)** | T0.1–T0.7 ✅, T12.1–T12.10 ✅, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T15.1–T15.6 ✅, T16.0–T16.7, T17.1–T17.4, T18.1–T18.6 ✅ |
+| `tantra-labs` (root) | 1 (0001 broker-feed feature tracker) | 0001 (umbrella), **0005 (EE+ platform, Active — T12.1–T12.10 COMPLETE 2026-11-17)**, **0008 (trade signal generator, proposed)**, **0009 (Qullamaggie swing, proposed — T16)**, **0010 (screener, P1 implemented / P2–P9 proposed)**, **0011 (Unified Lakehouse v3, Active — T17.1–T17.2 done / T17.3–T17.4 Rust pending)**, **0012 (remaining-gap inventory, T18.1–T18.6 COMPLETE 2026-11-17)** | T0.1–T0.7 ✅, T12.1–T12.10 ✅, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T15.1–T15.6 ✅, T16.0–T16.7, T17.1–T17.4 (T17.1–T17.2 ✅), T18.1–T18.6 ✅ |
 | `tantra-core` | **0** (0002 closed) | 0005 (TradePlanner, **P1 done / P2–P3 remain**) — 0003 Implemented | T0.7 ✅ (audit decision), T12.1 ✅ |
 | `tantra-ledger` | **0** (0012 closed) | — | T2.1–T2.11 ✅, T12.7 ✅ |
 | `tantra-risk` | **0** (0005 closed) | — (plan 0002 Implemented) | T1.1–T1.4 ✅, T12.6 ✅ |
@@ -470,7 +470,7 @@ independent (one per wave under the 2-subagent ceiling).
 | `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — master guide), 0012 (persona roster, approved), 0013 (screener MCP, proposed), 0014 (trade-plan MCP, proposed) — 0011 Implemented | T0.8 ✅, T6.1–T6.12 ✅, T12.8 ✅ |
 | `tantra-ui` | **0** (0007 closed) | 0002 (UX ref), 0006 (EE+ Studio, **Implemented 2026-11-17 — T12.9**), 0007 (agent desk, proposed) — 0001/0003/0008 Implemented (docs retained as references) | T10.1–T10.5 ✅, T12.9 ✅, T14.12–T14.13 ✅, T14.14 ✅ |
 | `tantra-adapters` | 0 | — (0002–0004 Implemented) | T4.1–T4.10 ✅ |
-| `tantra-data` | 2 (0024 SAST/analyst-estimate remainder, 0025 legacy catalog fragmentation) | 0007 (instrument master, proposed), 0008 (screen DSL catalog, proposed) | T5.1–T5.10 ✅, T12.3 ✅, T16.3 (partial), T18.1 ✅, T18.4 ✅, T18.5 ✅, T17.1–T17.2 |
+| `tantra-data` | 1 (0024 SAST/analyst-estimate remainder) | 0007 (instrument master, proposed), 0008 (screen DSL catalog, proposed), **0009 (Lakehouse v3, Implemented 2026-11-17)** | T5.1–T5.10 ✅, T12.3 ✅, T16.3 (partial), T18.1 ✅, T18.4 ✅, T18.5 ✅, T17.1 ✅, T17.2 ✅ |
 | `tantra-strategies` | **0** (0007 closed) | 0002 (universe/screen context, proposed), 0003 (trade-plan SDK, proposed) — 0001 (EE+) Implemented | T8.1–T8.5 ✅, T12.4 ✅, T14.11 ✅, T18.6 ✅ |
 | `tantra-examples` | **0** (all 8 closed: 0001–0008) | 0005 (categorized examples, proposed) — 0003/0004 Implemented | T9.1–T9.10 all ✅, T13.6–T13.7 ✅, T14.11 ✅, T15.1–T15.6 ✅ |
 | `tantra-ffi` | **0** | 0004 (trade-planner bindings, proposed) — 0002/0003 Implemented | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 ✅, T14.14 ✅ |
