@@ -456,10 +456,10 @@ independent (one per wave under the 2-subagent ceiling).
 
 ---
 
-## T19 — FIRE Planning, Cashflow & Retirement Platform (`Elicherla01/fireapp`) · Phase 1, 4–6 — Proposed 2026-11-18
+## T19 — FIRE Planning, Cashflow & Retirement Platform (`Elicherla01/fireapp`) · Phase 1, 4–6 — P0 Done 2026-11-18 / P1–P6 Pending
 
 **Source**: [root plan 0013](plans/0013-fire-planning-and-cashflow-platform.md) (full-stack L1–L6 incorporation of [`Elicherla01/fireapp`](https://github.com/Elicherla01/fireapp/tree/main); **`tantra-core` untouched**) ·
-[`tantra-ledger` 0006](../tantra-ledger/docs/plans/0006-fire-bucket-glidepath-and-swr-metrics.md) ·
+[`tantra-ledger` 0006 (Implemented)](../tantra-ledger/docs/plans/README.md#implemented-plans) ·
 [`tantra-runtime` 0008](../tantra-runtime/docs/plans/0008-fire-planning-persistence-and-rest-api.md) ·
 [`tantra-agent` 0015](../tantra-agent/docs/plans/0015-fire-planning-chat-and-mcp-tools.md) ·
 [`tantra-ffi` 0005](../tantra-ffi/docs/plans/0005-fire-planning-python-bindings.md) ·
@@ -469,7 +469,7 @@ independent (one per wave under the 2-subagent ceiling).
 
 | Task | Work | Repo / Scope | Phase | Status | Plan / Depends |
 | :--- | :--- | :--- | :---: | :--- | :--- |
-| **T19.1** | `tantra-ledger-allocation::{fire, fire_buckets}` & `tantra-ledger-performance::swr` — zero-float `Decimal` FIRE simulator, 5 archetypes, 3-bucket cashflow & glidepaths, `SplitMix64` SoRR bootstrap, SWR metrics, golden + proptests (`wasm32`-clean; zero `tantra-core` edits) | `tantra-ledger` | 1 | Proposed | ledger plan 0006 (P0) |
+| **T19.1** | ✅ `tantra-ledger-allocation::{fire, fire_buckets}` & `tantra-ledger-performance::swr` — zero-float `Decimal` FIRE simulator, 5 archetypes, 3-bucket cashflow & glidepaths, `SplitMix64` SoRR bootstrap, SWR metrics, 15 golden + proptests (`zero tantra-core edits`) | `tantra-ledger` | 1 | **Done 2026-11-18** | ledger plan 0006 (closed) — ledger `a735aa3` |
 | **T19.2** | `tantra-runtime-api::fire` (`schemars`), `Profile.fire_plans` CAS persistence (`MAX_FIRE_PLANS`), `/api/{v1,v2}/planning/fire/{plans,simulate,from-portfolio}`, live ledger/Greeks/Finance Act 2025 tax hydration, OpenAPI regen | `tantra-runtime` | 4 | Proposed | runtime plan 0008 (P1) · ← T19.1 |
 | **T19.3** | `fire_simulate` & `fire_portfolio_check` (`tantra-agent-chat-tools`), MCP gateway tools (`tantra-agent-mcp`, Rule R4 compliant), R1–R4 tests | `tantra-agent` | 4 | Proposed | agent plan 0015 (P2) · ← T19.1, T19.2 |
 | **T19.4** | `tantra.wire.fire` codegen + `tantra.fire` PyO3 bindings over `tantra-ledger-allocation::fire` (GIL-released SoRR, `decimal.Decimal` strictness, `from_backtest_result`) | `tantra-ffi` | 5 | Proposed | ffi plan 0005 (P3) · ← T19.1 |
@@ -483,9 +483,9 @@ independent (one per wave under the 2-subagent ceiling).
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
 | :--- | :---: | :--- | :--- |
-| `tantra-labs` (root) | 1 (0001 broker-feed feature tracker) | 0001 (umbrella), **0005 (EE+ platform, Active — T12.1–T12.10 COMPLETE 2026-11-17)**, **0008 (trade signal generator, proposed)**, **0009 (Qullamaggie swing, proposed — T16)**, **0010 (screener, P1 implemented / P2–P9 proposed)**, **0011 (Unified Lakehouse v3, Active — Phases 1–3 ✅ / Phase 4 legacy deprecation remains)**, **0012 (remaining-gap inventory, T18.1–T18.6 COMPLETE 2026-11-17)**, **0013 (FIRE planning & cashflow platform, proposed — T19)** | T0.1–T0.7 ✅, T12.1–T12.10 ✅, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T15.1–T15.6 ✅, T16.0–T16.7, T17.1–T17.4 ✅, T18.1–T18.6 ✅, T19.1–T19.7 |
+| `tantra-labs` (root) | 1 (0001 broker-feed feature tracker) | 0001 (umbrella), **0005 (EE+ platform, Active — T12.1–T12.10 COMPLETE 2026-11-17)**, **0008 (trade signal generator, proposed)**, **0009 (Qullamaggie swing, proposed — T16)**, **0010 (screener, P1 implemented / P2–P9 proposed)**, **0011 (Unified Lakehouse v3, Active — Phases 1–3 ✅ / Phase 4 legacy deprecation remains)**, **0012 (remaining-gap inventory, T18.1–T18.6 COMPLETE 2026-11-17)**, **0013 (FIRE planning & cashflow platform, Active — T19.1 ✅ / P1–P6 remaining)** | T0.1–T0.7 ✅, T12.1–T12.10 ✅, T13.1–T13.7 ✅, T14.1–T14.16 ✅, T15.1–T15.6 ✅, T16.0–T16.7, T17.1–T17.4 ✅, T18.1–T18.6 ✅, T19.1 ✅ / T19.2–T19.7 |
 | `tantra-core` | **0** (0002 closed) | 0005 (TradePlanner, **P1 done / P2–P3 remain**) — 0003/0004 Implemented *(untouched by T19)* | T0.7 ✅ (audit decision), T12.1 ✅ |
-| `tantra-ledger` | **0** (0012 closed) | 0006 (FIRE domain/engine, 3-bucket glidepath & SWR metrics, proposed — T19.1) | T2.1–T2.11 ✅, T12.7 ✅, T19.1 |
+| `tantra-ledger` | **0** (0012 closed) | — (plans 0001–0006 Implemented) | T2.1–T2.11 ✅, T12.7 ✅, T19.1 ✅ |
 | `tantra-risk` | **0** (0005 closed) | — (plan 0002 Implemented) | T1.1–T1.4 ✅, T12.6 ✅ |
 | `tantra-market` | 2 (0003 feeds, 0007 ADR%/Chandelier) | 0002 (chart-pattern analyzer, proposed) | T3.1–T3.4 🔶, T12.2 ✅, T16.4, T17.3 ✅ (feeds tracked by T3.3) |
 | `tantra-exec` | **0** (0003 closed) | — (0002, 0003 Implemented) | T0.3 ✅, T4.11 ✅, T12.5 ✅, T14.1–T14.4 ✅, T14.14 ✅ |

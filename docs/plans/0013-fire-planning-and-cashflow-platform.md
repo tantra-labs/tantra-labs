@@ -1,6 +1,6 @@
 # 0013 — FIRE Planning, Cashflow & Retirement Simulation Platform (`Elicherla01/fireapp` Full-Stack Incorporation)
 
-**Status**: Proposed (2026-11-18) — Track **T19**
+**Status**: Active — **P0 (`T19.1` `tantra-ledger` 0006) Implemented 2026-11-18**; P1–P6 remaining (Track **T19**)
 
 Source inspiration: [`Elicherla01/fireapp`](https://github.com/Elicherla01/fireapp/tree/main) ("FIRE Works" — Next.js 15 / React 19 / Radix UI interactive financial independence simulator).
 Decision: incorporate **natively from L5 UI down to L1 (`tantra-ledger`)**, leaving **`tantra-core` (L0) completely untouched** (FIRE retirement/wealth planning is an allocation/performance domain concern, not a core market/order-execution kernel primitive — it reuses existing `tantra_core::{Money, Currency}` and `SplitMix64` as read-only inputs). Obeys every `tantra-labs` invariant (strict L0–L6 DAG, **Zero-Floats** `Decimal` / `decimal.js`, Zero-I/O & Zero-Clock domain cores, `Caller`-scoped revision-CAS persistence, OpenAPI 3.1 schema generation, WASM precision kernel, and Agent Rules R1–R4).
@@ -48,7 +48,7 @@ Incorporating `fireapp` across `tantra-labs` elevates it from a standalone calcu
 
 | Tier | Capability | Provider Plan |
 |---|---|---|
-| **L1** | Canonical `Decimal` FIRE domain types & engine (`tantra-ledger-allocation::fire` + `fire_buckets` glidepaths) and SWR sustainability metrics (`tantra-ledger-performance::swr`), golden & proptest suites (`wasm32`-clean) | [`tantra-ledger` plan 0006](../../tantra-ledger/docs/plans/0006-fire-bucket-glidepath-and-swr-metrics.md) |
+| **L1** | Canonical `Decimal` FIRE domain types & engine (`tantra-ledger-allocation::fire` + `fire_buckets` glidepaths) and SWR sustainability metrics (`tantra-ledger-performance::swr`), golden & proptest suites (`wasm32`-clean) | [`tantra-ledger` plan 0006 (Implemented)](../../tantra-ledger/docs/plans/README.md#implemented-plans) |
 | **L3A** | `tantra-runtime-api::fire` OpenAPI (`schemars`) wire DTOs, `Profile.fire_plans` CAS persistence (`MAX_FIRE_PLANS`), `/api/{v1,v2}/planning/fire/simulate`, `/api/{v1,v2}/planning/fire/from-portfolio/{account}`, live ledger/Greeks/tax/backtest seeding, OpenAPI regen, MCP wiring | [`tantra-runtime` plan 0008](../../tantra-runtime/docs/plans/0008-fire-planning-persistence-and-rest-api.md) |
 | **L3B** | ReadOnly `fire_simulate` & `fire_portfolio_check` tools (`tantra-agent-chat-tools`), MCP gateway tools (`tantra-agent-mcp` using `tantra-ledger-allocation` per existing Rule R4), AI Wealth/FIRE Copilot persona grounding (strict R1–R4 compliance) | [`tantra-agent` plan 0015](../../tantra-agent/docs/plans/0015-fire-planning-chat-and-mcp-tools.md) |
 | **L4** | Codegen `tantra.wire.fire` + PyO3 `tantra.fire` wheel module over `tantra-ledger-allocation::fire` (`simulate_fire_runway`, `calculate_fire_archetypes`, `simulate_post_fire_cashflow`, `run_sor_stress`) | [`tantra-ffi` plan 0005](../../tantra-ffi/docs/plans/0005-fire-planning-python-bindings.md) |

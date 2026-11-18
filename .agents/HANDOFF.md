@@ -1,23 +1,21 @@
 # HANDOFF — tantra-labs
 
-**Status**: Layers 0–6 GREEN; **T12 (EE+)**, **T13 (`_kernel` removal)**, **T14 (Paper Exchange)**, **T15 (Data Provisioning)**, **T17 Phases 1–3 (Lakehouse v3)**, and **T18 (Independent Fixes)** complete.
+**Status**: Layers 0–6 GREEN; **T12 (EE+)**, **T13 (`_kernel` removal)**, **T14 (Paper Exchange)**, **T15 (Data Provisioning)**, **T17 Phases 1–3 (Lakehouse v3)**, **T18 (Independent Fixes)**, and **T19 P0 (`T19.1` FIRE L1 engine)** complete.
 **Date**: 2026-11-18 · **Workspace**: `tantra-labs` · **Task List**: [`docs/task-list-tracks-and-phases.md`](../docs/task-list-tracks-and-phases.md)
 
 ---
 
-## Latest Batch — Track T19 Architecture Plans (`Elicherla01/fireapp`, docs-only)
+## Latest Batch — Track T19 Phase P0 (`T19.1` — `tantra-ledger`) Complete
 
-Date: 2026-11-18. Analyzed `https://github.com/Elicherla01/fireapp/tree/main` ("FIRE Works") and authored full-stack L1–L6 architecture plans (no `src/` changes yet; **`tantra-core` L0 untouched**):
-- **Master Plan**: [`docs/plans/0013-fire-planning-and-cashflow-platform.md`](../docs/plans/0013-fire-planning-and-cashflow-platform.md) (Track **T19**, Phases **P0–P6** / `T19.1–T19.7`).
-- **Per-Repo Plans (7)**:
-  - **L1 (Primary Domain Owner)**: [`tantra-ledger/docs/plans/0006-fire-bucket-glidepath-and-swr-metrics.md`](../tantra-ledger/docs/plans/0006-fire-bucket-glidepath-and-swr-metrics.md) (`tantra-ledger-allocation::{fire, fire_buckets}` Zero-Float `Decimal` compounding, 5 archetypes, 3-bucket cashflow & glidepath, `SplitMix64` SoRR stress + `tantra-ledger-performance::swr`, `wasm32`-clean; reuses `tantra-core::{Money, Currency}` & `SplitMix64` read-only).
-  - **L3A**: [`tantra-runtime/docs/plans/0008-fire-planning-persistence-and-rest-api.md`](../tantra-runtime/docs/plans/0008-fire-planning-persistence-and-rest-api.md) (`tantra-runtime-api::fire` `schemars` DTOs, `Profile.fire_plans` CAS, `/api/{v1,v2}/planning/fire/*`, live ledger/Greeks/Finance Act 2025 tax hydration, OpenAPI regen).
-  - **L3B**: [`tantra-agent/docs/plans/0015-fire-planning-chat-and-mcp-tools.md`](../tantra-agent/docs/plans/0015-fire-planning-chat-and-mcp-tools.md) (`fire_simulate`, `fire_portfolio_check` in `tantra-agent-chat-tools` + `tantra-agent-mcp` via `tantra-ledger-allocation`, Rule R4 compliant).
-  - **L4**: [`tantra-ffi/docs/plans/0005-fire-planning-python-bindings.md`](../tantra-ffi/docs/plans/0005-fire-planning-python-bindings.md) (`tantra.wire.fire` codegen + `tantra.fire` PyO3 over `tantra-ledger-allocation::fire`).
-  - **L5B**: [`tantra-ui-web/docs/plans/0015-fire-works-simulator-and-cashflow-ui.md`](../tantra-ui-web/docs/plans/0015-fire-works-simulator-and-cashflow-ui.md) (`vyapaar-ui-web-wasm` via `tantra-ledger-allocation`, `/fire`, Workspace tab, Portfolio `FIRE Runway` tab, dark/gold theme).
-  - **L5A**: [`tantra-ui/docs/plans/0009-fire-planning-workstation-cli-tui-wasm.md`](../tantra-ui/docs/plans/0009-fire-planning-workstation-cli-tui-wasm.md) (`tantra-ui-core`, Leptos CSR `AppRoute::Fire`, `tantra fire` CLI, TUI tab via `tantra-ledger-allocation`).
-  - **L6**: [`tantra-strategies/docs/plans/0004-fire-cashflow-theta-and-compounding-templates.md`](../tantra-strategies/docs/plans/0004-fire-cashflow-theta-and-compounding-templates.md) (`manifests/fire_barbell_basket.toml` + `fire_bridge.py`).
-- **Indexes & Task List Updated**: root + all 7 plan `docs/plans/README.md` tables + `docs/task-list-tracks-and-phases.md`.
+Date: 2026-11-18. Implemented and verified P0 (`T19.1`) of [`docs/plans/0013-fire-planning-and-cashflow-platform.md`](../docs/plans/0013-fire-planning-and-cashflow-platform.md) (`Elicherla01/fireapp` L1–L6 incorporation; **`tantra-core` L0 untouched**):
+- **`tantra-ledger` (`a735aa3`, Plan 0006 closed/retired)**:
+  - `tantra-ledger-allocation::fire`: `Decimal` compounding engine, `FirePlanConfig`, `TaxDragConfig::india_finance_act_2025`, 5 archetypes (`Lean`, `Standard`, `Fat`, `Coast`, `Barista`), 3-bucket post-FIRE cashflow simulator, `SplitMix64` SoRR stress with 256-bin quantile table.
+  - `tantra-ledger-allocation::fire_buckets`: `FireBucketKind`, `FireGlidepathPolicy`, `compute_bucket_drift`, `allocate_fire_bucket_discrete`.
+  - `tantra-ledger-performance::swr`: `SwrEvaluationInput`, `SwrReport`, `evaluate_swr`.
+  - Verification: 15 new tests (`fire_engine_tests.rs` incl. `fire_golden.json` + proptest, `fire_buckets_tests.rs`, `swr_tests.rs`) + all 83 existing tests in `allocation` & `performance` pass (`cargo clippy --workspace --all-targets --profile prod -- -D warnings` & `make prod` green; note 2 pre-existing unrelated `tantra-ledger-oms` `trade_manager_tests` failures untouched).
+- **Remaining T19 Phases (P1–P6)**:
+  - **P1 (`T19.2`)**: [`tantra-runtime` plan 0008](../tantra-runtime/docs/plans/0008-fire-planning-persistence-and-rest-api.md) (`tantra-runtime-api::fire`, `Profile.fire_plans`, `/api/{v1,v2}/planning/fire/*`).
+  - **P2–P6 (`T19.3–T19.7`)**: `tantra-agent` `0015`, `tantra-ffi` `0005`, `tantra-ui-web` `0015`, `tantra-ui` `0009`, `tantra-strategies` `0004`.
 
 ---
 
@@ -40,7 +38,7 @@ Date: 2026-11-18. Shipped and committed (`tantra-data` `dd4a953`, `tantra-market
 
 ## Immediate Next Step
 
-1. **Track T19 (Proposed, `docs/plans/0013`)** — await user approval to commit plan docs and/or begin **Phase P0 (`T19.1` — `tantra-ledger` plan 0006 `tantra-ledger-allocation::fire`)**.
+1. **Track T19 (`docs/plans/0013`)** — commit P0 (`tantra-ledger` + root updates) if requested and start **Phase P1 (`T19.2` — `tantra-runtime` plan 0008 `tantra-runtime-api::fire`, `Profile.fire_plans`, `/planning/fire/*`)**.
 2. **Other Active/Proposed Tracks**:
    - **T3.3 (`tantra-market/docs/gaps/0003`)**: remaining 3 broker WS feeds (`upstox`, `fyers`, `angelone`) + live credential check on `dhan`/`zerodha`.
    - **T16 (`docs/plans/0009`)**: Qullamaggie Multi-Market Swing Trading Platform.
