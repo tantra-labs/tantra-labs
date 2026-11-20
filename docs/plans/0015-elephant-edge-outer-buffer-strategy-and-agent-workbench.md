@@ -1,6 +1,6 @@
 # 0015 — Composable Strategy, Optimization-Loop & Interactive Graphical Primitives (EE+ Outer-Buffer Flagship)
 
-**Status**: Implementing (2026-11-20) — Track **T21** (**`T21.1` ✅ Implemented**; **`T21.2` ✅ Implemented**; `T21.3–T21.6` Planned)  
+**Status**: Implementing (2026-11-20) — Track **T21** (**`T21.1` ✅ Implemented**; **`T21.2` ✅ Implemented**; **`T21.3` ✅ Implemented**; `T21.4–T21.6` Planned)  
 **Target Scope**: `tantra-market`, `tantra-strategies`, `tantra-runtime`, `tantra-ui` (`tantra-ui-charts`, `tantra-ui-core`, `tantra-tui`, `tantra-cli`), `tantra-ui-web`, `tantra-agent`, `tantra-docs`  
 **Architecture Rule**: **Zero edits to `tantra-core`** (reuse existing `LevelMap`, `LevelKind`, `StopProtection`, `TradePlan`, `PositionIntent`, `OptionChainSnapshot`, `Exchange`, `InstrumentId`, `Money`, `Price`, `Quantity`, `Decimal` read-only).  
 **Depends On**: [Plan 0005 (Elephant Edge Strategy Platform)](0005-elephant-edge-strategy-platform.md), [Plan 0008 (Trade Signal Generator)](0008-trade-signal-generator.md), [Plan 0014 (`Experimental-Analysis` Workbench)](0014-experimental-analysis-statistical-workbench.md).
@@ -186,7 +186,7 @@ Every synthesized hedge reports: **Exact Legs (`BUY/SELL FUT/CE/PE`)**, **Lot-Ro
   - Add a second strategy consumer (e.g., `Orb15` or `EmaPullback`) wired to the same `OuterBufferStopPolicy` + `OverlayScene` primitives to **prove cross-strategy generality**.
 - **Verification**: `ruff check . && ruff format --check .`, `mypy`, `pytest -q` (tests across Index, F&O equity, and MCX commodity fixtures), `tools/validate_catalog.py`.
 
-### Phase 3 — Stateful Loop Service, OpenAPI v2 & Live Chain Wiring (`tantra-runtime`) · Track `T21.3`
+### Phase 3 — Stateful Loop Service, OpenAPI v2 & Live Chain Wiring (`tantra-runtime`) · Track `T21.3` ✅ Implemented (2026-11-20)
 - **Deliverables**:
   - OpenAPI v2 DTOs in `tantra-runtime-api` for generic `StrategyLoopRequest/Response`, `StrategySweepRequest/Response` (IS/OOS + DSR), `ExpiryHedgeRequest/Response`, and serialized `OverlayScene`.
   - REST endpoints in `tantra-runtime-api-rest` :
@@ -229,7 +229,7 @@ Every synthesized hedge reports: **Exact Legs (`BUY/SELL FUT/CE/PE`)**, **Lot-Ro
 |---|---|---|
 | `T21.1` | `tantra-market`, `tantra-ui` (`charts`) | ✅ Implemented — recorded in [`tantra-market/docs/plans/README.md`](../../tantra-market/docs/plans/README.md) (`0004`) & `tantra-ui-charts::scene` |
 | `T21.2` | `tantra-strategies` | ✅ Implemented — recorded in [`tantra-strategies/docs/plans/README.md`](../../tantra-strategies/docs/plans/README.md) (`0004`) |
-| `T21.3` | `tantra-runtime` | `tantra-runtime/docs/plans/0010-strategy-loop-sweep-and-hedge-api.md` |
+| `T21.3` | `tantra-runtime` | ✅ Implemented — recorded in [`tantra-runtime/docs/plans/README.md`](../../tantra-runtime/docs/plans/README.md) (`0011`) |
 | `T21.4` | `tantra-ui` (`core`, `tui`, `cli`) | `tantra-ui/docs/plans/0009-overlay-scene-tui-canvas-and-cli.md` |
 | `T21.5` | `tantra-ui-web` | `tantra-ui-web/docs/plans/0017-generic-overlay-scene-and-interactive-loop-ui.md` |
 | `T21.6` | `tantra-agent`, `tantra-docs` | `tantra-agent/docs/plans/0017-generic-loop-sweep-hedge-and-scene-tools.md` |
