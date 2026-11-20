@@ -1,7 +1,9 @@
 # 0016 — Concept & Indicator Library for AI Agents, MCP and Experimental Analysis (Track T22)
 
 **Status**: **Library + MCP server implemented 2026-11-20 in `tantra-strategies`** (T22.1–T22.5);
-runtime / agent / Experimental-Analysis wiring **planned, not wired** (T22.6–T22.8).
+runtime + agent wiring **implemented 2026-11-20** (T22.6 runtime `/api/v2/studies/*` + supervised
+`LibraryMcpClient`; T22.7 agent `IndicatorLibraryPort` + `tantra_library_*` MCP proxy + library-backed
+`IndicatorCatalog`); T22.8 ui-web: client + generic `OverlayScenePrimitive` done, Indicator Lab tab UI remains.
 
 **Decision (2026-11-20)**: the whole library lives in **`tantra-strategies`** as the new Python
 package **`tantra_library`** (next to `tantra_strategies`), not across the Rust repos. The project
@@ -115,9 +117,9 @@ flowchart LR
 | P3 | T22.3 | strategies | catalog (44 entries) + 12 concept pages | ✅ `86c6b63` |
 | P4 | T22.4 | strategies | signal study + recipe strategies | ✅ `2487490` |
 | P5 | T22.5 | strategies | stdio MCP server + CSV bar source | ✅ `4eef653` |
-| P6 | T22.6 | runtime | MCP subprocess supervisor + `/api/v2/library/*` proxy | Planned (runtime 0010) |
-| P7 | T22.7 | agent | chat/copilot tool exposure via runtime | Planned (agent 0017) |
-| P8 | T22.8 | ui-web | Indicator Lab study tab | Planned (ui-web 0017) |
+| P6 | T22.6 | runtime | MCP subprocess supervisor + `/api/v2/studies/library/*` proxy | Implemented 2026-11-20 (runtime 0010: `7e33319`, `d17dea8`) |
+| P7 | T22.7 | agent | chat/copilot tool exposure via runtime | Implemented 2026-11-20 (agent 0017: `429c097`, `9984310`) |
+| P8 | T22.8 | ui-web | Indicator Lab study tab | Partial 2026-11-20 — library client + `OverlayScenePrimitive` (`c0e6575`); tab UI remains (ui-web 0017) |
 | — | — | data / strategies | lakehouse bar source; stop-price exits | Gaps data 0026, strategies 0008 |
 | — | — | market | Rust port of hot paths | Deferred (market 0005) |
 

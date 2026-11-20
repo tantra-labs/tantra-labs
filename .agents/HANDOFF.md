@@ -24,6 +24,26 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — Architectural-analysis unification (T21/T22 cross-repo), COMPLETE 2026-11-20
+
+Source: `docs/plans/Here is an architectural analysis of the.md` (§2 strategies duplication, §3 cross-repo
+design changes). All landed with per-repo commits (details in each repo's HANDOFF / plan indices):
+- **strategies**: single Decimal indicator kernel; EE+/ORB-15 in `tantra_library`; gap 0008 closed (OCO
+  intrabar brackets); PR recipes emit `OverlayScene` + runnable `catalog_steps`; `WheelSdkBridge`; legacy
+  `catalog/` retired; generic `scene_projection` + MCP `overlay_scene`; `LakehouseBarSource`.
+- **data**: gap 0026 closed (`LakehouseBarReader`, pinned commit, closed bars, Decimal).
+- **market**: ATR/CMO in `rust_decimal`, golden parity with `tantra_library` (gap 0009 rows; gap stays open).
+- **runtime**: plan 0010 implemented — `LibraryMcpClient` + canonical `/api/v2/studies/*` (library,
+  compute, signal-study, experimental-analysis aliases; legacy paths RFC 8594-deprecated); **security fix**:
+  auth now fail-closed on JWT-only configs (`config.auth.is_enabled()`).
+- **agent**: plan 0017 implemented — `IndicatorLibraryPort`, library-backed `IndicatorCatalog`,
+  `tantra_library_*` MCP proxy over runtime REST (`TANTRA_RUNTIME_URL`).
+- **ui / ui-web**: generic `OverlayScenePrimitive` replaces `ElephantZonesPrimitive`; `/api/v2/studies`
+  client; Python↔Rust `OverlayScene` wire contract test + TUI projection of library scenes.
+- **Open follow-ups**: Indicator Lab tab UI (ui-web plan 0017); T21.6 agent loop tools; `pane:` sub-pane
+  strip in the web renderer; pre-existing `tantra-market-indicators` wasm32 build break (`getrandom 0.4`
+  needs the `wasm_js` feature).
+
 ## Latest Batch — Reading-List study book (`docs/reading-list/`) docs-only, COMPLETE 2026-11-17
 
 Docs-only (no Rust/Python touched). New mdBook `docs/reading-list/` — "The Investor's
