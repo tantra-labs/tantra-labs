@@ -1,9 +1,9 @@
 # 0015 — Composable Strategy, Optimization-Loop & Interactive Graphical Primitives (EE+ Outer-Buffer Flagship)
 
-**Status**: Implementing (2026-11-20) — Track **T21** (**`T21.1` ✅ Implemented**; **`T21.2` ✅ Implemented**; **`T21.3` ✅ Implemented**; `T21.4–T21.6` Planned)  
+**Status**: Implementing (2026-11-20) — Track **T21** (**`T21.1` ✅ Implemented**; **`T21.2` ✅ Implemented**; **`T21.3` ✅ Implemented**; **`T21.4` ✅ Implemented**; `T21.5–T21.6` Planned)  
 **Target Scope**: `tantra-market`, `tantra-strategies`, `tantra-runtime`, `tantra-ui` (`tantra-ui-charts`, `tantra-ui-core`, `tantra-tui`, `tantra-cli`), `tantra-ui-web`, `tantra-agent`, `tantra-docs`  
 **Architecture Rule**: **Zero edits to `tantra-core`** (reuse existing `LevelMap`, `LevelKind`, `StopProtection`, `TradePlan`, `PositionIntent`, `OptionChainSnapshot`, `Exchange`, `InstrumentId`, `Money`, `Price`, `Quantity`, `Decimal` read-only).  
-**Depends On**: [Plan 0005 (Elephant Edge Strategy Platform)](0005-elephant-edge-strategy-platform.md), [Plan 0008 (Trade Signal Generator)](0008-trade-signal-generator.md), [Plan 0014 (`Experimental-Analysis` Workbench)](0014-experimental-analysis-statistical-workbench.md).
+**Depends On**: [Plan 0005 (Elephant Edge Strategy Platform)](0005-elephant-edge-strategy-platform.md), [Plan 0008 (Trade Signal Generator)](0008-trade-signal-generator.md), [Plan 0014 (`Experimental-Analysis` Statistical & Event Study Platform)](0014-experimental-analysis-statistical-workbench.md).
 
 ---
 
@@ -196,7 +196,7 @@ Every synthesized hedge reports: **Exact Legs (`BUY/SELL FUT/CE/PE`)**, **Lot-Ro
   - Replace hardcoded `DefaultStrategyRunner` stubs by wiring real `StrategyRunner` + `StudyReader` + `ChainReader` at runtime composition root.
 - **Verification**: `cargo test --workspace --profile prod`, `openapi.v2.json` schema parity, honest unavailable/partial tests when chains or bars are absent.
 
-### Phase 4 — Unified Graphical Canvas & Interactive Controls in CLI & TUI (`tantra-ui`) · Track `T21.4`
+### Phase 4 — Unified Graphical Canvas & Interactive Controls in CLI & TUI (`tantra-ui`) · Track `T21.4` ✅ Implemented (2026-11-20)
 - **Deliverables**:
   - Pure `Decimal` formatting & ASCII/Braille scene projector in `tantra-ui-core` (`OverlayScene` → TUI Canvas primitives, KPI tables, Sweep Delta rows, Hedge cards).
   - **TUI (`tantra-tui`)**: Interactive **`Strategy Lab / Chart`** view using `ratatui::widgets::Canvas` + `Sparkline` displaying candlesticks, shaded bands (`S1/S2/R1/R2`), `▲`/`▼`/`◆` Buy/Sell/Sweep signals, `─SL─`/`─Outer SL─`/`─3R─` lines, sub-pane indicators, cursor-steppable **Hint Inspector**, `[1..6]` layer toggles, interactive parameter tweaks, and `/ee-study`, `/loop-eval`, `/loop-sweep`, `/hedge` slash commands.
@@ -230,7 +230,7 @@ Every synthesized hedge reports: **Exact Legs (`BUY/SELL FUT/CE/PE`)**, **Lot-Ro
 | `T21.1` | `tantra-market`, `tantra-ui` (`charts`) | ✅ Implemented — recorded in [`tantra-market/docs/plans/README.md`](../../tantra-market/docs/plans/README.md) (`0004`) & `tantra-ui-charts::scene` |
 | `T21.2` | `tantra-strategies` | ✅ Implemented — recorded in [`tantra-strategies/docs/plans/README.md`](../../tantra-strategies/docs/plans/README.md) (`0004`) |
 | `T21.3` | `tantra-runtime` | ✅ Implemented — recorded in [`tantra-runtime/docs/plans/README.md`](../../tantra-runtime/docs/plans/README.md) (`0011`) |
-| `T21.4` | `tantra-ui` (`core`, `tui`, `cli`) | `tantra-ui/docs/plans/0009-overlay-scene-tui-canvas-and-cli.md` |
+| `T21.4` | `tantra-ui` (`core`, `tui`, `cli`) | ✅ Implemented — recorded in [`tantra-ui/docs/plans/README.md`](../../tantra-ui/docs/plans/README.md) (`0009`) |
 | `T21.5` | `tantra-ui-web` | `tantra-ui-web/docs/plans/0017-generic-overlay-scene-and-interactive-loop-ui.md` |
 | `T21.6` | `tantra-agent`, `tantra-docs` | `tantra-agent/docs/plans/0017-generic-loop-sweep-hedge-and-scene-tools.md` |
 
