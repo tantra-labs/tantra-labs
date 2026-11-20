@@ -14,7 +14,7 @@ video strategies (trend pullback + Reversal Bars, breakout + VIDYA), and LuxAlgo
 | `tantra-agent` | `docs/plans/0017-library-port-and-mcp-tools.md` | `IndicatorLibraryPort`, MCP tools, retire `IndicatorCatalog` |
 | `tantra-runtime` | `docs/plans/0010-library-rest-and-signal-study.md` | Port adapter, `/api/v2/library/*`, `indicators/compute`, `signal-study` |
 | `tantra-ui-web` | `docs/plans/0017-indicator-lab-study-tab.md` | "Indicator Lab" study tab in Experimental-Analysis |
-| `tantra-strategies` | `docs/plans/0004-predictive-range-strategies.md` | Strategy recipes on top of the library (via `tantra-ffi`) |
+| `tantra-strategies` | `docs/plans/0005-predictive-range-strategies.md` | Strategy recipes on top of the library (via `tantra-ffi`) |
 
 ---
 
@@ -53,7 +53,7 @@ Every library entry is one **manifest** (front-matter + Markdown body) with a st
 | `primitive` | Building-block series op | yes | `prim.true-range`, `prim.rma`, `prim.highest`, `prim.swing-pivot` |
 | `indicator` | A concrete, parameterised computation | yes | `ind.atr`, `ind.vidya`, `ind.cmo` |
 | `composite` | Indicator built on other indicators + state | yes | `ind.predictive-ranges`, `ind.vidya-trend` |
-| `detector` | Emits discrete events (`Signal`) from series | yes | `det.pr-support-touch`, `det.pr-range-break`, `det.reversal-bar` |
+| `detector` | Emits discrete events (`Signal`) from series | yes | `det.pr-zone-touch`, `det.pr-center-step`, `det.reversal-bar` |
 | `recipe` | Strategy blueprint: filters + trigger + stop + target | via `tantra-strategies` | `recipe.pr-trend-pullback`, `recipe.pr-vidya-breakout` |
 
 ### 1.1 Manifest fields (wire contract — see §3 for where the type lives)
@@ -267,7 +267,7 @@ same bar.
 | P0 | T22.0 | root | This design + per-repo plans | Reviewed |
 | P1 | T22.1 | core, market | `tantra-core::library` DTOs; `tantra-market-library` skeleton, manifest loader, DAG validation, `DynIndicator`, `evaluate`; ATR Decimal migration; manifests for ~10 existing indicators; licence review | Goldens green; `wasm32` check for indicators |
 | P2 | T22.2 | market | New primitives + `vidya`, `volume-delta-pct`, `alligator`, `predictive-ranges`, `vidya-trend`, `reversal-bars`; detectors §2.4; first concept pages; wrap remaining indicators | Goldens + proptests (center steps only on threshold, hold frozen between steps) |
-| P3 | T22.3 | runtime, agent | Port + adapter; `/api/v2/library/*`, `POST /api/v2/indicators/compute`; MCP `tantra_library_search/describe/compute`; retire `get_indicator_catalog` (alias for one release) | Contract tests; dependency_rules R1–R4 green |
+| P3 | T22.3 | runtime, agent | Port + adapter; `/api/v2/library/*`, `POST /api/v2/indicators/compute`; MCP `tantra_library_search/describe` + `tantra_indicator_compute`; retire `get_indicator_catalog` (alias for one release) | Contract tests; dependency_rules R1–R4 green |
 | P4 | T22.4 | runtime, market-finance, agent | `POST /api/v2/experimental-analysis/signal-study`; MCP `tantra_signal_study` | Study on NIFTY 5m reproduces across runs (pinned commit) |
 | P5 | T22.5 | ui-web | Indicator Lab tab: library browser, concept page, overlay chart, signal-study panel | tsc/lint/vitest/build |
 | P6 | T22.6 | ffi, strategies | `tantra.library` Python surface; `recipe.pr-trend-pullback`, `recipe.pr-vidya-breakout` strategies + Strategy Tester runs | Research-live parity test (Rust vs Python frames identical) |
