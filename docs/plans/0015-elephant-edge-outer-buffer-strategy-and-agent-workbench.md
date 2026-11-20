@@ -1,6 +1,6 @@
 # 0015 — Composable Strategy, Optimization-Loop & Interactive Graphical Primitives (EE+ Outer-Buffer Flagship)
 
-**Status**: Proposed (2026-11-20) — Track **T21** (`T21.1–T21.6`)  
+**Status**: Implementing (2026-11-20) — Track **T21** (**`T21.1` ✅ Implemented**; `T21.2–T21.6` Planned)  
 **Target Scope**: `tantra-market`, `tantra-strategies`, `tantra-runtime`, `tantra-ui` (`tantra-ui-charts`, `tantra-ui-core`, `tantra-tui`, `tantra-cli`), `tantra-ui-web`, `tantra-agent`, `tantra-docs`  
 **Architecture Rule**: **Zero edits to `tantra-core`** (reuse existing `LevelMap`, `LevelKind`, `StopProtection`, `TradePlan`, `PositionIntent`, `OptionChainSnapshot`, `Exchange`, `InstrumentId`, `Money`, `Price`, `Quantity`, `Decimal` read-only).  
 **Depends On**: [Plan 0005 (Elephant Edge Strategy Platform)](0005-elephant-edge-strategy-platform.md), [Plan 0008 (Trade Signal Generator)](0008-trade-signal-generator.md), [Plan 0014 (`Experimental-Analysis` Workbench)](0014-experimental-analysis-statistical-workbench.md).
@@ -171,7 +171,7 @@ Every synthesized hedge reports: **Exact Legs (`BUY/SELL FUT/CE/PE`)**, **Lot-Ro
 
 ## 3. Phased Implementation Roadmap (Tracks `T21.1` – `T21.6`)
 
-### Phase 1 — Core Quantitative & Scene Primitives (`tantra-market` & `tantra-ui-charts`) · Track `T21.1`
+### Phase 1 — Core Quantitative & Scene Primitives (`tantra-market` & `tantra-ui-charts`) · Track `T21.1` ✅ Implemented (2026-11-20)
 - **Deliverables**:
   - `tantra-market-finance::studies::pipeline`: Factor generic traits/structs (`ZoneExtractor`, `IndicatorPrimitive`, `EntrySignalPrimitive`, `StopExitPolicy`, `HedgeOverlayPolicy`, `StrategyLoopKernel`, `ParameterSweepRunner`).
   - Implement `ElephantZonesExtractor`, `RejectionWickFilter`, `OuterBufferStopPolicy`, `SplitArtifactGuard`, and `HedgeSynthesizer` in pure `Decimal` (`wasm32`-clean).
@@ -227,7 +227,7 @@ Every synthesized hedge reports: **Exact Legs (`BUY/SELL FUT/CE/PE`)**, **Lot-Ro
 
 | Track | Owning Repo | Child Plan Target |
 |---|---|---|
-| `T21.1` | `tantra-market`, `tantra-ui` (`charts`) | `tantra-market/docs/plans/0004-composable-strategy-loop-primitives.md` |
+| `T21.1` | `tantra-market`, `tantra-ui` (`charts`) | ✅ Implemented — recorded in [`tantra-market/docs/plans/README.md`](../../tantra-market/docs/plans/README.md) (`0004`) & `tantra-ui-charts::scene` |
 | `T21.2` | `tantra-strategies` | `tantra-strategies/docs/plans/0004-multi-horizon-primitives-and-elephant-v3.md` |
 | `T21.3` | `tantra-runtime` | `tantra-runtime/docs/plans/0010-strategy-loop-sweep-and-hedge-api.md` |
 | `T21.4` | `tantra-ui` (`core`, `tui`, `cli`) | `tantra-ui/docs/plans/0009-overlay-scene-tui-canvas-and-cli.md` |
