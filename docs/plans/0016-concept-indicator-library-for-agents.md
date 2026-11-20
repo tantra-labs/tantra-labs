@@ -14,7 +14,7 @@ video strategies (trend pullback + Reversal Bars, breakout + VIDYA), and LuxAlgo
 | `tantra-agent` | `docs/plans/0017-library-port-and-mcp-tools.md` | `IndicatorLibraryPort`, MCP tools, retire `IndicatorCatalog` |
 | `tantra-runtime` | `docs/plans/0010-library-rest-and-signal-study.md` | Port adapter, `/api/v2/library/*`, `indicators/compute`, `signal-study` |
 | `tantra-ui-web` | `docs/plans/0017-indicator-lab-study-tab.md` | "Indicator Lab" study tab in Experimental-Analysis |
-| `tantra-strategies` | `docs/plans/<next>-predictive-range-strategies.md` | Strategy recipes on top of the library (via `tantra-ffi`) |
+| `tantra-strategies` | `docs/plans/0004-predictive-range-strategies.md` | Strategy recipes on top of the library (via `tantra-ffi`) |
 
 ---
 
@@ -231,7 +231,7 @@ Key decisions:
 - New entries are Decimal-native. `ind.atr` is currently `f64` internally and feeds price-denominated
   levels (Predictive Ranges bands) → **must migrate before `ind.predictive-ranges` ships**. Other
   `f64` indicators are tagged `numeric: f64-legacy` and filed as a gap in `tantra-market`
-  (`docs/gaps/<next>-f64-indicator-internals.md`), migrated incrementally.
+  (`docs/gaps/0009-f64-indicator-internals.md`), migrated incrementally.
 
 ### 4.4 Untrusted AI
 - Agent-supplied `{id, params}` are validated against the manifest (`deny_unknown_fields`, bounds,
