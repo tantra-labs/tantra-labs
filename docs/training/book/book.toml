@@ -1,7 +1,7 @@
 [book]
 title = "SEBI Capital Markets Professional — Course Book"
 description = "A robust, certification-aligned curriculum for a high school passout entering Indian capital markets. Built on the Tantra platform for hands-on labs."
-authors = ["Tantra Labs (vyapaar)"]
+authors = ["Tantra Labs (tantra)"]
 language = "en"
 multilingual = false
 src = "src"

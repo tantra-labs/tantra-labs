@@ -1,7 +1,7 @@
 # 0003 — Architectural Survey: Coupling, Interfaces, Scalability, Modularity & Security
 
 **Status**: Proposed (architecture & security audit) — filed 2026-11-13  
-**Scope**: Full `tantra-labs` superproject (14 Git submodules + `vyapaar-ui-web`, spanning 9 Rust workspaces / ~60+ crates, 4 Python packages, and a Next.js/TypeScript + WASM web frontend).  
+**Scope**: Full `tantra-labs` superproject (14 Git submodules + `tantra-ui-web`, spanning 9 Rust workspaces / ~60+ crates, 4 Python packages, and a Next.js/TypeScript + WASM web frontend).  
 **Method**: Direct verification of `Cargo.toml`, `pyproject.toml`, `package.json`, Rust/Python/TypeScript sources, and workspace invariants against `docs/design/architecture.md` and `docs/ddd-conflict.md`.
 
 ---
@@ -13,7 +13,7 @@
 | **Loose Coupling** | **Fair (B-)** | Clean intended L0–L6 DAG, undermined by 1 cross-repo cycle (`tantra-market` ↔ `tantra-agent`), an upward L1→L2 edge, concrete broker wiring inside pure strategy dispatch, and unversioned UI/REST glue. |
 | **Interface-First Design** | **Strong (A-)** | Strong hexagonal ports (`tantra-core/src/ports.rs`, `BrokerExecutor`, `CredentialStore`, `AgentTool`, Python `Protocol`s), weakened by sync-vs-async trait drift, stringly-typed `BrokerAdapter`, and concrete store types in REST `AppState`. |
 | **Scalability** | **Moderate (C+)** | Bounded supervised actors, 15µs zero-alloc risk hot path, Arrow C-Stream FFI, and SQLx/WAL pooling exist, but `unbounded_channel` in 7 WS producers, blocking `std::fs` + global `std::sync::Mutex` on Tokio threads, and `to_bytes(..., usize::MAX)` limit throughput and horizontal scale. |
-| **Modularity** | **Good (B)** | Clear bounded-context crates and recent facade standardization (`docs/design/0001-crate-topology-audit-and-target.md`), but `Zero-I/O`/`Zero-Floats` invariants leak in `tantra-market-core`/`tantra-market-finance`/`tantra-risk`, and two parallel UI stacks (`tantra-ui` + `vyapaar-ui-web`) create duplication. |
+| **Modularity** | **Good (B)** | Clear bounded-context crates and recent facade standardization (`docs/design/0001-crate-topology-audit-and-target.md`), but `Zero-I/O`/`Zero-Floats` invariants leak in `tantra-market-core`/`tantra-market-finance`/`tantra-risk`, and two parallel UI stacks (`tantra-ui` + `tantra-ui-web`) create duplication. |
 | **Security** | **Needs Hardening (C-)** | Strong AI decision guardrails, tamper-evident hash chain, and parameterized SQL, undermined by a **critical JWT-only auth bypass** in REST middleware, IDOR on `/ws/chat`, keyless `POST /orders` idempotency collision, unzeroized plaintext secrets, and custom crypto primitives. |
 
 ---
@@ -45,8 +45,8 @@ L0 (tantra-core)
 4. **Concrete Broker Implementation Coupled into Strategy Engine**:
    - `tantra-runtime/crates/tantra-runtime-strategy/src/dispatch.rs:15-19, 555-563` directly imports `ZerodhaExecutor` (`tantra-exec-zerodha`) and constructs an internal `tokio::runtime::Runtime` inside a crate documented as Zero-I/O in `docs/design/architecture.md`.
 5. **Ad-hoc UI ↔ Backend Coupling**:
-   - `vyapaar-ui-web/src/lib/vyapaar-runtime-client.ts:23-27` issues unversioned REST fetches instead of consuming generated OpenAPI/TypeScript contracts against `/v1` or `/v2`.
-   - `vyapaar-ui-web/src/app/api/chat/route.ts:56-58` hardcodes backend `/ws/chat` WebSocket-to-SSE translation in Next.js server routes.
+   - `tantra-ui-web/src/lib/tantra-runtime-client.ts:23-27` issues unversioned REST fetches instead of consuming generated OpenAPI/TypeScript contracts against `/v1` or `/v2`.
+   - `tantra-ui-web/src/app/api/chat/route.ts:56-58` hardcodes backend `/ws/chat` WebSocket-to-SSE translation in Next.js server routes.
 
 ---
 
@@ -86,7 +86,7 @@ L0 (tantra-core)
 4. **Nested `Runtime::block_on` Panic Hazard**: `tantra-runtime-strategy/src/dispatch.rs:640-664` invokes `runtime.block_on(...)`, which panics if executed inside an async Tokio worker context.
 5. **Unbounded Body Buffering & WS Leaks**:
    - `tantra-runtime-api-rest/src/lib.rs:224` and `v2.rs:33` buffer responses via `axum::body::to_bytes(body, usize::MAX)`.
-   - `ws.rs:200-304` stores unbounded `subscribed` / `previous_prices` per WebSocket connection; `vyapaar-ui-web/src/app/api/chat/route.ts:168-171` does not close the backend WS in `ReadableStream.cancel()`, leaking backend LLM turns on client abort.
+   - `ws.rs:200-304` stores unbounded `subscribed` / `previous_prices` per WebSocket connection; `tantra-ui-web/src/app/api/chat/route.ts:168-171` does not close the backend WS in `ReadableStream.cancel()`, leaking backend LLM turns on client abort.
 
 ---
 
@@ -102,7 +102,7 @@ L0 (tantra-core)
   - `tantra-market-finance/src/costs.rs:14-91` computes `Charge.amount` and `CostSchedule::compute_costs` using `f64` alongside `Decimal`-based `india::costs`; `f64` money/price fields also appear in `portfolio_store.rs:118` (`leverage`), `ws.rs:33-73`, and `orders.rs:704-713`.
   - `tantra-risk/src/engine.rs` calls `Instant::now()`, and `tantra-exec-router/src/lib.rs:110` calls `Utc::now()` instead of accepting an injected clock (compare `AuditJournal::append` in `tantra-exec-audit/src/journal.rs:27-28`, which injects `DateTime<Utc>`).
 - **Remaining Inline Test Violation**: `tantra-agent/crates/tantra-agent-analytics/src/volatility.rs:313` still contains `#[cfg(test)]` in `src/` contrary to `AGENTS.md` §3.2 (`tantra-ledger` is clean).
-- **Dual UI Ecosystems & Legacy Leftovers**: Both `tantra-ui` (incomplete `tantra-ui-app` + `tantra-cli/src/backtest_gen.rs:194-203`, which writes Python scripts to CWD and spawns `python3`) and `vyapaar-ui-web` coexist. Legacy `HONBA_*` env vars (`tantra-exec-auth/src/credentials.rs:36`), `"honba"` default JWT issuer (`bootstrap.rs:185`), and redundant routers (`ExecRouter`/`SmartOrderRouter` alongside `ResilientRouter` in `tantra-exec-router/src/sor.rs:3`) remain.
+- **Dual UI Ecosystems & Legacy Leftovers**: Both `tantra-ui` (incomplete `tantra-ui-app` + `tantra-cli/src/backtest_gen.rs:194-203`, which writes Python scripts to CWD and spawns `python3`) and `tantra-ui-web` coexist. Legacy `HONBA_*` env vars (`tantra-exec-auth/src/credentials.rs:36`), `"honba"` default JWT issuer (`bootstrap.rs:185`), and redundant routers (`ExecRouter`/`SmartOrderRouter` alongside `ResilientRouter` in `tantra-exec-router/src/sor.rs:3`) remain.
 
 ---
 
@@ -119,7 +119,7 @@ L0 (tantra-core)
 |---|---|---|
 | **CRITICAL** | `tantra-runtime/crates/tantra-runtime-api-rest/src/lib.rs:296-307`, `bootstrap.rs:193, 500` | **JWT-only Auth Bypass**: `api_router_with_config` wraps routes with `auth_middleware` **only** inside `if let Some(tokens_file) = &config.auth.tokens_file`. Configuring `--jwt-secret` or `--jwt-rsa-key` without `--tokens-file` causes `ServeAuthConfig::is_enabled()` to return `true` (suppressing the warning) while **never mounting auth middleware**, leaving orders, approvals, and kill-switch endpoints unauthenticated as `DEFAULT_USER_ID`. |
 | **HIGH** | `tantra-runtime/crates/tantra-runtime-api-rest/src/bootstrap.rs:500`, `caller.rs:38` | **Unauthenticated Default Mode**: Binding to non-loopback interfaces (e.g., `0.0.0.0`) with no auth config logs a warning to `stderr` instead of failing closed. |
-| **HIGH** | `tantra-runtime/crates/tantra-runtime-api-rest/src/chat.rs:225-256`, `vyapaar-ui-web/src/app/api/chat/route.ts:73` | **WebSocket Chat IDOR & Missing Auth Forwarding**: `chat_ws_handler` does not extract `Caller` and keys `SessionScope` solely off `?workspace=<id>`, letting any authenticated user hijack another tenant's chat workspace. Meanwhile `route.ts` opens upstream WebSockets without forwarding Bearer credentials. |
+| **HIGH** | `tantra-runtime/crates/tantra-runtime-api-rest/src/chat.rs:225-256`, `tantra-ui-web/src/app/api/chat/route.ts:73` | **WebSocket Chat IDOR & Missing Auth Forwarding**: `chat_ws_handler` does not extract `Caller` and keys `SessionScope` solely off `?workspace=<id>`, letting any authenticated user hijack another tenant's chat workspace. Meanwhile `route.ts` opens upstream WebSockets without forwarding Bearer credentials. |
 | **HIGH** | `tantra-runtime/crates/tantra-runtime-api-rest/src/v1.rs:130`, `orders.rs:906-916` | **Keyless `POST /orders` Idempotency Collision**: `v1::post_orders` supplies constant `"rest"` as `order_id` when `client_order_id` is absent; subsequent keyless placements collide on `"rest"` in `state.orders` and replay the first order. |
 
 ### 5.3 Medium Security & Hygiene Gaps
@@ -136,7 +136,7 @@ L0 (tantra-core)
 ### P0 — Immediate Security & Correctness
 1. **Fix JWT-only Auth Bypass**: Attach `auth_middleware` in `tantra-runtime-api-rest/src/lib.rs:296-307` whenever `config.auth.is_enabled()` (tokens file **or** JWT keys), and fail closed on non-loopback binds without auth unless explicitly overridden.
 2. **Fix Keyless `POST /orders` Collision**: Generate a unique UUID/monotonic idempotency key per keyless placement in `v1.rs:130` instead of constant `"rest"`.
-3. **Scope `/ws/chat` by `Caller` & Forward Auth**: Extract `Caller` in `chat_ws_handler` to namespace `SessionScope` by `(caller_id, workspace)`, forward Bearer headers in `vyapaar-ui-web/src/app/api/chat/route.ts`, and close the upstream WS on `ReadableStream.cancel()`.
+3. **Scope `/ws/chat` by `Caller` & Forward Auth**: Extract `Caller` in `chat_ws_handler` to namespace `SessionScope` by `(caller_id, workspace)`, forward Bearer headers in `tantra-ui-web/src/app/api/chat/route.ts`, and close the upstream WS on `ReadableStream.cancel()`.
 4. **Harden Crypto, JWT & Secrets**: Replace custom hashes/HMAC in `tantra-exec-auth/src/crypto.rs` with `sha2`/`hmac`, use `subtle::ConstantTimeEq` in `auth.rs`, re-enable `jsonwebtoken` validation flags, add `AUTHORIZATION` to CORS, and redact `Debug` + implement `ZeroizeOnDrop` on `BrokerCredentials`/`SessionTokens`.
 
 ### P1 — Architectural Decoupling & Domain Purity
@@ -150,4 +150,4 @@ L0 (tantra-core)
 ### P2 — Scalability & Modularity Cleanup
 8. **Bound Channels & Eliminate Sync I/O on Async Workers**: Replace all 7 `unbounded_channel` sites with bounded channels + explicit backpressure; move `auth.rs`, `profile_store.rs`, and `portfolio_store.rs` off global `std::sync::Mutex` + sync `std::fs` onto async storage / SQLx.
 9. **Persist Runtime State & Bound Payloads**: Back `OrderLedger`, `ApprovalQueue`, and `TradingState` with `tantra-runtime-persistence`; cap `axum::body::to_bytes` and per-socket WS subscription maps.
-10. **Converge UI Contracts & Retire Legacy Shims**: Generate OpenAPI/TS types for `vyapaar-ui-web`, remove `tantra_adapters/base.py`, `HONBA_*` defaults, and legacy `ExecRouter`, and route `tantra-cli` backtests directly through `tantra-runtime`/`tantra-ffi`.
+10. **Converge UI Contracts & Retire Legacy Shims**: Generate OpenAPI/TS types for `tantra-ui-web`, remove `tantra_adapters/base.py`, `HONBA_*` defaults, and legacy `ExecRouter`, and route `tantra-cli` backtests directly through `tantra-runtime`/`tantra-ffi`.

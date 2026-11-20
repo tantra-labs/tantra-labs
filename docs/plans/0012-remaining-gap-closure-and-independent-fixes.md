@@ -82,7 +82,7 @@ vision-capable providers. Unblocks `tantra-ui-web`'s model picker + "Capture are
 Extend `QuoteTick` (or add a `/quotes/summary` schema) with `last_price`, `day_high`, `day_low`,
 `prev_close`, `volume` populated from the feed / session aggregator. Regenerate the OpenAPI
 artifact (per gap 0005's process) and map `dayHigh`/`dayLow` directly in
-`tantra-ui-web/src/lib/vyapaar-runtime-client.ts`.
+`tantra-ui-web/src/lib/tantra-runtime-client.ts`.
 
 ### T18.4 — Mutual-funds store surface (`tantra-data` 0023)
 Ship `tantra_data/store/mutual_funds.py` with `DuckDbMutualFundsStore` over the AMFI ingestion:

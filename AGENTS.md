@@ -68,7 +68,7 @@ Full rules: `.agents/rules/architecture-and-coupling.md` & `.agents/config/proje
 | **L3** | **Agent** | `tantra-agent/` | Rust + Python | Autonomous research loop, MCP server, prompt replayer, chat tools, analytics, Odysseus genetic synthesizer. |
 | **L3** | **House** | `tantra-runtime/` | Rust (Tokio) | Supervised actor pipeline, REST/WS API server, Strategy Tester (`backtest`), persistence (SQLx), Strategy Enhancer. |
 | **L4** | **Soul** | `tantra-ffi/` | Rust (PyO3) | `tantra` PyPI wheel, Arrow C-Stream `PyCapsule` zero-copy bridge, GIL-safe `StrategyRunner`. |
-| **L5** | **Face** | `tantra-ui/`, `vyapaar-ui-web/` | Rust / TS | CLI, TUI, WASM Studio (`tantra-ui`), and Next.js web application (`vyapaar-ui-web`). |
+| **L5** | **Face** | `tantra-ui/`, `tantra-ui-web/` | Rust / TS | CLI, TUI, WASM Studio (`tantra-ui`), and Next.js web application (`tantra-ui-web`). |
 | **L6** | **Python** | `tantra-strategies/`, `tantra-adapters/`, `tantra-data/`, `tantra-examples/`, `tantra-docs/` | Python / DuckDB / MD | Strategy SDK, broker ACL adapters, DuckDB/Parquet lakehouse, learning examples, MkDocs documentation. |
 
 ### 2.2 Non-Negotiable Coupling Invariants
@@ -117,7 +117,7 @@ Full rules: `.agents/rules/testing-and-verification.md` & `.agents/checklists/pr
   - **Rust**: `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `make check`, `make test`, `make prod` (note: if `tantra-runtime-api-rest` hits 15 GiB LTO OOM on full test-bin link, run `make check` + targeted test binaries).
   - **Python**: `ruff check . && ruff format --check .`, `mypy --strict`, `pytest -v`.
   - **FFI (`tantra-ffi`)**: `cargo check --workspace --profile prod`, `maturin develop`, `pytest -q`.
-  - **Web (`vyapaar-ui-web`)**: `npx tsc --noEmit`, `npm run lint`, `npx vitest run`, `npm run build`.
+  - **Web (`tantra-ui-web`)**: `npx tsc --noEmit`, `npm run lint`, `npx vitest run`, `npm run build`.
   - **Docs (`tantra-docs`)**: `mkdocs build --strict`.
 
 ---

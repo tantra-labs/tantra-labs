@@ -1,7 +1,7 @@
 [book]
 title = "The Investor's Study — A Curated Reading Guide to 200+ Investing Books"
 description = "A macro-to-micro study book that merges a curated collection of 126 trading & investing books (plus archive editions) into one curriculum: markets, philosophy, fundamentals, technical analysis, trading systems, styles, advanced topics, and the stories behind them. Includes an AI study-companion layer for refreshing older editions against larger models' training data."
-authors = ["Tantra Labs (vyapaar)"]
+authors = ["Tantra Labs (tantra)"]
 language = "en"
 src = "src"
 
