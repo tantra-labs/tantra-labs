@@ -1,39 +1,34 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# scripts/start-llm.sh — start the local OpenAI-compatible LLM server that
-# tantra.jsonc points at (provider "local" -> http://127.0.0.1:8080/v1, model id
-# "qwen3-30b-a3b"). Both backends serve the SAME endpoint and model name, so
-# tantra.jsonc never changes when you switch backends.
+# Usage: start-llm.sh [start|stop|status|logs] [options]
 #
-# Backends:
-#   llama (default) — llama.cpp `llama-server` on a GGUF file, CPU-only. Works on
-#                     this laptop (Ryzen 6850U / Radeon 680M: no vLLM-capable GPU).
-#   vllm            — vLLM on a GPU host (NVIDIA CUDA or a ROCm-supported AMD GPU).
-#                     Installs into a uv venv (Python 3.12) with --install.
+# Start the local LLM server that tantra.jsonc points at
+# (http://127.0.0.1:8080/v1, model "qwen3-30b-a3b"). `start` (the default) runs it
+# in the background and returns once the model is loaded.
 #
-# Usage:
-#   scripts/start-llm.sh [start] [options]     start in background, wait until ready
-#   scripts/start-llm.sh stop                  stop the server started by this script
-#   scripts/start-llm.sh status                show whether the endpoint answers
-#   scripts/start-llm.sh logs                  tail the server log
+#   start     start the server (does nothing if it is already running)
+#   stop      stop the server this script started
+#   status    show whether it is running and which model it serves
+#   logs      follow the server log
 #
 # Options:
-#   --backend llama|vllm   backend (default: llama)
-#   --model M              llama: path to .gguf (default: models/Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf)
-#                          vllm:  HF repo id or local dir (default: Qwen/Qwen3-30B-A3B-Instruct-2507)
+#   --backend llama|vllm   llama (default): llama.cpp on a GGUF, CPU-only — works on
+#                          this laptop. vllm: for a machine with an NVIDIA/ROCm GPU.
+#   --model M              llama: .gguf path (default: models/Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf)
+#                          vllm:  HF repo id or dir (default: Qwen/Qwen3-30B-A3B-Instruct-2507)
 #   --alias NAME           served model name (default: qwen3-30b-a3b, matches tantra.jsonc)
 #   --port N               port (default: 8080)
 #   --host H               bind address (default: 127.0.0.1; the server has NO auth)
-#   --ctx N                context length (default: 16384, matches tantra.jsonc limit)
+#   --ctx N                context length (default: 16384)
 #   --threads N            llama: CPU threads (default: 8)
-#   --gpu-mem F            vllm: --gpu-memory-utilization (default: 0.90)
+#   --gpu-mem F            vllm: GPU memory fraction (default: 0.90)
 #   --tp N                 vllm: tensor-parallel size (default: 1)
 #   --venv DIR             vllm: venv dir (default: ~/.cache/tantra/vllm-venv)
-#   --install              vllm: create the venv and install vllm if missing
-#   --foreground           run in the foreground (Ctrl+C to stop) instead of background
-#   --timeout S            seconds to wait for readiness (default: llama 600, vllm 1800)
-#   --force                skip the RAM / GPU preflight checks
-#   -h, --help             this help
+#   --install              vllm: install vllm into the venv if missing
+#   --foreground           run attached (Ctrl+C stops it) instead of in the background
+#   --timeout S            seconds to wait for the model to load (llama 600, vllm 1800)
+#   --force                skip the free-RAM / GPU checks
+#   -h, --help             show this help
 # ==============================================================================
 
 set -euo pipefail
@@ -104,13 +99,44 @@ running_pid() {
     return 1
 }
 
+# Model ids the endpoint serves, comma-separated (OpenAI `/v1/models` `data[].id`).
+served_models() {
+    curl -fsS --max-time 3 "${BASE_URL}/models" 2>/dev/null \
+        | grep -oE '"id"[[:space:]]*:[[:space:]]*"[^"]+"' | sed -E 's/.*"([^"]+)"$/\1/' \
+        | sort -u | paste -sd, -
+}
+
+# Who listens on $PORT: "pid N (started by this script)" or "pid N (<name>, started elsewhere)".
+port_owner() {
+    local pid name
+    if pid="$(running_pid)"; then
+        echo "pid $pid, started by this script"
+        return
+    fi
+    pid="$(ss -ltnpH "sport = :${PORT}" 2>/dev/null | grep -oE 'pid=[0-9]+' | head -n1 | cut -d= -f2)"
+    if [[ -n "$pid" ]]; then
+        name="$(ps -o comm= -p "$pid" 2>/dev/null || true)"
+        echo "pid $pid${name:+ ($name)}, started outside this script"
+    else
+        echo "started outside this script"
+    fi
+}
+
+report_running() {
+    local models
+    models="$(served_models)"
+    info "LLM server is running and ready"
+    echo "  endpoint: ${BASE_URL}"
+    echo "  models:   ${models:-unknown}"
+    echo "  process:  $(port_owner)"
+}
+
 case "$ACTION" in
     status)
         if endpoint_up; then
-            info "up at ${BASE_URL}"
-            curl -fsS --max-time 3 "${BASE_URL}/models" | head -c 400; echo
+            report_running
         else
-            info "not answering at ${BASE_URL}"
+            info "no LLM server is answering at ${BASE_URL}"
             exit 1
         fi
         exit 0 ;;
@@ -119,20 +145,27 @@ case "$ACTION" in
         exec tail -n 100 -f "$LOG_FILE" ;;
     stop)
         if pid="$(running_pid)"; then
-            info "stopping pid $pid"
+            info "stopping LLM server (pid $pid)"
             kill "$pid"
             for _ in $(seq 1 30); do kill -0 "$pid" 2>/dev/null || break; sleep 1; done
             kill -0 "$pid" 2>/dev/null && { info "still alive, sending SIGKILL"; kill -9 "$pid"; }
             rm -f "$PID_FILE"
+        elif endpoint_up; then
+            info "an LLM server answers at ${BASE_URL}, but this script did not start it ($(port_owner)); stop that process yourself"
+            exit 1
         else
-            info "no server started by this script is running"
+            info "no LLM server is running on port ${PORT}"
         fi
         exit 0 ;;
 esac
 
 # ---------------------------------------------------------------- start
 if endpoint_up; then
-    info "something already answers at ${BASE_URL} — not starting another (use 'stop' first)"
+    report_running
+    echo "  nothing to do. To restart with other options: $0 stop, then start again."
+    if ! running_pid >/dev/null; then
+        echo "  (it was not started by this script, so '$0 stop' cannot stop it)"
+    fi
     exit 0
 fi
 if [[ "$HOST" != "127.0.0.1" && "$HOST" != "localhost" ]]; then
