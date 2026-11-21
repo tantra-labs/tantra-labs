@@ -51,6 +51,11 @@ subject is complete and long superseded — see "Prior work" below.
   - **Next**: `tantra ask` on `AcpClient`, Phase 4 web BFF, Phase 5 Python SDK, and Phase 6
     retire `/ws/chat`.
   - Follow-ups: caller-scoped ACP session store; drain buffered output on disconnect.
+- **Runtime API surface (design `docs/design/0006-runtime-api-surface.md`, proposed)**:
+  - Target: one enveloped `/api/v2` contract built from a route registry (route, scope and OpenAPI
+    in one place), deny-by-default auth, one `/stream` WS plus `/acp`, and generated clients.
+  - **R0 first**: runtime gap 0012. `/ws/live` (can place paper orders), the `/trade-journal/*`
+    writes and `/market-data/*` are unauthenticated even with auth on.
 - **Next session: agent orchestration (design `docs/design/0005-agent-orchestration-over-acp.md`)**:
   - Option B: an orchestrator plus specialist sub-agents (`AgentSpec`), with `coordination: inline|delegate`
     set per model in `tantra.jsonc`.
