@@ -10,6 +10,7 @@ provider repo's own `docs/gaps/README.md` is the implementation tracker.
 | # | Title | Provider Repo / Scope | Filed |
 |---|-------|-----------------------|-------|
 | [0001](0001-market-broker-feed-stubs.md) | Real broker WS feed crates (`zerodha`, `upstox`, `fyers`, `angelone`, `dhan`) — **feature tracker, 2 of 5 shipped 2026-11-13**: `tantra-market-dhan` (DhanHQ v2) and `tantra-market-zerodha` (Kite Connect 3) are real; `upstox`, `fyers`, `angelone` are re-added as real crates when their wire protocols are implemented (task T3.3) | `tantra-market` | 2026-11-12 |
+| [0009](0009-stale-plan-index-rows-0015-0016.md) | Root `docs/plans/README.md` rows 0015/0016 still say T21.5–T21.6 / T22.6–T22.8 "planned" though they are implemented; the architectural-analysis unification batch isn't indexed | root `docs/plans/README.md` | 2026-11-21 |
 
 ## Closed Gaps
 
