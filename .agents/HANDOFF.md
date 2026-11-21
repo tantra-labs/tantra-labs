@@ -41,9 +41,21 @@ subject is complete and long superseded — see "Prior work" below.
   schema `tantra-agent/docs/design/provider-config.md`. Candle GGUF provider, the per-model
   format layer and all `TANTRA_GGUF_*`/`TANTRA_LLM_*` env vars are removed — agent `06657e3`,
   runtime `4afe41a` (`ChatRuntime::from_config`), ui `44d5a9c` (`--model`/`--config`).
-- **ACP (agent plan 0019)**: Phase 1 `tantra-agent-acp` crate landed (`be8b063`). **Next**:
-  Phase 2 runtime `GET /v1/acp`, Phase 3 TUI/CLI on `AcpClient`, Phase 4 web BFF, Phase 5
-  Python SDK, Phase 6 retire `/ws/chat`.
+- **ACP (agent plan 0019)**:
+  - Phase 1 is the crate (`be8b063`).
+  - Phase 2 is runtime `GET /v1/acp` (`756d267`): it serves the full chat tool set plus
+    `present_view`, requires auth, and is capped at 64 connections with 1 MiB frames.
+  - Phase 3 for the TUI (ui `86d35ee`, agent `c91301a` `connect_ws`): the TUI is embedded by
+    default; `tantra --server ws://127.0.0.1:8000/v1/acp --token-file PATH` connects to the
+    runtime instead. `/model` lists or switches models, and `/auto` toggles approval live.
+  - **Next**: `tantra ask` on `AcpClient`, Phase 4 web BFF, Phase 5 Python SDK, and Phase 6
+    retire `/ws/chat`.
+  - Follow-ups: caller-scoped ACP session store; drain buffered output on disconnect.
+- **Dynamic TUI right pane (ui plan 0010, `25bbfc0`, `cdf681e`)**:
+  - `/help`, informational commands, and the strategy/backtest/positions views open panes, kept
+    as tabs (Alt+←/→ to switch, Alt+x to close, `/pane`).
+  - Agent queries open Analysis. The agent's `present_view` tool (agent plan 0020, `9859f6f`;
+    `DisplayBlock::View`) opens the layout it composes.
 - **Open**: `tantra-docs` still documents the removed env vars (ai/, user-guide/, api/rest.md);
   `tantra-cli` `test_run_ask_backtest_synthesis` needs the `tantra` wheel (`maturin develop`).
 - Local model: CPU-only (`--device none`; Vulkan on the 680M hits `ErrorDeviceLost`); decode
