@@ -1,6 +1,6 @@
 # 0015 — Composable Strategy, Optimization-Loop & Interactive Graphical Primitives (EE+ Outer-Buffer Flagship)
 
-**Status**: Implementing (2026-11-20) — Track **T21** (**`T21.1` ✅ Implemented**; **`T21.2` ✅ Implemented**; **`T21.3` ✅ Implemented**; **`T21.4` ✅ Implemented**; `T21.5` Planned; **`T21.6` ✅ Implemented**)  
+**Status**: Implementing (2026-11-20) — Track **T21** (**`T21.1` ✅ Implemented**; **`T21.2` ✅ Implemented**; **`T21.3` ✅ Implemented**; **`T21.4` ✅ Implemented**; **`T21.5` ✅ Implemented**; **`T21.6` ✅ Implemented**)  
 **Target Scope**: `tantra-market`, `tantra-strategies`, `tantra-runtime`, `tantra-ui` (`tantra-ui-charts`, `tantra-ui-core`, `tantra-tui`, `tantra-cli`), `tantra-ui-web`, `tantra-agent`, `tantra-docs`  
 **Architecture Rule**: **Zero edits to `tantra-core`** (reuse existing `LevelMap`, `LevelKind`, `StopProtection`, `TradePlan`, `PositionIntent`, `OptionChainSnapshot`, `Exchange`, `InstrumentId`, `Money`, `Price`, `Quantity`, `Decimal` read-only).  
 **Depends On**: [Plan 0005 (Elephant Edge Strategy Platform)](0005-elephant-edge-strategy-platform.md), [Plan 0008 (Trade Signal Generator)](0008-trade-signal-generator.md), [Plan 0014 (`Experimental-Analysis` Statistical & Event Study Platform)](0014-experimental-analysis-statistical-workbench.md).
@@ -203,7 +203,7 @@ Every synthesized hedge reports: **Exact Legs (`BUY/SELL FUT/CE/PE`)**, **Lot-Ro
   - **CLI (`tantra-cli`)**: Live `tantra elephant` & `tantra study-loop` commands supporting `--strategy`, `--symbol`, `--tf`, `--horizon`, `--sweep`, `--hedge`, `--json`, `--export-scene`.
 - **Verification**: `cargo test --workspace --profile prod`, deterministic TUI layout & CLI snapshot tests across Index/F&O/Commodity.
 
-### Phase 5 — Interactive Multi-Layer Canvas & What-If Workbench in Web (`tantra-ui-web`) · Track `T21.5`
+### Phase 5 — Interactive Multi-Layer Canvas & What-If Workbench in Web (`tantra-ui-web`) · Track `T21.5` ✅ Implemented (2026-11-21)
 - **Deliverables**:
   - Refactor `ElephantZonesPrimitive` in [vyapaar-bridge.js](../../tantra-ui-web/public/charts/vendor/vyapaar-bridge.js) into a generic **`OverlayScenePrimitive` engine** rendering all 6 primitive groups (`signals`, `bands`, `stops`, `indicators`, `hints`, `hedges`) + hover hit-testing + sub-pane indicator sync.
   - Add **Interactive Layer Pill Bar** (`Signals | Bands | Stops | Indicators | Hints | Hedges | Tight-vs-Buffered Diff`) and **Setup/Hint Inspector Drawer** to [`ChartCanvas.tsx`](../../tantra-ui-web/src/components/organisms/ChartCanvas.tsx) & [`ChartToolbar.tsx`](../../tantra-ui-web/src/components/organisms/ChartToolbar.tsx).
@@ -231,7 +231,7 @@ Every synthesized hedge reports: **Exact Legs (`BUY/SELL FUT/CE/PE`)**, **Lot-Ro
 | `T21.2` | `tantra-strategies` | ✅ Implemented — recorded in [`tantra-strategies/docs/plans/README.md`](../../tantra-strategies/docs/plans/README.md) (`0004`) |
 | `T21.3` | `tantra-runtime` | ✅ Implemented — recorded in [`tantra-runtime/docs/plans/README.md`](../../tantra-runtime/docs/plans/README.md) (`0011`) |
 | `T21.4` | `tantra-ui` (`core`, `tui`, `cli`) | ✅ Implemented — recorded in [`tantra-ui/docs/plans/README.md`](../../tantra-ui/docs/plans/README.md) (`0009`) |
-| `T21.5` | `tantra-ui-web` | `tantra-ui-web/docs/plans/0017-generic-overlay-scene-and-interactive-loop-ui.md` |
+| `T21.5` | `tantra-ui-web` | ✅ Implemented — ui-web `73ecd1e` (sub-pane strip), `4b5618b` (workbench, layer pills, hint inspector, scene bus), `8a1c7c9` (ChatRail Render on Chart + main-chart scene bar); Playwright tests not added (no Playwright in repo) |
 | `T21.6` | `tantra-agent`, `tantra-runtime`, `tantra-ui`, `tantra-docs` | ✅ Implemented — [`tantra-agent/docs/plans/0018`](../../tantra-agent/docs/plans/0018-generic-loop-sweep-hedge-and-scene-tools.md) (agent `9925588`, runtime `9d69b8c`, ui `b85eba1`, docs `cb81295`) |
 
 ---

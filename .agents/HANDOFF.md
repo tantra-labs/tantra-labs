@@ -46,8 +46,10 @@ design changes). All landed with per-repo commits (details in each repo's HANDOF
 - **T21.6 COMPLETE 2026-11-21** (agent plan 0018): `StrategyLoopPort` + 4 ReadOnly tools (`strategy_loop_eval`/`_sweep`,
   `strategy_hedge_recommend`, `chart_scene_annotate`) in chat-tools + MCP; `DisplayBlock::OverlayScene`; runtime chat
   wires them in-process (`RuntimeStrategyLoopPort`, late-bound `Weak<AppState>`); CLI/TUI render the block; docs page.
-- **Next**: T21.5 (ui-web layer pill bar, hint inspector, Strategy Loop & Hedge Workbench, ChatRail "Render on Chart" for
-  `overlay_scene` blocks); then a live browser check of the scene renderer + Indicator Lab (none run yet).
+- **T21.5 COMPLETE 2026-11-21** (ui-web `4b5618b`, `8a1c7c9`): Strategy Loop & Hedge Workbench, layer pills, hint
+  inspector, scene bus, ChatRail Render on Chart. Agent fixes on the way: `ToolDisplay` adjacent tagging (`af78bc2` —
+  successful `tool_finished` events were being dropped), slimmed loop payloads under the 64 KiB tool cap (`7ffc079`).
+- **Next**: live browser check of the scene renderer, Indicator Lab, workbench and Render on Chart (none run yet).
   tantra-strategies tests need `PYTHONPATH=../tantra-ffi/python:../tantra-examples:../tantra-data/src:.`.
 
 ## Latest Batch — Reading-List study book (`docs/reading-list/`) docs-only, COMPLETE 2026-11-17
