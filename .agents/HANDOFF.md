@@ -34,6 +34,21 @@ subject is complete and long superseded — see "Prior work" below.
 - `tantra-agent` (`db826c1`): `SessionEvent::ToolFinished` carries `blocks: Vec<DisplayBlock>`.
 - **Open**: `tantra-agent/docs/gaps/0009` — Chart cards can't resolve `$tantra/ref` series.
 
+## Active Batch — LLM gateway config + one agent protocol (ACP), IN PROGRESS 2026-11-21
+
+- **Provider config (done)**: every LLM is an OpenAI-compatible endpoint declared in an
+  opencode-shaped `tantra.jsonc` (root file → `local/qwen3-30b-a3b` on llama-server :8080);
+  schema `tantra-agent/docs/design/provider-config.md`. Candle GGUF provider, the per-model
+  format layer and all `TANTRA_GGUF_*`/`TANTRA_LLM_*` env vars are removed — agent `06657e3`,
+  runtime `4afe41a` (`ChatRuntime::from_config`), ui `44d5a9c` (`--model`/`--config`).
+- **ACP (agent plan 0019)**: Phase 1 `tantra-agent-acp` crate landed (`be8b063`). **Next**:
+  Phase 2 runtime `GET /v1/acp`, Phase 3 TUI/CLI on `AcpClient`, Phase 4 web BFF, Phase 5
+  Python SDK, Phase 6 retire `/ws/chat`.
+- **Open**: `tantra-docs` still documents the removed env vars (ai/, user-guide/, api/rest.md);
+  `tantra-cli` `test_run_ask_backtest_synthesis` needs the `tantra` wheel (`maturin develop`).
+- Local model: CPU-only (`--device none`; Vulkan on the 680M hits `ErrorDeviceLost`); decode
+  is RAM-bound — ~1 tok/s while the machine swaps, needs ~20 GB free for Qwen3-30B.
+
 ## Latest Batch — Architectural-analysis unification (T21/T22 cross-repo), COMPLETE 2026-11-20
 
 Source: `docs/plans/Here is an architectural analysis of the.md` (§2 strategies duplication, §3 cross-repo

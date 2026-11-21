@@ -1,0 +1,24 @@
+// Tantra LLM provider config (project level). Same shape as opencode's `provider` block:
+// every model is an OpenAI-compatible endpoint; ids are "<provider>/<model>".
+// Lookup: `--config PATH`, else this file (found by walking up from cwd), merged over
+// ~/.config/tantra/tantra.jsonc. Secrets go in as {env:VAR} / {file:path}, never inline.
+// Schema: tantra-agent/docs/design/provider-config.md
+{
+  "model": "local/qwen3-30b-a3b",
+
+  "provider": {
+    // llama.cpp: llama-server -m models/Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf --jinja
+    //            -c 16384 --device none -t 8 --port 8080 --alias qwen3-30b-a3b
+    "local": {
+      "name": "llama.cpp (local)",
+      "options": { "baseURL": "http://127.0.0.1:8080/v1", "timeout": 600000 },
+      "models": {
+        "qwen3-30b-a3b": {
+          "name": "Qwen3 30B A3B Instruct 2507 (Q4_K_M)",
+          "tool_call": true,
+          "limit": { "context": 16384, "output": 4096 }
+        }
+      }
+    }
+  }
+}
