@@ -7,7 +7,9 @@
   "model": "local/qwen3-30b-a3b",
 
   "provider": {
-    // llama.cpp: llama-server -m models/Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf --jinja
+    // Start it with scripts/start-llm.sh (llama.cpp here; --backend vllm on a GPU host;
+    // both serve this same endpoint + model id). Equivalent llama.cpp command:
+    //   llama-server -m models/Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf --jinja
     //            -c 16384 --device none -t 8 --port 8080 --alias qwen3-30b-a3b
     "local": {
       "name": "llama.cpp (local)",
