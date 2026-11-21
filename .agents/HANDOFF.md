@@ -49,7 +49,11 @@ design changes). All landed with per-repo commits (details in each repo's HANDOF
 - **T21.5 COMPLETE 2026-11-21** (ui-web `4b5618b`, `8a1c7c9`): Strategy Loop & Hedge Workbench, layer pills, hint
   inspector, scene bus, ChatRail Render on Chart. Agent fixes on the way: `ToolDisplay` adjacent tagging (`af78bc2` —
   successful `tool_finished` events were being dropped), slimmed loop payloads under the 64 KiB tool cap (`7ffc079`).
-- **Next**: live browser check of the scene renderer, Indicator Lab, workbench and Render on Chart (none run yet).
+- **Live check 2026-11-21**: generic scene renderer (EE zones), `pane:` sub-pane strip (+ time-axis fix ui-web `1e87572`)
+  and strip removal verified in Chrome; Indicator Lab tab renders with honest error states. Library / strategy-loop
+  data paths NOT exercised: the user's runtime on :8000 is a pre-library binary (404 on `/studies/library/*`).
+- **Next**: relaunch `tantra serve` with the current `tantra-ui/target/prod/tantra` (set `TANTRA_LIBRARY_MCP_CMD` /
+  `_ARGS` for `tantra-library-mcp`), then exercise Indicator Lab compute, workbench evaluate, and chat Render on Chart.
   tantra-strategies tests need `PYTHONPATH=../tantra-ffi/python:../tantra-examples:../tantra-data/src:.`.
 
 ## Latest Batch — Reading-List study book (`docs/reading-list/`) docs-only, COMPLETE 2026-11-17
