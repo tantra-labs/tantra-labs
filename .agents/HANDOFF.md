@@ -43,11 +43,11 @@ design changes). All landed with per-repo commits (details in each repo's HANDOF
 - **Follow-ups closed 2026-11-20**: wasm32 build (core `601ba3f`, getrandom `wasm_js`); `pr_trend_pullback`
   engine e2e test + WheelSdkBridge epoch-ns timestamp crash fix (strategies `e2c6da4`); `pane:` sub-pane strip
   (ui-web `73ecd1e`); Indicator Lab tab + `/api/v2/studies` client wire fix `ts`/`id` (ui-web `40b9210`, plan 0017).
-- **Next**: T21.5 (ui-web layer pill bar, hint inspector, Strategy Loop & Hedge Workbench, ChatRail "Render on
-  Chart"); T21.6 (agent: `StrategyLoopPort` in agent-core + `strategy_loop_eval`/`_sweep`/`strategy_hedge_recommend`/
-  `chart_scene_annotate` in chat-tools + MCP over runtime `/api/v2/studies/strategy-loop/*`; needs a scene
-  `DisplayBlock`; file as agent plan 0018 — 0017 is taken; `strategy_run/tune/suggest` already use runtime
-  `RuntimeStrategyRunner`); then a live browser check of the scene renderer + Indicator Lab (none run yet).
+- **T21.6 COMPLETE 2026-11-21** (agent plan 0018): `StrategyLoopPort` + 4 ReadOnly tools (`strategy_loop_eval`/`_sweep`,
+  `strategy_hedge_recommend`, `chart_scene_annotate`) in chat-tools + MCP; `DisplayBlock::OverlayScene`; runtime chat
+  wires them in-process (`RuntimeStrategyLoopPort`, late-bound `Weak<AppState>`); CLI/TUI render the block; docs page.
+- **Next**: T21.5 (ui-web layer pill bar, hint inspector, Strategy Loop & Hedge Workbench, ChatRail "Render on Chart" for
+  `overlay_scene` blocks); then a live browser check of the scene renderer + Indicator Lab (none run yet).
   tantra-strategies tests need `PYTHONPATH=../tantra-ffi/python:../tantra-examples:../tantra-data/src:.`.
 
 ## Latest Batch — Reading-List study book (`docs/reading-list/`) docs-only, COMPLETE 2026-11-17
