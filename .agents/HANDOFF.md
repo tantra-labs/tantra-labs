@@ -51,6 +51,14 @@ subject is complete and long superseded — see "Prior work" below.
   - **Next**: `tantra ask` on `AcpClient`, Phase 4 web BFF, Phase 5 Python SDK, and Phase 6
     retire `/ws/chat`.
   - Follow-ups: caller-scoped ACP session store; drain buffered output on disconnect.
+- **Next session: agent orchestration (design `docs/design/0005-agent-orchestration-over-acp.md`)**:
+  - Option B: an orchestrator plus specialist sub-agents (`AgentSpec`), with `coordination: inline|delegate`
+    set per model in `tantra.jsonc`.
+  - Start with P0, the `tantra-core::fo` NSE expiry calendar and contract symbols, then P1, the
+    `fo_contracts` tool.
+  - Blocker for real answers: the runtime instrument master is equity-only (3,768). It has no
+    index or NFO contracts and no index bars, so `options_chain` for NIFTY is empty (P2; the data
+    source is open decision 1).
 - **Dynamic TUI right pane (ui plan 0010, `25bbfc0`, `cdf681e`)**:
   - `/help`, informational commands, and the strategy/backtest/positions views open panes, kept
     as tabs (Alt+←/→ to switch, Alt+x to close, `/pane`).
