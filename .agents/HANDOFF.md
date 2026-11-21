@@ -43,10 +43,10 @@ subject is complete and long superseded — see "Prior work" below.
   runtime `4afe41a` (`ChatRuntime::from_config`), ui `44d5a9c` (`--model`/`--config`).
 - **ACP (agent plan 0019)**:
   - Phase 1 is the crate (`be8b063`).
-  - Phase 2 is runtime `GET /v1/acp` (`756d267`): it serves the full chat tool set plus
+  - Phase 2 is runtime `GET /api/v1/acp` (`756d267`): it serves the full chat tool set plus
     `present_view`, requires auth, and is capped at 64 connections with 1 MiB frames.
   - Phase 3 for the TUI (ui `86d35ee`, agent `c91301a` `connect_ws`): the TUI is embedded by
-    default; `tantra --server ws://127.0.0.1:8000/v1/acp --token-file PATH` connects to the
+    default; `tantra --server ws://127.0.0.1:8000/api/v1/acp --token-file PATH` connects to the
     runtime instead. `/model` lists or switches models, and `/auto` toggles approval live.
   - **Next**: `tantra ask` on `AcpClient`, Phase 4 web BFF, Phase 5 Python SDK, and Phase 6
     retire `/ws/chat`.
