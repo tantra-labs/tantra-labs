@@ -24,6 +24,16 @@ Playbook: `docs/future-work-bottoms-up-build-order.md` (execution order, by crat
 depth). The repo-migration (`honba-*` → `tantra-*`, Tier 0–6) that used to be this file's whole
 subject is complete and long superseded — see "Prior work" below.
 
+## Latest Batch — TUI Trading-R1 look + split-screen analysis page, COMPLETE 2026-11-21
+
+- `tantra-ui` (`b65c228`…`a5bfeca`): `tantra-tui` adopts the Trading-R1 (Apache-2.0) look —
+  theme tokens (`theme.rs`), welcome screen, rounded panes, grouped palette; after the first
+  query the Agent view splits 40/60 into chat + `analysis_view` (ticker strip, price chart,
+  spread/position, backtest, one card per tool `DisplayBlock`). The TUI now drives
+  `tantra_agent_chat::run_turn` (tools execute; non-read-only tools need `/auto`).
+- `tantra-agent` (`db826c1`): `SessionEvent::ToolFinished` carries `blocks: Vec<DisplayBlock>`.
+- **Open**: `tantra-agent/docs/gaps/0009` — Chart cards can't resolve `$tantra/ref` series.
+
 ## Latest Batch — Architectural-analysis unification (T21/T22 cross-repo), COMPLETE 2026-11-20
 
 Source: `docs/plans/Here is an architectural analysis of the.md` (§2 strategies duplication, §3 cross-repo
