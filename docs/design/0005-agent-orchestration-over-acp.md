@@ -1,6 +1,6 @@
 # 0005 — Agent Orchestration over ACP: Orchestrator + Specialist Sub-Agents
 
-**Status**: Proposed. Design agreed (option B), implementation starts next session. Dated 2026-11-21.
+**Status**: Accepted (option B; §8 decisions recorded). Implementation starts next session. Dated 2026-11-21.
 **Scope**: How one user request ("analyze NSE:NIFTY50 1W options expiring next week") is planned,
 split across specialist agents, resolved into exact instruments, analysed with tools and
 presented in the client's right pane, all over the ACP agent protocol. This spans `tantra-core`,
@@ -114,9 +114,8 @@ identical, and only the nesting disappears.
 ### 4.2 Data (blocked today; the prerequisite for real answers)
 - **`tantra-data`**: an F&O contract master (NFO futures and options, index and stock
   underlyings, lot sizes, expiries), an index instrument list (`NIFTY 50`, `NIFTY BANK`,
-  `FINNIFTY`, …) and index daily bars into Lakehouse v3. The source is an open decision (§8);
-  candidates are broker instrument dumps (Zerodha, Dhan) or NSE bhavcopy archives. This needs a
-  new gap in the provider repo.
+  `FINNIFTY`, …) and index daily bars into Lakehouse v3, all from **NSE bhavcopy archives**
+  (§8.1). This needs a new gap in the provider repo, filed when P2 starts.
 - **`tantra-market-store`**: the instrument master and `InstrumentChainReader` read the
   derivatives master, so `options_chain` returns listed contracts and bars resolve for indices.
 - **`tantra-runtime`**: `FeedMarketReader` and `/api/v2/bars` serve them, and they back
@@ -140,9 +139,8 @@ identical, and only the nesting disappears.
   same specs. Dependency rules R1–R4 hold, because it uses only `ToolSet` and ports already in
   `tantra-agent-chat`.
 - **Turn blackboard (refs, not payloads)**: large tool outputs (chains, bars) are stored per
-  turn under `$tantra/ref/...` ids, and specialists pass refs between each other. This also
-  fixes agent gap 0009, where Chart `series_ref` can't be resolved by clients, if the
-  blackboard is readable through an ACP ext method (`_tantra/ref/get`).
+  turn under `$tantra/ref/...` ids, and specialists pass refs between each other. The
+  blackboard is host-side only: clients receive step summaries (§8.4), not raw refs.
 
 ### 4.4 ACP mapping (extends agent plan 0019's table)
 
@@ -151,7 +149,7 @@ identical, and only the nesting disappears.
 | orchestrator plan | `session/update` `plan` (`Plan{entries: PlanEntry{content, priority, status}}`, ACP v1 schema) |
 | specialist call | `tool_call` with `_meta.tantra.agent = "<spec id>"` and kind `think` |
 | specialist's inner tool calls | `tool_call` with `_meta.tantra.parent_call_id` (clients render them nested) |
-| typed handoff | `tool_call_update` content (summary) + `_meta.tantra.result` (typed JSON) + `_meta.tantra.blocks` |
+| typed handoff | `tool_call_update` content + `_meta.tantra.summary` (UI chain-of-thought step summary) + `_meta.tantra.blocks`; the full typed result stays host-side |
 | cancel | `session/cancel` cancels the whole tree via child tokens |
 | mode / model per spec | `tantra.jsonc` (`coordination`, `agents.<id>.model`); clients see models via `_meta.tantra.models` |
 
@@ -160,7 +158,7 @@ identical, and only the nesting disappears.
   - a **Plan** pane (step list with status);
   - nested tool rows in the transcript;
   - focus and Price card follow `ResolvedInstruments` / `present_view.symbols`. This replaces
-    regex `detect_instruments`, which stays only as a pre-turn hint.
+    regex `detect_instruments`, superseded by the pre-planner's `QueryHints` (§8.2).
 - **Web** (agent plan 0019 Phase 4): the same ACP stream, Plan panel, nested steps.
 
 ### 4.6 Initial specialist set
@@ -206,9 +204,9 @@ per the provider-config rule in `tantra-agent/docs/design/provider-config.md`.
 
 | Phase | Repo(s) | Deliverable | Verify |
 |---|---|---|---|
-| P0 | `tantra-core` | `fo` module: `ExpiryCalendar` (rule versions, holiday shift) and `ContractSymbol` | golden vectors, proptest on calendar invariants, wasm32 check |
+| P0 | `tantra-core` (+ `tantra-agent-tools`) | `fo` module: `ExpiryCalendar` (rule versions, holiday shift) and `ContractSymbol`; pure query pre-planner → `QueryHints` (§8.2) | golden vectors, proptest on calendar invariants, wasm32 check |
 | P1 | `tantra-agent-chat-tools`, `-mcp` | `fo_contracts` over `ContractMasterPort` (calendar-only fallback labelled) | unit + MCP tests |
-| P2 | `tantra-data` → `tantra-market` → `tantra-runtime` | F&O contract master, index instruments and bars; chain reader on the derivatives master | pytest, store tests, `/api/v2/bars` for the index, `options_chain` non-empty |
+| P2 | `tantra-data` → `tantra-market` → `tantra-runtime` | NSE bhavcopy adapter (§8.1): F&O contract master, index instruments and bars, EOD OI/settle; chain reader on the derivatives master | pytest with recorded bhavcopy fixtures, store tests, `/api/v2/bars` for the index, `options_chain` non-empty (EOD-labelled) |
 | P3 | `tantra-agent-core`, `tantra-agent-chat` | `AgentSpec`, handoff DTOs, `DelegateTool`, `CoordinationMode`, turn blackboard | scripted-LLM tests for both modes, dependency rules |
 | P4 | `tantra-agent-acp`, `tantra-runtime` | plan updates, nested `tool_call` meta, specialist registry from `tantra.jsonc` | golden ACP transcripts, `acp_ws` through the real router |
 | P5 | `tantra-ui` | Plan pane, nested rows, focus from resolved instruments (regex demoted to a hint) | TUI tests, live run of the NIFTY scenario |
@@ -217,12 +215,33 @@ per the provider-config rule in `tantra-agent/docs/design/provider-config.md`.
 P0–P1 can ship before the data (P2): the resolver then returns `source: calendar` contracts and
 says the chain is unavailable, instead of guessing.
 
-## 8. Open decisions
-1. **F&O data source**: broker instrument dumps (Zerodha or Dhan, which need credentials) or
-   NSE bhavcopy archives (public, end of day). This decides P2's adapter and refresh cadence.
-2. **Intent parsing**: LLM-only, or a deterministic query pre-planner ("1W", "next expiry",
-   "ATM ±10") that the orchestrator may override.
-3. **Per-specialist models**: allow a small fast model for `resolver` while a larger one
-   analyses (needs several providers loaded locally, which costs RAM).
-4. **Blackboard exposure**: whether clients may fetch `$tantra/ref/...` (fixes agent gap 0009)
-   and how it is scoped per caller and session.
+## 8. Decisions (2026-11-21)
+1. **F&O data source: NSE bhavcopy archives.** They're public and end of day, with no broker
+   credentials.
+   - P2 adds a `tantra-data` bhavcopy adapter that derives:
+     - the F&O contract master (instrument, underlying, expiry, strike, option type, lot size)
+       from the F&O bhavcopy;
+     - index daily bars from the index close files;
+     - and EOD OI, settle and close per contract.
+   - Refresh is daily after the EOD files publish. The data is end of day, so chains and quotes
+     carry an `as_of` trading date and are labelled EOD. Intraday chain snapshots remain
+     `tantra-data` gap 0016.
+2. **Intent parsing: both.** A deterministic **query pre-planner** runs first.
+   - It is pure, in `tantra-agent-tools` or `tantra-core::fo` alongside the calendar.
+   - It extracts what it can: underlying, horizon (`0D`/`1W`/`2W`/`1M`, "next expiry",
+     explicit dates), strike window ("ATM ±10"), and option kinds.
+   - Its `QueryHints` go to the orchestrator as structured context. The LLM may override or
+     fill gaps, and any override is recorded in the plan.
+   - The TUI regex `detect_instruments` is replaced by these hints.
+3. **Per-specialist models: supported in config, all routed to local for now.**
+   `agents.<id>.model` exists and is validated, but every spec resolves to the default local
+   model (`local/qwen3-30b-a3b`) until more providers are configured. So the default
+   `coordination` is `inline`.
+4. **Blackboard: clients get summaries, not raw refs.**
+   - Each specialist and plan step sends a short typed **step summary** for the UI's chain of
+     thought, via `_meta.tantra.summary` on its `tool_call_update` plus the ACP `plan` entry
+     status and text.
+   - That summary holds what was resolved or computed, the key numbers taken from tools, and
+     what's unavailable.
+   - Raw `$tantra/ref/...` payloads stay host-side, so no client fetch method is added.
+     Agent gap 0009 (client-resolvable Chart refs) stays open and separate.

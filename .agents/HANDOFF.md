@@ -58,7 +58,10 @@ subject is complete and long superseded — see "Prior work" below.
     `fo_contracts` tool.
   - Blocker for real answers: the runtime instrument master is equity-only (3,768). It has no
     index or NFO contracts and no index bars, so `options_chain` for NIFTY is empty (P2; the data
-    source is open decision 1).
+    source is NSE bhavcopy).
+  - Design §8 decisions: bhavcopy for EOD data; a deterministic pre-planner plus LLM override for intent;
+    per-agent models are configurable but all route to local for now (so `inline`); clients get step
+    summaries for the chain-of-thought UI, not raw refs.
 - **Dynamic TUI right pane (ui plan 0010, `25bbfc0`, `cdf681e`)**:
   - `/help`, informational commands, and the strategy/backtest/positions views open panes, kept
     as tabs (Alt+←/→ to switch, Alt+x to close, `/pane`).
