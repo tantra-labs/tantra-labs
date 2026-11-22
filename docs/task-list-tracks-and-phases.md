@@ -482,8 +482,8 @@ Multi-asset empirical return, streak & `6×6` Markov regime equilibrium, percent
 | `tantra-risk` | **0** (0005 closed) | — (plan 0002 Implemented) | T1.1–T1.4 ✅, T12.6 ✅ |
 | `tantra-market` | 2 (0003 feeds, 0007 ADR%/Chandelier) | 0002 (chart-pattern analyzer, proposed), 0003 (`Experimental-Analysis` period & Markov engine, proposed) | T3.1–T3.4 🔶, T12.2 ✅, T16.4, T17.3 ✅, T20.2 (feeds tracked by T3.3) |
 | `tantra-exec` | **0** (0003 closed) | — (0002, 0003 Implemented) | T0.3 ✅, T4.11 ✅, T12.5 ✅, T14.1–T14.4 ✅, T14.14 ✅ |
-| `tantra-runtime` | **0** (0011 closed) | 0006 (trade manager, proposed), 0007 (group alerts, proposed), 0009 (`Experimental-Analysis` REST API, proposed) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅, T17.4 ✅, T18.2 ✅, T18.3 ✅, T20.3 |
-| `tantra-agent` | **0** (gaps 0003–0008 closed 2026-11-14) | 0007 (Active — master guide), 0012 (persona roster, approved), 0013 (screener MCP, proposed), 0014 (trade-plan MCP, proposed), 0016 (`Experimental-Analysis` assistant/news, proposed) — 0011 Implemented | T0.8 ✅, T6.1–T6.12 ✅, T12.8 ✅, T20.4 |
+| `tantra-runtime` | **1** (0013 open; 0014 closed 2026-11-22) | 0006 (trade manager, proposed), 0007 (group alerts, proposed), 0009 (`Experimental-Analysis` REST API, proposed) | T0.2/T0.5 ✅, T6.3 ✅, T7.1–T7.8 ✅, T14.5–T14.9 ✅, T17.4 ✅, T18.2 ✅, T18.3 ✅, T20.3 |
+| `tantra-agent` | **1** (0009 open; 0010 closed 2026-11-22) | 0007 (Active — master guide), 0012 (persona roster, approved), 0013 (screener MCP, proposed), 0014 (trade-plan MCP, proposed), 0016 (`Experimental-Analysis` assistant/news, proposed) — 0011 Implemented | T0.8 ✅, T6.1–T6.12 ✅, T12.8 ✅, T20.4 |
 | `tantra-ui` | **0** (0007 closed) | 0002 (UX ref), 0006 (EE+ Studio, **Implemented 2026-11-17 — T12.9**), 0007 (agent desk, proposed) — 0001/0003/0008 Implemented (docs retained as references) | T10.1–T10.5 ✅, T12.9 ✅, T14.12–T14.13 ✅, T14.14 ✅ |
 | `tantra-adapters` | 0 | — (0002–0004 Implemented) | T4.1–T4.10 ✅ |
 | `tantra-data` | 1 (0024 SAST/analyst-estimate remainder) | 0007 (instrument master, proposed), 0008 (screen DSL catalog, proposed), **0009 (Lakehouse v3, Implemented 2026-11-17)**, 0010 (`Experimental-Analysis` multi-asset/events, proposed) | T5.1–T5.10 ✅, T12.3 ✅, T16.3 (partial), T18.1 ✅, T18.4 ✅, T18.5 ✅, T17.1 ✅, T17.2 ✅, T20.1 |
@@ -491,7 +491,7 @@ Multi-asset empirical return, streak & `6×6` Markov regime equilibrium, percent
 | `tantra-examples` | **0** (all 8 closed: 0001–0008) | 0005 (categorized examples, proposed) — 0003/0004 Implemented | T9.1–T9.10 all ✅, T13.6–T13.7 ✅, T14.11 ✅, T15.1–T15.6 ✅ |
 | `tantra-ffi` | **0** | 0004 (trade-planner bindings, proposed) — 0002/0003 Implemented | T9.1 ✅, T9.2 ✅, T13.1–T13.5 ✅, T14.10–T14.11 ✅, T14.14 ✅ |
 | `tantra-docs` | — | — (0001–0005 Implemented) | T11.1 ✅, T11.2 ✅, T12.10 ✅, T14.15 ✅, T14.16 ✅ |
-| `tantra-ui-web` | per `tantra-ui-web/docs/gaps/README.md` | 0001 (roadmap, active), 0002 (desk UI, ref), 0014 (alerts/screener UI, proposed), 0016 (`Experimental-Analysis` workbench UI, proposed) | T16.7, T20.5 |
+| `tantra-ui-web` | per `tantra-ui-web/docs/gaps/README.md` | 0001 (roadmap, active), 0002 (desk UI, ref), 0014 (alerts/screener UI, proposed), 0016 (`Experimental-Analysis` workbench UI, proposed) — root 0020 Dockview/VibePrompt/Fonts implemented 2026-11-22 | T16.7, T20.5 |
 
 > T0 track complete 2026-11-13 (plan 0003 Implemented): 11 crates removed/absorbed, 5 facades
 > added, convention pinned, aliases pruned, TDD cleanup done, all workspaces verified. T0.7
