@@ -6,6 +6,21 @@
 Date: 2026-11-22 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md`
 
+## Latest Batch — Runtime API surface consolidation (root design `0006`) R0–R3, COMPLETE 2026-11-22
+
+- **Runtime** (`tantra-runtime`): fail-closed auth + `RouteTable` registry carrying scope/body cap (`dc9aeab`, `ce75b69`);
+  OpenAPI generated from the registry (in `19f317f`); v2 envelope + `ErrorCode::http_status()` (`7c09ed8`); canonical
+  `/api/v2` paths with 308 aliases, `/orders/{id}/cancel`, `/approvals/{id}/*`, `/alerts`, `/stream` WS (`77274ae`,
+  `e007186`, `a9dc41d`, `31a2a9b`). **Security fixes**: keyless orders were keyed by constants `"rest"`/`"approved"`/`"ws"`.
+- **Clients**: `tantra-runtime-client` crate (`ed930f7`); TUI/CLI on it + `tantra.jsonc` `runtime` block (ui `320e32a`,
+  `c5e7f70`; agent `ae6f790` incl. MCP contract test); web on canonical v2 + bearer token (ui-web `86d80f2`);
+  Python `tantra.client` (ffi `c1bc15a`, examples `6889efb`).
+- **Open**: runtime gaps 0013 (per-caller journal/paper account), 0015 (34 status/code mismatches); `/derivatives`
+  (needs design 0005 P2); R4 leftovers (docs from OpenAPI, CI grep gate, web token UI); R5 removal after §6.1 v1 decision.
+- Pre-existing runtime test failures (fail at HEAD before this batch): `bar_ingest::posted_bars_fill_a_market_order_and_refresh_quotes`,
+  `trade_journal::overview` (likely date-dependent default range).
+- **Relaunch `tantra serve`** from the current build: ui-web now calls `/studies/experimental-analysis/*` and `/screener/scans`.
+
 ## Latest Batch — Root Plan `0020` Full Stack (UI Dockview/Fonts + Upstream Agent/Runtime/TUI Gaps), COMPLETE 2026-11-22
 
 Executed Phases 0–4 of `docs/plans/0020-dockview-vibeprompts-ui-web-migration.md`, follow-on UX polish (`b191310` + working tree), and closed upstream gaps `tantra-agent` `0010` and `tantra-runtime` `0014`:
@@ -43,7 +58,7 @@ Source: `docs/plans/Here is an architectural analysis of the.md` (§2 strategies
 
 ## Immediate Next Step
 1. **Browser smoke QA (`tantra-ui-web` plan `0020`)**: Verify `/workspace` Dockview layout switching, `WidgetCatalogMenu`, per-widget `<WidgetFontSelect />` + `SettingsModal` fonts, `(app)/*` redirects, and `AgentPane` streaming/thread sync against a running `tantra serve` runtime; commit the pending working trees across `tantra-ui-web`, `tantra-agent`, `tantra-runtime`, `tantra-ui`, and root `tantra-labs` when ready.
-2. **Remaining chat/runtime gaps**: Implement `tantra-runtime/docs/gaps/0013` (per-caller journal & paper account), `tantra-agent/docs/gaps/0009` (`DisplayBlock::Chart` series refs), and T21.6 (`StrategyLoopPort`).
+2. **Remaining chat/runtime gaps**: Implement `tantra-runtime/docs/gaps/0013` (per-caller journal & paper account), `0015` (error code/status mismatches), `tantra-agent/docs/gaps/0009` (`DisplayBlock::Chart` series refs), and T21.6 (`StrategyLoopPort`).
 3. **Active cross-repo roadmaps**: `docs/plans/0009` (Qullamaggie), `docs/plans/0008` (Trade Signal Generator), `docs/plans/0010` (Screener/QVM P2–P9), `docs/plans/0019` (Codebase audit & unwired subsystem wiring), and T3.3 remaining feeds (`upstox`/`fyers`/`angelone`).
 
 ## Operating Invariants
