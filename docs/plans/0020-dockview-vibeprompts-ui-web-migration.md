@@ -1,7 +1,7 @@
 # 0020 — `tantra-ui-web` Dockview Shell, Taxonomy Icon Porting, Theme/Typography Bridge & VibePrompt AI/Agentic Pane Migration
 
-**Status:** Proposed Plan — Approved for Documentation Only (2026-11-21; implementation not yet started)  
-**Scope:** `tantra-ui-web` (with read-only contract alignment to `tantra-runtime` `/api/chat` and `/api/v2/profile`)  
+**Status:** Phases 0–4 Implemented (2026-11-22; code, typecheck, lint & unit suites verified; live browser smoke pending)  
+**Scope:** `tantra-ui-web` (plus upstream contract/trace alignment in `tantra-runtime` gap `0014`, `tantra-agent` gap `0010`, and `tantra-ui` `DisplayBlock::CodeDiff`)  
 **Supersedes / Consolidates Shell UX:** `tantra-ui-web/docs/plans/0010` (Unified Workspace Shell), `tantra-ui-web/docs/plans/0008` (RightIconDock / TradingDock layout shell)  
 **Governance References:** `AGENTS.md`, `.agents/rules/gap-tracking.md`, `.agents/rules/testing-and-verification.md`
 
@@ -12,7 +12,7 @@
 1. **Dockview MIT Tier Only (`dockview-react` v8.x)**:
    - Use the **MIT-licensed** `dockview-react` package exclusively (zero runtime dependencies, official React 19 peer dependency support).
    - Do **not** depend on `dockview-enterprise`. All target capabilities—split/grid layouts, nested tabs, `left`/`right`/`bottom` edge groups (`addEdgeGroup`), floating groups (`addFloatingGroup`), multi-window popouts (`addPopoutGroup`), custom tab renderers, header action slots, tab context menus, watermark empty states, themes, and full `toJSON()`/`fromJSON()` serialization—are available in MIT `dockview-react`.
-   - Edge-group toggling via our lean icon activator rail provides clean collapse/expand ergonomics without Enterprise auto-hide overlay dependencies.
+   - Edge-group toggling via top-bar `WidgetCatalogMenu` (`b191310`, evolving the initial right activator rail concept) provides clean collapse/expand ergonomics without Enterprise auto-hide overlay dependencies.
 
 2. **Redirect Everything to Dockview (Single Unified Workstation Shell)**:
    - `/workspace` (`DockviewWorkspace`) becomes the **sole interactive application shell**.
@@ -27,7 +27,7 @@
 4. **Lean, Tokenized Theme & Typography Bridge**:
    - Keep runtime dependencies minimal: `dockview-react` is the **only** new runtime dependency.
    - Unify Tantra's `--color-*` palette tokens, Dockview's `--dv-*` theme variables, and WASM `openalgo-charts` canvas theming behind a single `data-theme` + `DockviewTheme` bridge supporting both **dark** (`tantra-obsidian` default, `abyss`, `dracula`, `vs-dark`) and **light** (`tantra-paper`, `github-light`) themes.
-   - Preserve `Space Grotesk` (`--font-display`) and `IBM Plex Mono` (`--font-mono` for quotes, tickers, tables, run IDs, and raw tool payloads), add a crisp UI sans (`Plus Jakarta Sans` / `Inter` as `--font-sans`) for readable agent prose, and unlock density (`compact`/`comfortable`) and font-scale controls in `SettingsModal.tsx`.
+   - Preserve `Space Grotesk` (`--font-display`) and `IBM Plex Mono` (`--font-mono` for quotes, tickers, tables, run IDs, and raw tool payloads), add a crisp UI sans (`Plus Jakarta Sans` / `Inter` as `--font-sans`) for readable agent prose, and unlock density (`compact`/`comfortable`), font-scale, and macro font-family (`sans`/`serif`/`sans-serif`/`mono`) controls in `SettingsModal.tsx`.
 
 5. **AI / Agentic Pane Built on `vibeprompts.dev` Patterns**:
    - Rebuild `ChatRail.tsx`, `ResearchLanding.tsx`, `ResearchTurn.tsx`, `ToolCallGroup.tsx`, and `FollowUpComposer.tsx` into a first-class Dockview panel (`agent-copilot`, docked in the `left` edge group by default) using zero-dependency Tailwind + React adaptations of `vibeprompts.dev` layouts:
@@ -90,8 +90,8 @@ Every panel in `tantra-ui-web` registers a typed entry in `src/lib/dockview/pane
 | `journal` | `JournalDashboard.tsx` (or `JournalDockPanel.tsx` in right edge) | `center` / `right` | `journal` | Singleton | Yes |
 | `workbench` | `TradeWorkbenchView.tsx` | `center` grid | `workbench` *(new)* | Singleton | Yes |
 | `calendar` | `CalendarBoard.tsx` (or `CalendarDockPanel.tsx` in right edge) | `center` / `right` | `calendar` | Singleton | Yes |
-| `research` | `ResearchTabContent.tsx` | `center` grid | `lightbulb` | Singleton | Yes |
-| `experimental-analysis` | `ExperimentalAnalysisTab.tsx` (`params: { symbol?, assetClass? }`) | `center` grid | `experimental-analysis` *(new)* | Singleton | Yes |
+| `research` | `ResearchTabContent.tsx` *(deduplicated into `agent-copilot` in `148a5ad`)* | `center` grid | `lightbulb` | Singleton | Yes |
+| `analysis` *(planned as `experimental-analysis`; renamed in `bb78b0a`)* | `ExperimentalAnalysisTab.tsx` (`params: { symbol?, assetClass? }`) | `center` grid | `experimental-analysis` *(new)* | Singleton | Yes |
 | `alerts` | `AlertsPanel.tsx` / full alerts manager (`params: { mode?: "dock" \| "full" }`) | `right` / `center` | `alerts` | Singleton | Yes |
 | `order-panel` | `OrderPanelDock.tsx` | `right` edge group | `order-panel` | Singleton | Yes |
 | `order-book` | `OrderBookPanel.tsx` | `right` edge group | `order-book` | Singleton | Yes |
@@ -223,7 +223,7 @@ Map Dockview's `--dv-*` CSS variables directly onto Tantra's semantic tokens:
     - `theme: "tantra-obsidian" | "tantra-paper" | "abyss" | "dracula" | "vs-dark" | "github-light"`
     - `density: "compact" | "comfortable"` (drives `--ui-tab-height: 28px | 34px` and cell padding tokens)
     - `fontScale: "sm" | "md" | "lg"` (drives `--ui-font-scale: 0.92 | 1 | 1.08`)
-    - `proseFont: "sans" | "mono"` (lets terminal purists keep mono everywhere or use sans for prose)
+    - `proseFont: "sans" | "mono"` (subsequently expanded in `148a5ad`/`170965f` into macro `sans` / `serif` / `sans-serif` / `mono` font-family tokens across UI components)
 - **Unlock Appearance in `SettingsModal.tsx`**: Remove the `disabled` gate in `GeneralSection` (`lines 120–129`) and implement the full `Appearance` section (theme swatch cards, density toggle, font scale slider, live preview) plus a quick switcher in the top utility bar.
 - **WASM Chart Theme & Resize Sync**:
   - Update `ChartCanvas.tsx` to observe theme changes (`data-theme` / `preferences.theme`) and push matching background/grid/text/candle palette updates to `openalgo-charts`.
@@ -255,7 +255,7 @@ Replace `ChatRail.tsx` + `ResearchLanding.tsx` + `ResearchTurn.tsx` + `ToolCallG
 - **Immediate client-side derivations (no upstream blocker):**
   - Generate `runId`, track per-step `startMs`/`elapsedMs`, synthesize initial `thought` + `tool` + `scene` + `output` trace steps, and estimate per-step tokens (`chars / 4`).
 - **Forward-compatible native fields:**
-  - If `tantra-runtime` emits `thought_delta`, `token_usage`, `raw_input`, `raw_output`, or `code_diff` events later, `AgentPane` hydrates them natively without refactoring the trace UI.
+  - If `tantra-runtime` emits `thought_delta`, `token_usage`, `raw_input`, `raw_output`, or `code_diff` events later, `AgentPane` hydrates them natively without refactoring the trace UI. *(Implemented end-to-end across `tantra-agent` gap `0010` and `tantra-runtime` gap `0014`.)*
 
 ---
 
@@ -275,21 +275,21 @@ Extend `WorkspaceMeta` in `src/lib/workspaces-store.ts`:
 
 Expose a **Layouts** menu in the 36px top bar (accessible via `layout-1` / `workspaces` taxonomy icons):
 1. **`trading-desk` (Default)**: `agent-copilot` (`left` edge, 26% width) · `chart` (`center`) · `order-panel` + `watchlist-dock` (`right` edge) · `trading-panel` (`bottom` edge, collapsed or compact).
-2. **`research-quant`**: `agent-copilot` (`left` edge, 34%) · `research` + `experimental-analysis` (`center` split) · `reports` (`right` edge).
+2. **`research-quant`**: `agent-copilot` (`left` edge, 34%) · `research` + `experimental-analysis` (`center` split; later consolidated to `analysis` + `chart` / `screener`) · `reports` (`right` edge).
 3. **`multi-chart-2x2`**: `agent-copilot` (`left` edge, collapsed) · 2×2 grid of synchronized/independent `chart` panels (`center`) · `object-tree` (`right` edge).
 4. **`focus-chart`**: Full-bleed `chart` (`center`), all edge groups collapsed to activator icons.
 
 ---
 
-## 8. Phased Implementation Roadmap (Not Yet Started)
+## 8. Phased Implementation Roadmap (Phases 0–4 Completed 2026-11-22)
 
-| Phase | Deliverables | Key Files Touched / Created | Exit Gate |
-| :--- | :--- | :--- | :--- |
-| **Phase 0: Foundations (Deps, Icons, Themes)** | Install `dockview-react` (MIT); port 29 new icons into `public/assets/icons/` + `src/assets/icons/{index.ts,manifest.json}`; build `<TantraIcon />`; create `themes.css` + `dockview-theme.css`; add theme/density/typography preferences in `settings-store.ts` and unlock Appearance in `SettingsModal.tsx`. | `package.json`, `src/assets/icons/*`, `src/components/atoms/{TantraIcon,IconButton}.tsx`, `src/styles/{themes,dockview-theme}.css`, `src/app/{globals.css,layout.tsx}`, `src/lib/settings-store.ts`, `src/components/organisms/SettingsModal.tsx` | `npm run icons:showcase` regenerates cleanly; `npm run build` + `npm run test` green; dark & light tokens verified. |
-| **Phase 1: Workspace Bus & Panel Decoupling** | Implement `WorkspaceBusProvider`; extract the 13 right-dock panels out of `ChartWorkspace.tsx`; extract `WatchlistDetailPanel.tsx`, `SupportPanel.tsx`, and full-mode `AlertsPanel.tsx`; wire `ResizeObserver` + theme listener into `ChartCanvas.tsx`. | `src/lib/workspace-bus.tsx`, `src/components/organisms/{ChartWorkspace,ChartCanvas,WatchlistDetailPanel,SupportPanel,AlertsPanel}.tsx`, `src/components/organisms/panels/*` | `ChartCanvas` resizes smoothly on container resize; all panels mount standalone from `WorkspaceBusProvider`. |
-| **Phase 2: Dockview Shell & Full Route Redirection** | Build `DockviewWorkspace.tsx`, `PANEL_REGISTRY`, `TantraDockTab.tsx`, header action components, watermark, right activator rail, top utility bar, and 4 layout presets; upgrade `workspaces-store.ts` (`v1→v2` migration) & `workspace-deeplink.ts`; move `CommandPalette` into shell; redirect all `(app)/*` routes (`/portfolio/[id]`, `/watchlists/[id]`, `/alerts`, `/chats`, `/support`) to `/workspace?open=...`; remove `AppSidebar.tsx` & `(app)/layout.tsx`. | `src/components/organisms/dockview/*`, `src/lib/{workspaces-store,workspace-deeplink}.ts`, `src/app/workspace/page.tsx`, `src/app/(app)/**`, `src/components/organisms/CommandPalette.tsx` | All legacy routes redirect into Dockview panels; multi-chart splits, edge groups, floating & popout panels serialize/restore across reload. |
-| **Phase 3: VibePrompt AI / Agentic Pane** | Build `src/components/organisms/agent/*` (`AgentPane`, `AgentEmptyState`, `AgentTurnCard`, `AgentRunTrace`, `ToolPayloadTree`, `StrategyDiffCard`, `AgentComposer`, `PromptBudgetBar`, `AgentSkeletonTurn`); wire chart snip, `publishScene`, ticker deep-focus, code diff apply, and local/profile thread persistence. | `src/components/organisms/agent/*`, `src/lib/{quant-copilot,chat-threads-store}.ts`, `src/components/organisms/dockview/panel-registry.ts` | End-to-end streaming `/api/chat` run renders step timeline, replay, token meter, markdown, JSON tree, chart overlay scene, and code diff staging. |
-| **Phase 4: Cleanup & Verification** | Delete superseded shell files (`WorkspaceTabBar.tsx`, legacy `ChatRail.tsx`, `ResearchLanding.tsx`, `ResearchTurn.tsx`, `ToolCallGroup.tsx`, `FollowUpComposer.tsx`, `AppSidebar.tsx`, `WorkspaceShell.tsx` once replaced); migrate remaining `lucide-react` & inline `svgPath` calls to `<TantraIcon />`; add unit tests (`node --test src/lib/*.test.ts`). | `src/lib/*.test.ts`, `src/lib/chart-controls.ts`, `tantra-ui-web/docs/plans/README.md` | `npm run lint`, `npm run test`, `npm run build`, `npm run check:api-contract`, and manual dark/light/resize/popout checks all pass. |
+| Phase | Status | Deliverables | Key Files Touched / Created | Exit Gate & Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| **Phase 0: Foundations (Deps, Icons, Themes)** | **✅ Complete** (`b5619d1`, `148a5ad`, `170965f`) | Installed `dockview-react@^8.9.1` (MIT); ported 29 new icons (`324 → 353` total across all 7 categories) into `public/assets/icons/` + `src/assets/icons/{index.ts,manifest.json}`; built `<TantraIcon />` & `IconButton` bridge; created `themes.css` + `dockview-theme.css` + `appearance.ts`; added theme/density/font-scale/macro font preferences (`sans`/`serif`/`sans-serif`/`mono`) in `settings-store.ts` & unlocked Appearance in `SettingsModal.tsx` (per-widget `<WidgetFontSelect />` was later intentionally removed in `170965f` in favor of macro UI font tokens). | `package.json`, `src/assets/icons/*`, `src/components/atoms/{TantraIcon,IconButton}.tsx`, `src/styles/{themes,dockview-theme}.css`, `src/app/{globals.css,layout.tsx}`, `tailwind.config.ts`, `src/lib/{appearance,settings-store}.ts`, `src/components/organisms/SettingsModal.tsx` | **Passed**: `icons:showcase` regenerated (`353` SVGs); dark & light tokens + font presets verified; `tsc`/`lint`/`test` green. |
+| **Phase 1: Workspace Bus & Panel Decoupling** | **✅ Complete** (`b5619d1`) | Implemented `WorkspaceBusProvider`; decoupled the 13 inline right-dock panels out of `ChartWorkspace.tsx`; extracted `WatchlistDetailPanel.tsx`, `SupportPanel.tsx`, and dual-mode `AlertsPanel.tsx`; wired `ResizeObserver` and `data-theme`/`data-mode` `MutationObserver` into `ChartCanvas.tsx`. | `src/lib/workspace-bus.tsx`, `src/components/organisms/{ChartWorkspace,ChartCanvas,WatchlistDetailPanel,SupportPanel,AlertsPanel}.tsx`, `src/components/organisms/*Panel.tsx` / `*Dock*.tsx` | **Passed**: `ChartCanvas` resizes smoothly on container resize and syncs theme changes; all panels mount standalone via `WorkspaceBusProvider`. |
+| **Phase 2: Dockview Shell & Full Route Redirection** | **✅ Complete** (`b5619d1`, `b191310`, `148a5ad`, `bb78b0a`, `9d2ca12`) | Built `DockviewWorkspace.tsx`, `PANEL_REGISTRY` (`src/lib/dockview/panel-registry.tsx`), `TantraDockTab.tsx` (with `X` tab close), `DockviewHeaderActions.tsx` (instant 1-tab-at-a-time scroll in `tab-scroll.ts`), `DockviewTopBar.tsx`, `DockviewWatermark.tsx`, `WidgetCatalogMenu.tsx` (replacing `RightActivatorRail.tsx`), and 4 layout presets; upgraded `workspaces-store.ts` (`v1→v2` migration) & `workspace-deeplink.ts`; moved `CommandPalette.tsx` into global shell; redirected all `(app)/*` routes (`/portfolio/[id]`, `/watchlists/[id]`, `/alerts`, `/chats`, `/support`, `/portfolio`, `/screener`) to `/workspace?open=...`; deleted `AppSidebar.tsx` & `(app)/layout.tsx`; renamed `experimental-analysis` → `analysis` (`bb78b0a`) and deduplicated `research` into `agent-copilot` (`148a5ad`). | `src/components/organisms/dockview/*`, `src/lib/dockview/*`, `src/lib/{dockview-panels,workspaces-store,workspace-deeplink}.ts`, `src/app/workspace/page.tsx`, `src/app/(app)/**`, `src/components/organisms/CommandPalette.tsx` | **Passed**: Legacy `(app)/*` routes redirect into Dockview panels; multi-chart splits, edge groups, floating & popout panels serialize/restore cleanly across reload. |
+| **Phase 3: VibePrompt AI / Agentic Pane** | **✅ Complete** (`b5619d1`, `b191310`, `148a5ad`) | Built `src/components/organisms/agent/*` (`AgentPane`, `AgentEmptyState`, `AgentTurnCard`, `AgentRunTrace`, `ToolPayloadTree`, `StrategyDiffCard`, `AgentComposer`, `PromptBudgetBar`, `AgentSkeletonTurn`); built `agent-trace.ts`, `chat-threads-store.ts`, `chat-threads-sync.ts`; wired chart snip, `scene-bus.ts` `"Render on Chart"`, ticker deep-focus, selective code diff apply, and server `/api/v2/chat/threads` + `/ws/chat` native trace hydration (`tantra-agent` gap `0010` & `tantra-runtime` gap `0014` closed; `tantra-ui` `DisplayBlock::CodeDiff` added). | `src/components/organisms/agent/*`, `src/app/api/chat/route.ts`, `src/lib/{agent-trace,chat-threads-store,chat-threads-sync,chat-scene-blocks}.ts`, `src/lib/dockview/panel-registry.tsx` | **Passed**: End-to-end streaming `/api/chat` run renders step timeline, replay, token meter, markdown, JSON tree, chart overlay scene, and selective code diff staging. |
+| **Phase 4: Cleanup & Verification** | **✅ Code & Tests Complete** (`b5619d1`..`9d2ca12`; live browser smoke pending) | Deleted superseded legacy files (`WorkspaceTabBar.tsx`, `ChatRail.tsx`, `ResearchLanding.tsx`, `ResearchTurn.tsx`, `ToolCallGroup.tsx`, `FollowUpComposer.tsx`, `AppSidebar.tsx`, `WorkspaceShell.tsx`, `RightIconDock.tsx`, `ResearchTabContent.tsx`, `(app)/layout.tsx`); removed all inline `svgPath` strings from `src/lib/chart-controls.ts` (`0` remaining) and wired `<TantraIcon />` across Dockview chrome, chart drawing toolbar, and agent pane (`45` non-toolbar/panel widgets retain legacy `lucide-react` imports); added unit suites (`agent-trace.test.ts`, `appearance.test.ts`, `chart-controls.test.ts`, `dockview-panels.test.ts`, `chat-threads-sync.test.ts`, `local-routes-contract.test.ts`, `tab-scroll.test.ts`). | `src/lib/*.test.ts`, `src/lib/dockview/*.test.ts`, `src/lib/chart-controls.ts`, `tantra-ui-web/docs/plans/README.md` | **Passed (automated)**: `npx tsc --noEmit`, `npm run lint`, and `npm test` (`124/124` tests across 34 suites at `9d2ca12`) green; **Pending**: interactive dark/light/resize/popout browser smoke and re-syncing `check:api-contract` OpenAPI schema if drifted. |
 
 ---
 
@@ -301,4 +301,4 @@ Expose a **Layouts** menu in the 36px top bar (accessible via `layout-1` / `work
 | **Multi-Chart Inspector Ambiguity** (2+ `chart` panels open) | Track `focusedChartPanelId` in `WorkspaceBusProvider` via `onDidActivePanelChange`; inspector panels display the bound symbol badge and support a `pin-panel` lock toggle. |
 | **Next.js 15 SSR Hydration Mismatch** | Render `DockviewReact` strictly behind `"use client"` after `useWorkspaces().migrated === true` so layout measurements never execute during SSR. |
 | **Profile Sync Payload Bloat** | Keep panel `params` minimal (`{ kind, symbol?, portfolioId?, watchlistId?, mode? }`) and exclude transient conversation transcripts from `SerializedDockview`. |
-| **Upstream Gap Tracking** | Any new `AgentRunTrace` capabilities requiring backend metadata (`thought_delta`, native per-step token counts, server-side thread persistence) remain client-estimated/local until tracked or closed in `tantra-runtime` / `tantra-agent` gap docs. |
+| **Upstream Gap Tracking** | Native `AgentRunTrace` metadata (`thought_delta`, native per-step `token_usage`, `raw_input`/`raw_output`, `code_diff`, server thread persistence) has now been implemented in `tantra-agent` (gap `0010` closed) and `tantra-runtime` (gap `0014` closed), with client-side fallback estimation preserved in `agent-trace.ts` when fields are absent. |
