@@ -1,6 +1,6 @@
 # 0006 — Runtime API Surface: One Versioned, Fail-Closed, Generated Contract
 
-**Status**: Accepted 2026-11-22 (decisions in §6). Landed in `tantra-runtime`: R0 `dc9aeab`, R1a `ce75b69`, R1b (in `19f317f`), R1c `7c09ed8`, R2a `77274ae`, R2c `e007186`, R2d `a9dc41d` (+ `31a2a9b`). Open: derivatives (needs design 0005 P2), runtime gaps 0013/0015. Next: R3 clients.
+**Status**: Accepted 2026-11-22 (decisions in §6). Landed in `tantra-runtime`: R0 `dc9aeab`, R1a `ce75b69`, R1b (in `19f317f`), R1c `7c09ed8`, R2a `77274ae`, R2c `e007186`, R2d `a9dc41d` (+ `31a2a9b`). R3 landed: runtime-client `ed930f7`, ui `320e32a` `c5e7f70`, agent `ae6f790`, ui-web `86d80f2`, ffi `c1bc15a`, examples `6889efb`. Open: derivatives (needs design 0005 P2), runtime gaps 0013/0015, R4 leftovers (docs regenerated from OpenAPI, CI grep gate, web token-entry UI / REST BFF proxy, `Client.inproc`), R5 removal (decide §6.1 v1 lifetime first).
 **Scope**: The HTTP + WebSocket surface of `tantra-runtime-api-rest` (`tantra serve`), and every
 client of it: `tantra-ui-web` (browser + Next.js BFF), `tantra-ui` (TUI, CLI), `tantra-agent-mcp`,
 the Python SDK and examples, and `tantra-docs`.
