@@ -178,7 +178,9 @@ With that in place:
 | R5 remove | Drop the root mount, `/api/v1`, the aliases, `/ws`, `/ws/market`, `/ws/live` and `/ws/chat` after one deprecation window. | Route count drops by about half; all suites green. |
 
 ## 6. Decisions (2026-11-22)
-1. **v1 lifetime.** Open: decide before R5 (frozen-forever compatibility layer vs removal after R4).
+1. **v1 lifetime.** Decided 2026-11-22: **remove in R5** once every in-workspace client is on `/api/v2` (R4). R5 drops
+   `/api/v1`, the un-prefixed root mount, the 308 aliases and `/ws`, `/ws/market`, `/ws/live`. `/api/v2/ws/chat` stays until
+   agent plan 0019 Phases 4–6 retire it (web chat → ACP is **not** part of this design's R4).
 2. **Python SDK home.** `tantra.client` moves into the `tantra-ffi` wheel with models generated from
    `openapi.v2.json`; examples switch to it (R3).
 3. **Action paths.** Sub-resource verbs: `POST /orders/{id}/cancel`, `POST /approvals/{id}/approve|reject`,
@@ -191,3 +193,5 @@ With that in place:
    WebSocket aliases (`/ws`, `/ws/market`, `/ws/live`) can't follow a redirect, so they stay served with
    `Deprecation` + `Link` until R5.
 7. **agent-mcp.** R3 adds the contract test in `tantra-agent-mcp` (`library_http.rs` + a new test only).
+8. **`Client.inproc`.** Implemented in `tantra-ffi` (L4 → L3 is allowed): the wheel embeds the runtime router and dispatches
+   `/api/v2` requests in-process, with the same envelope and errors as `Client.http`.
