@@ -1,6 +1,6 @@
 # 0006 — Runtime API Surface: One Versioned, Fail-Closed, Generated Contract
 
-**Status**: Proposed. Review written 2026-11-21; implementation starts next session.
+**Status**: Accepted 2026-11-22 (decisions in §6). R0 landed (runtime `dc9aeab`), R1a (`ce75b69`) and R1b (in `19f317f`) landed; R1c next.
 **Scope**: The HTTP + WebSocket surface of `tantra-runtime-api-rest` (`tantra serve`), and every
 client of it: `tantra-ui-web` (browser + Next.js BFF), `tantra-ui` (TUI, CLI), `tantra-agent-mcp`,
 the Python SDK and examples, and `tantra-docs`.
@@ -177,14 +177,17 @@ With that in place:
 | R4 migrate callers | Web experimental-analysis → `/studies/...`; web chat → ACP via the BFF (agent 0019 Phase 4); CLI `scan`; examples; TUI `/acp` → `/api/v2/acp`; docs regenerated from OpenAPI. | Zero hits for un-prefixed or v1 calls (grep gate in CI). |
 | R5 remove | Drop the root mount, `/api/v1`, the aliases, `/ws`, `/ws/market`, `/ws/live` and `/ws/chat` after one deprecation window. | Route count drops by about half; all suites green. |
 
-## 6. Open decisions
-1. **v1 lifetime.** Freeze now and remove after R4, or keep `/api/v1` permanently as a frozen
-   compatibility layer for external scripts.
-2. **Python SDK home.** `tantra.client` isn't in this workspace. Bring it into `tantra-ffi`
-   (`tantra` wheel) with generated models, or keep it external.
-3. **Action-path convention.** `POST /orders/{id}/cancel` (sub-resource verbs, proposed) vs
-   `DELETE /orders/{id}`, and `screener/scans` vs `screener/scan`.
-4. **Stream protocol.** Plain JSON channel frames (proposed) vs SSE for read-only feeds plus WS
-   only for commands.
-5. **Client config location.** A `runtime` block in `tantra.jsonc` (proposed, shared with LLM
-   config) vs a separate `~/.config/tantra/client.jsonc`.
+## 6. Decisions (2026-11-22)
+1. **v1 lifetime.** Open: decide before R5 (frozen-forever compatibility layer vs removal after R4).
+2. **Python SDK home.** `tantra.client` moves into the `tantra-ffi` wheel with models generated from
+   `openapi.v2.json`; examples switch to it (R3).
+3. **Action paths.** Sub-resource verbs: `POST /orders/{id}/cancel`, `POST /approvals/{id}/approve|reject`,
+   `GET /screener/scans`.
+4. **Stream protocol.** One authenticated `GET /stream` WebSocket with JSON channel frames
+   (`subscribe {channel, ids}`); paper `place_order`/`cancel_order` commands gated per message by `trade`.
+5. **Client config.** A `runtime` block in `tantra.jsonc` (URL + `{file:}` token), shared with the LLM
+   provider config; replaces `TANTRA_RUNTIME_URL` / `TANTRA_RUNTIME_TOKEN`.
+6. **Old paths in R2.** Non-canonical paths answer **308** to the canonical path (not served-with-headers).
+   WebSocket aliases (`/ws`, `/ws/market`, `/ws/live`) can't follow a redirect, so they stay served with
+   `Deprecation` + `Link` until R5.
+7. **agent-mcp.** R3 adds the contract test in `tantra-agent-mcp` (`library_http.rs` + a new test only).
