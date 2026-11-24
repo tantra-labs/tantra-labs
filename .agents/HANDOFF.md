@@ -2,63 +2,35 @@
 
 **Status**: Bottoms-up Fincept/Quantcept gap-closing build order
 (`docs/future-work-bottoms-up-build-order.md`) — Layers 0–6 GREEN.
-**Latest landed**: **Root Plan `0020` Dockview + VibePrompt UI + Multi-Font System & Backend Gap Closures (`tantra-ui-web`, `tantra-agent` gap `0010`, `tantra-runtime` gap `0014`, `tantra-ui` `CodeDiff`) COMPLETE 2026-11-22**; T21/T22 cross-repo architectural unification (`2026-11-20`); T14 Paper Exchange, T12 EE+, T18 fixes, and T17 Lakehouse v3 Phases 1–3.
-Date: 2026-11-22 · Workspace: `tantra-labs`
+**Latest landed**: **`tantra-runtime` Gap `0016` (`GET /api/v2/options/chain`) CLOSED & `tantra-ui-web` wired 2026-11-23**; Root Plan `0020` Dockview + VibePrompt UI + Multi-Font System & Backend Gap Closures (`tantra-ui-web`, `tantra-agent` gap `0010`, `tantra-runtime` gap `0014`, `tantra-ui` `CodeDiff`) COMPLETE 2026-11-22; T21/T22 cross-repo architectural unification (`2026-11-20`); T14 Paper Exchange, T12 EE+, T18 fixes, and T17 Lakehouse v3 Phases 1–3.
+Date: 2026-11-23 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md`
 
-## Latest Batch — Runtime API surface consolidation (root design `0006`) R0–R3, COMPLETE 2026-11-22
+## Latest Batch — `tantra-runtime` Gap `0016` (`GET /api/v2/options/chain`) & `tantra-ui-web` Option Chain Client, COMPLETE 2026-11-23
 
-- **Runtime** (`tantra-runtime`): fail-closed auth + `RouteTable` registry carrying scope/body cap (`dc9aeab`, `ce75b69`);
-  OpenAPI generated from the registry (in `19f317f`); v2 envelope + `ErrorCode::http_status()` (`7c09ed8`); canonical
-  `/api/v2` paths with 308 aliases, `/orders/{id}/cancel`, `/approvals/{id}/*`, `/alerts`, `/stream` WS (`77274ae`,
-  `e007186`, `a9dc41d`, `31a2a9b`). **Security fixes**: keyless orders were keyed by constants `"rest"`/`"approved"`/`"ws"`.
-- **Clients**: `tantra-runtime-client` crate (`ed930f7`); TUI/CLI on it + `tantra.jsonc` `runtime` block (ui `320e32a`,
-  `c5e7f70`; agent `ae6f790` incl. MCP contract test); web on canonical v2 + bearer token (ui-web `86d80f2`);
-  Python `tantra.client` (ffi `c1bc15a`, examples `6889efb`).
-- **Open**: runtime gaps 0013 (per-caller journal/paper account), 0015 (34 status/code mismatches); `/derivatives`
-  (needs design 0005 P2); R4 leftovers (docs from OpenAPI, CI grep gate, web token UI); R5 removal after §6.1 v1 decision.
-- Pre-existing runtime test failures (fail at HEAD before this batch): `bar_ingest::posted_bars_fill_a_market_order_and_refresh_quotes`,
-  `trade_journal::overview` (likely date-dependent default range).
-- **Relaunch `tantra serve`** from the current build: ui-web now calls `/studies/experimental-analysis/*` and `/screener/scans`.
+Closed `tantra-runtime/docs/gaps/0016-live-option-chain-endpoint.md`:
+- **`tantra-runtime` (`tantra-runtime-api` + `tantra-runtime-api-rest`, working tree)**:
+  - Pure DTOs & analytics (`tantra-runtime-api::options_chain`, `#![deny(missing_docs)]`, zero I/O, zero clock, `Decimal` throughout): `OptionsChainQuery` (`deny_unknown_fields`), `OptionsChainResponse`, `OptionChainRowDto`, `OptionLegSnapshotDto`, `OptionExpiryDto`, `OptionChainSource`, Tuesday expiry schedule, ATM/PCR/Max Pain/IV regime/contract symbol helpers.
+  - Registered `GET /api/v2/options/chain` in `v2_canonical.rs` and `openapi.rs`, regenerated `schema/openapi.v2.json`.
+  - Handler (`tantra-runtime-api-rest/src/options_chain.rs`) queries `InstrumentChainReader` + `LiveQuoteStore` + `AppState::oi_store()` (`ParquetOpenInterestStore` wired in `from_catalog_dir`/`from_lakehouse_v3` or `InMemoryOpenInterestStore`) + `BlackScholesModel` IV solver/Greeks; preserves `bid: null`/`ask: null` when unquoted and falls back honestly to `theoretical_bs` when no contracts exist.
+  - Verified: `options_chain_tests` (4), `options_chain` (5), `openapi_conformance` (8), `envelope_enforced` (4), `route_registry` (6), `auth_scope` (3), `market_data` (29), `cargo fmt --check`, `clippy -D warnings` (`tantra-runtime-api`), `make check`, and `make prod` green.
+- **`tantra-ui-web` (working tree)**:
+  - Regenerated `src/lib/api-schema.d.ts` (`npm run codegen:api`), wired `src/lib/option-chain.ts` (`mapOptionsChainResponse`, `loadOptionChainSnapshot`) to `GET /api/v2/options/chain`, and added live-payload + offline-fallback tests in `src/lib/option-chain.test.ts`. Verified: `npx tsc --noEmit`, `npm test` (147/147 across 39 suites), `npm run lint`, `npm run check:api-contract`, and `npm run build` green.
 
-## Latest Batch — Root Plan `0020` Full Stack (UI Dockview/Fonts + Upstream Agent/Runtime/TUI Gaps), COMPLETE 2026-11-22
+## Prior Batch — Root Plan `0020` Full Stack (UI Dockview/Fonts + Upstream Agent/Runtime/TUI Gaps), COMPLETE 2026-11-22
 
-Executed Phases 0–4 of `docs/plans/0020-dockview-vibeprompts-ui-web-migration.md`, follow-on UX polish (`b191310` + working tree), and closed upstream gaps `tantra-agent` `0010` and `tantra-runtime` `0014`:
-- **`tantra-ui-web` (`b191310` + verified working tree)**:
-  - **Shell & Iconography**: `dockview-react@8.9.1` workstation, top-bar `WidgetCatalogMenu` launcher + `X` tab close (right activator rail removed), 4 presets, `v1→v2` layout migration, `CommandPalette` Dockview dispatch, `(app)/*` redirects, **353** SVG taxonomy icons (`TantraIcon`/`IconButton` across `chart-controls.ts`, toolbars, switcher).
-  - **VibePrompt `agent/*` Pane & Thread Sync**: `AgentPane` (`AgentTurnCard`, `AgentRunTrace`, `PromptBudgetBar`, `StrategyDiffCard`, `ToolPayloadTree`), server `/api/v2/chat/threads` sync (`chat-threads-sync.ts`, `chat-threads-store.ts`) + native `thought_delta`/`token_usage`/`raw_input`/`raw_output`/`code_diff` hydration (`src/app/api/chat/route.ts`), and consolidated duplicate `ResearchTabContent` into `agent-copilot` (`Quant Copilot`, 24 `DOCK_PANEL_KINDS`; legacy `?open=research` redirects preserved).
-  - **Multi-Font System & Built-in Per-Widget Selectors**: Global `SettingsModal` Appearance backing font groups (`Sans`: `Open Sans`/`Fira Sans`/`IBM Plex Sans`; `Serif`: `IBM Plex Serif`/`Merriweather`/`Lora`; `Sans Serif`: `Roboto`/`Roboto Condensed`/`Inter`; `Mono`: `Cousine`/`Ubuntu Mono`/`Roboto Mono` in `src/lib/appearance.ts` + `src/app/layout.tsx`) and built-in `<WidgetFontSelect />` (`Sans | Serif | Sans Serif | Mono`, persisted via `src/lib/widget-fonts.ts`) wired into all 24 panel organisms. Verified: `npx tsc --noEmit`, `npm run lint`, `npm test` (126/126 across 35 suites), `npm run build`, and `npm run check:api-contract` (OpenAPI in sync) all GREEN.
-- **Upstream Gaps Closed & Verified**:
-  - **`tantra-agent` (gap `0010` CLOSED)**: Added `DisplayBlock::CodeDiff`/`CodeDiffHunk` & `SessionStore` single/update/archive/delete methods (`tantra-agent-core`), `ChatStreamEvent::{ThinkingDelta,Usage}` (`tantra-agent-llm`), and `SessionEvent::{ThinkingDelta,Usage}`, `ToolStarted::raw_input`, `ToolFinished::raw_output`, and `CodeDiff` extraction (`tantra-agent-chat`); `fmt --check`, `clippy -D warnings`, targeted suites, and `make prod` green.
-  - **`tantra-runtime` (gap `0014` CLOSED)**: Implemented `SqlxSessionStore` session lifecycle CRUD (`tantra-runtime-persistence/src/sessions.rs`), caller/workspace-scoped `/api/v2/chat/threads` CRUD (`chat_threads.rs`, `v2.rs`), `/ws/chat` structured trace forwarding & `thread_id` ownership check (`chat.rs`), and regenerated `openapi.rs`/`schema/openapi.v2.json`; `chat_ws_gap0014` (4), auth/openapi/version conformance suites, `tantra-runtime-persistence`, `fmt --check`, `clippy -D warnings`, `make check`, and `make prod` green.
-  - **`tantra-ui` (verified)**: Added `DisplayBlock::CodeDiff` rendering to `tantra-cli::block_render` and `tantra-tui::{result_block,analysis_view}`; `fmt --check`, `clippy -D warnings`, targeted `tantra-tui` tests (16), `make check`, and `make prod` green.
+Executed Phases 0–4 of `docs/plans/0020-dockview-vibeprompts-ui-web-migration.md`, follow-on UX polish (`8732b7a` in `tantra-ui-web`), and closed upstream gaps `tantra-agent` `0010` and `tantra-runtime` `0014` (`tantra-ui-web` Dockview workstation, VibePrompt `agent/*` pane, multi-font system, `SqlxSessionStore` threads CRUD, and `tantra-ui` `CodeDiff`).
 
-## Latest Batch — Architectural-analysis unification (T21/T22 cross-repo), COMPLETE 2026-11-20
+## Prior batches (2026-11-06..2026-11-20, collapsed per `.agents/rules/handoff-hygiene.md`)
 
-Source: `docs/plans/Here is an architectural analysis of the.md` (§2 strategies duplication, §3 cross-repo design changes). All landed with per-repo commits:
-- **strategies**: single Decimal indicator kernel; EE+/ORB-15 in `tantra_library`; gap 0008 closed; PR recipes emit `OverlayScene` + runnable `catalog_steps`; `WheelSdkBridge`; legacy `catalog/` retired; `LakehouseBarSource`.
-- **data / market**: data gap 0026 closed (`LakehouseBarReader`); market ATR/CMO in `rust_decimal` (gap 0009 stays open).
-- **runtime / agent**: runtime plan 0010 (`/api/v2/studies/*`, fail-closed JWT auth); agent plan 0017 (`IndicatorLibraryPort`, `tantra_library_*` MCP proxy).
-- **ui / ui-web**: generic `OverlayScenePrimitive`; `/api/v2/studies` client; `wasm32` fix (`core 601ba3f`); Indicator Lab (`ui-web 40b9210`, plan 0017).
-- **Next**: T21.6 (`StrategyLoopPort` + `DisplayBlock::Scene` in `tantra-agent`, file as agent plan 0018); live browser check of `OverlayScene` + Indicator Lab + Dockview `DockviewWorkspace`.
-  `tantra-strategies` tests need `PYTHONPATH=../tantra-ffi/python:../tantra-examples:../tantra-data/src:.`.
-
-## Latest Batch — Lakehouse v3 (root plan 0011) Phases 1–3 COMPLETE 2026-11-18
-
-- **`tantra-data`** (`plan 0009` A–C: `ee802e9`/`398eeb7`/`d64c877`, gap `0025` closed): CAS (`objects/sha256`), `catalog.duckdb`, `trees/` export, `tantra-catalog` CLI.
-- **`tantra-market`** (gap `0008` closed) + **`tantra-runtime`** (gap `0011` closed): `ManifestResolver`, `Lakehouse::compact_v3`, `CatalogInstrumentMaster` Decimal128, `CatalogLoader` snapshot pinning & RowGroup pruning, `BacktestRequest.data_ref`. Phase 4 (legacy fallback removal) remains.
-
-## Prior batches (2026-11-06..2026-11-17, collapsed per `.agents/rules/handoff-hygiene.md`)
-
-- **Reading-List study book (`docs/reading-list/`, 2026-11-17)**: 24 chapters + 6 appendices + AI study-companion templates (`mdbook build docs/reading-list` clean).
-- **T12.9 Studio + T18 independent-fixes + EE+ platform (2026-11-17)**: `tantra-ui` `013a5d6`; T18.1–T18.6 (`data` 0015/0023/0024, `runtime` 0009/0010, `strategies` 0007 closed); TradePlanner/TradeManager/OCO/FIFO bracket PnL (`core` 08dffea, `ledger` ff73eaa/697b428, `exec` fc4a5a6).
-- **T14 Standalone Paper Exchange (2026-11-16, root plan 0007)**: `tantra-exec-paper`, runtime `/orders` + `/ws/live` + `paper serve`, wheel `tantra.paper`, WASM/UI/TUI/CLI, cross-language golden parity, `tantra-docs` user/paper guides.
-- **T13 `_kernel` dismantle & single `.venv` (2026-11-16, root plan 0006)**: wheel `tantra.{portfolio,risk,options,metrics,calendar}`, `tantra_examples/harness/`, all 8 `tantra-examples` gaps closed.
-- **T0–T9 foundations (2026-11-12..2026-11-15)**: platform rename (`honba-*` → `tantra-*`), crate topology consolidation (plan 0003), risk controls (plan 0002), ledger settlement & FIFO corporate actions (plan 0005), data/market readers (T3/T5/T7), OpenAPI v2 spec, `tantra-strategies` ticks/live/baskets (T8).
+- **Architectural-analysis unification (T21/T22 cross-repo, 2026-11-20)**: `strategies` single Decimal kernel / EE+ / ORB-15 / `OverlayScene`; `data` gap `0026`; `runtime` `/api/v2/studies/*` + fail-closed JWT auth; `agent` `IndicatorLibraryPort`; `ui-web` Indicator Lab + `OverlayScenePrimitive`.
+- **Lakehouse v3 (root plan `0011`, Phases 1–3, 2026-11-18)**: `tantra-data` CAS (`objects/sha256`), `CatalogInstrumentMaster` Decimal128, `CatalogLoader` snapshot pinning & RowGroup pruning.
+- **Reading-List study book (`docs/reading-list/`, 2026-11-17)**: 24 chapters + 6 appendices (`mdbook build` clean).
+- **T12.9 Studio + T14 Paper Exchange + T13/T0–T9 foundations (2026-11-12..2026-11-17)**: `tantra-exec-paper`, `/orders` + `/ws/live`, platform rename (`honba-*` → `tantra-*`), OpenAPI v2 spec, `tantra-strategies` ticks/baskets.
 
 ## Immediate Next Step
-1. **Browser smoke QA (`tantra-ui-web` plan `0020`)**: Verify `/workspace` Dockview layout switching, `WidgetCatalogMenu`, per-widget `<WidgetFontSelect />` + `SettingsModal` fonts, `(app)/*` redirects, and `AgentPane` streaming/thread sync against a running `tantra serve` runtime; commit the pending working trees across `tantra-ui-web`, `tantra-agent`, `tantra-runtime`, `tantra-ui`, and root `tantra-labs` when ready.
-2. **Remaining chat/runtime gaps**: Implement `tantra-runtime/docs/gaps/0013` (per-caller journal & paper account), `0015` (error code/status mismatches), `tantra-agent/docs/gaps/0009` (`DisplayBlock::Chart` series refs), and T21.6 (`StrategyLoopPort`).
+1. **Browser smoke QA (`tantra-ui-web` + `GET /api/v2/options/chain`)**: Verify Option Chain live/fallback rendering and Dockview workspace against a running `tantra serve` runtime; commit pending working trees across `tantra-runtime` and `tantra-ui-web` when ready.
+2. **Remaining chat/runtime gaps**: Implement `tantra-runtime/docs/gaps/0013` (per-caller journal & paper account), `tantra-agent/docs/gaps/0009` (`DisplayBlock::Chart` series refs), and T21.6 (`StrategyLoopPort`).
 3. **Active cross-repo roadmaps**: `docs/plans/0009` (Qullamaggie), `docs/plans/0008` (Trade Signal Generator), `docs/plans/0010` (Screener/QVM P2–P9), `docs/plans/0019` (Codebase audit & unwired subsystem wiring), and T3.3 remaining feeds (`upstox`/`fyers`/`angelone`).
 
 ## Operating Invariants
