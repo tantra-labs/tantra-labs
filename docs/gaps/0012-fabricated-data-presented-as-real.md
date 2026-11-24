@@ -6,14 +6,14 @@
 
 ## What's stubbed or hardcoded
 
-Several surfaces return invented values instead of an explicit "unavailable": MCP tools report fabricated "queued/started/ALL PASSED" results for backtests and optimisation; the CLI drives strategy run/tune/suggest from synthetic sine-wave bars; the web option chain fabricates open interest, OI change, LTP change and skew in the live path because the runtime endpoint lacks those fields; the Python adapters turn missing prices and margins into zero; the FFI `StrategyRunner` "GIL-free batch" is a placeholder checksum. At the root of this, `PortError` is stringly-typed and has no `unavailable` variant, so there is no typed way to say "not provided".
+Several surfaces return invented values instead of an explicit "unavailable": MCP tools report fabricated "queued/started/ALL PASSED" results for backtests and optimisation; the CLI drives strategy run/tune/suggest from synthetic sine-wave bars; the web option chain silently falls back to a fabricated chain (open interest, OI change, LTP change, skew) whenever loading fails, while the runtime endpoint itself encodes missing values as zeros or modelled IV with no per-field provenance; the Python adapters turn missing prices and margins into zero; the FFI `StrategyRunner` "GIL-free batch" is a placeholder checksum. At the root of this, `PortError` is stringly-typed and has no `unavailable` variant, so there is no typed way to say "not provided".
 
 | Repo tracker | Severity | What it covers |
 |---|---|---|
-| [tantra-runtime 0027](../../tantra-runtime/docs/gaps/0027-options-chain-oi-change-and-iv-fields.md) | high | Options-chain endpoint lacks OI-change, LTP-change, IV/skew |
+| [tantra-runtime 0027](../../tantra-runtime/docs/gaps/0027-options-chain-oi-change-and-iv-fields.md) | high | Options-chain fields encode missing data as zero/model values, no per-field provenance |
 | [tantra-agent 0011](../../tantra-agent/docs/gaps/0011-mcp-stub-tools-fabricate-results.md) | high | MCP `run_backtest`/`optimize_strategy`/`explain_decision` fabricate results |
 | [tantra-ui 0008](../../tantra-ui/docs/gaps/0008-synthetic-bars-in-run-tune-suggest.md) | high | Sine-wave bars drive run/tune/suggest |
-| [tantra-ui-web 0079](../../tantra-ui-web/docs/gaps/0079-option-chain-fabricated-fields.md) | high | Option chain fabricates OI, OI change, LTP change, skew |
+| [tantra-ui-web 0079](../../tantra-ui-web/docs/gaps/0079-option-chain-fabricated-fields.md) | high | Option chain silently falls back to a fabricated chain on any load error |
 | [tantra-adapters 0013](../../tantra-adapters/docs/gaps/0013-missing-data-as-zero.md) | high | Missing data fabricated as zero (prices, margins) |
 | [tantra-core 0005](../../tantra-core/docs/gaps/0005-typed-port-errors.md) | medium | `PortError` stringly-typed, no `unavailable` |
 | [tantra-ffi 0009](../../tantra-ffi/docs/gaps/0009-strategy-runner-placeholder.md) | medium | `StrategyRunner` placeholder checksum |
@@ -25,8 +25,8 @@ A trader or an LLM agent reading "ALL PASSED", a zero margin, or a plausible-loo
 ## How to close it
 
 1. `tantra-core`: add typed `PortError` with `unavailable` and use it as the port contract (0005).
-2. `tantra-runtime`: serve the real OI-change/LTP-change/IV fields from the options-chain endpoint (0027).
-3. `tantra-ui-web`: remove the fabricated fields and render "n/a" until the endpoint supplies them (0079).
+2. `tantra-runtime`: make missing options-chain values nullable with per-field provenance instead of zeros/modelled IV (0027).
+3. `tantra-ui-web`: replace the silent `catch {}` fallback to a fabricated chain with an explicit unavailable state, and render "—" for null fields (0079).
 4. `tantra-agent`: MCP stub tools return an explicit unavailable error or call the real backtest port (0011).
 5. `tantra-ui`: run/tune/suggest take real lakehouse bars or fail with a clear message (0008).
 6. `tantra-adapters`: missing data raises or returns `None`, never `0` (0013).
