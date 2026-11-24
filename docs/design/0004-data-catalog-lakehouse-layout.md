@@ -1,6 +1,6 @@
 # 0004 — Unified Data Catalog & Git-Style Content-Addressed Lakehouse (v3)
 
-**Status**: Proposed (decision pending implementation) — 2026-11-17  
+**Status**: **Phases 1–3 Implemented 2026-11-18** (Root Plan `0011`; `tantra-data` gap `0025`, `tantra-market` gap `0008`, `tantra-runtime` gap `0011` closed) — Phase 4 (legacy fallback removal) and CAS locking/GC hardening (`tantra-data` `0027`–`0032`, root gap `0018`) remain open.  
 **Scope**: Cross-repo market, derivatives, reference, and fundamentals storage contract across `tantra-data` (`ParquetCatalog`, DuckDB stores, `LakehouseBridgeExporter`, `CoverageLedger`), `tantra-market-store` (`Lakehouse`, `CatalogInstrumentMaster`, `ParquetOpenInterestStore`, projection readers), and `tantra-runtime-backtest` (`CatalogLoader`).  
 **Inputs**: Verified against `tantra-market/crates/tantra-market-store/src/{lakehouse,dataset,instruments,open_interest}.rs`, `tantra-data/tantra_data/{adapters/parquet_catalog,service/bridge_exporter}.py`, `tantra-runtime/crates/tantra-runtime-backtest/src/catalog.rs`, and `tantra-data/docs/gaps/0016-intraday-option-chain-snapshot-lakehouse.md`.
 
@@ -99,6 +99,6 @@ Why internal sort keys replace `<instrument>/year/month/day`:
 
 - Root Master Plan: [`docs/plans/0011-unified-data-catalog-lakehouse-v3.md`](../plans/0011-unified-data-catalog-lakehouse-v3.md)
 - Provider Plan (`tantra-data`): [`tantra-data/docs/plans/0009-unified-lakehouse-v3-and-cas-manifest.md`](../../tantra-data/docs/plans/0009-unified-lakehouse-v3-and-cas-manifest.md)
-- Legacy fragmentation & option-chain alignment (`tantra-data`): [`tantra-data/docs/gaps/0025-legacy-catalog-layout-and-flat-parquet-fragmentation.md`](../../tantra-data/docs/gaps/0025-legacy-catalog-layout-and-flat-parquet-fragmentation.md), [`tantra-data/docs/gaps/0016-intraday-option-chain-snapshot-lakehouse.md`](../../tantra-data/docs/gaps/0016-intraday-option-chain-snapshot-lakehouse.md)
+- Legacy fragmentation & option-chain alignment (`tantra-data`, both closed): [`tantra-data/docs/gaps/README.md#closed-gaps`](../../tantra-data/docs/gaps/README.md#closed-gaps) (gaps `0016`, `0025`); open CAS/GC gaps in [`tantra-data/docs/gaps/README.md`](../../tantra-data/docs/gaps/README.md) (`0027`–`0032`)
 - Rust Lakehouse v3 store reader/writer (`tantra-market`): [`tantra-market/docs/gaps/0008-lakehouse-v3-manifest-and-snapshot-reader.md`](../../tantra-market/docs/gaps/0008-lakehouse-v3-manifest-and-snapshot-reader.md)
 - Backtest commit pinning (`tantra-runtime`): [`tantra-runtime/docs/gaps/0011-backtest-catalog-manifest-pinning.md`](../../tantra-runtime/docs/gaps/0011-backtest-catalog-manifest-pinning.md)

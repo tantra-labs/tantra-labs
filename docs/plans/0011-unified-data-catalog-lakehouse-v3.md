@@ -15,7 +15,7 @@ Replace `tantra-labs`'s four divergent on-disk data layouts (`*.NSE.parquet`, `c
 | Capability | Current State | Tracking Doc |
 |---|---|---|
 | Per-symbol & flat Parquet fragmentation | **Closed** — migrated to v3 hierarchy & CAS manifests | [`tantra-data` gap 0025 (closed)](../../tantra-data/docs/gaps/README.md#closed-gaps) |
-| Option-chain intraday snapshots | Aligned to `date=YYYY-MM-DD` sorted by `(expiry, strike, option_type, as_of_ts)` | [`tantra-data` gap 0016](../../tantra-data/docs/gaps/0016-intraday-option-chain-snapshot-lakehouse.md) |
+| Option-chain intraday snapshots | Aligned to `date=YYYY-MM-DD` sorted by `(expiry, strike, option_type, as_of_ts)` | [`tantra-data` gap 0016 (closed)](../../tantra-data/docs/gaps/README.md#closed-gaps) |
 | CAS object store, manifests, compaction & CLI | **Implemented** — `objects/sha256`, `refs/`, `commits/`, `trees/`, `views/`, `catalog.duckdb` + CLI | [`tantra-data` plan 0009](../../tantra-data/docs/plans/0009-unified-lakehouse-v3-and-cas-manifest.md) |
 | Rust Lakehouse v3 + Decimal `instruments` schema | **Closed 2026-11-18** — `ManifestResolver`, post-close CAS compaction, `CatalogInstrumentMaster` `Decimal128(18, 4)`, OI & projection readers | [`tantra-market` gap 0008 (closed)](../../tantra-market/docs/gaps/README.md#closed-gaps) |
 | Deterministic backtest data pinning & `tantra serve` v3 | **Closed 2026-11-18** — `CatalogLoader` `data_ref`/alias/RowGroup pruning, `BacktestRequest.data_ref`, `RunManifest` provenance, `prepare_server` v3 detection | [`tantra-runtime` gap 0011 (closed)](../../tantra-runtime/docs/gaps/README.md#closed-gaps) |
@@ -49,7 +49,6 @@ Dependencies & synergies:
 
 - [`docs/design/0004-data-catalog-lakehouse-layout.md`](../design/0004-data-catalog-lakehouse-layout.md)
 - [`tantra-data/docs/plans/0009-unified-lakehouse-v3-and-cas-manifest.md`](../../tantra-data/docs/plans/0009-unified-lakehouse-v3-and-cas-manifest.md)
-- [`tantra-data/docs/gaps/0025-legacy-catalog-layout-and-flat-parquet-fragmentation.md`](../../tantra-data/docs/gaps/0025-legacy-catalog-layout-and-flat-parquet-fragmentation.md)
-- [`tantra-data/docs/gaps/0016-intraday-option-chain-snapshot-lakehouse.md`](../../tantra-data/docs/gaps/0016-intraday-option-chain-snapshot-lakehouse.md)
+- [`tantra-data/docs/gaps/README.md#closed-gaps`](../../tantra-data/docs/gaps/README.md#closed-gaps) (gaps `0016`, `0025`)
 - [`tantra-market/docs/gaps/README.md#closed-gaps`](../../tantra-market/docs/gaps/README.md#closed-gaps) (gap `0008`)
 - [`tantra-runtime/docs/gaps/README.md#closed-gaps`](../../tantra-runtime/docs/gaps/README.md#closed-gaps) (gap `0011`)

@@ -1,6 +1,6 @@
 # 0001 — Crate Topology Audit & Target Arrangement (tantra-labs)
 
-**Status**: Proposed (design / audit) — filed 2026-11-12
+**Status**: **Implemented 2026-11-13** (Plan `0003` Complete; §4.2 facade ADR active; see [`docs/gaps/0001`](../gaps/0001-market-broker-feed-stubs.md) for remaining 3 market feeds)
 **Scope**: All 9 Rust workspaces and their crate inventories (72 crates); Python repos out of scope
   except where their broker adapters overlap Rust broker crates.
 **Inputs**: Verified by direct inspection of each workspace `Cargo.toml` and every crate's `src/`

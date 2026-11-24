@@ -1,6 +1,6 @@
 # 0002 — Reduce-Only Enforcement Contract (Risk Gate ↔ Runtime REST)
 
-**Status**: Accepted (decision recorded) — 2026-11-13
+**Status**: Accepted (decision recorded) — 2026-11-13 (see 2026-11-24 re-evaluation note below)
 **Scope**: Cross-repo behavioral contract between `tantra-risk` (position-free gate) and
   `tantra-runtime-api-rest` (position-aware order route), plus the price-collar contract.
 **Inputs**: Verified against `tantra-risk/src/engine.rs`, `tantra-risk/tests/plan0002_tests.rs`
@@ -46,10 +46,16 @@ data, so the band edge is the conservative fill proxy; skipped when no band exis
 - A future position-aware mode inside `tantra-risk` would need a position port into the pure
   gate — deliberately out of scope.
 
-## 5. Referenced docs
+## 5. 2026-11-24 Re-evaluation Note (latest source)
+
+- The two-layer reduce-only contract remains active, **except two fail-open defects identified by the 2026-11 design review** (root gap [`0013`](../gaps/0013-risk-gate-single-shared-fail-closed.md)):
+  - **Price collar & reference data**: §3's "skipped when no band exists" is superseded by [`tantra-risk` gap 0006](../../tantra-risk/docs/gaps/0006-fail-closed-reference-data.md) — missing price band, freeze limit, reference price, or equity must **fail closed** rather than skip checks.
+  - **`ModifyOrder` under halts**: [`tantra-risk` gap 0007](../../tantra-risk/docs/gaps/0007-modify-order-bypasses-halts.md) notes that while `ModifyOrder` is refused under `GlobalState::ReduceOnly`, `engine.rs` still skips `GlobalState::Halted`, per-algo/market halts, band, freeze, and notional checks.
+
+## 6. Referenced docs
 
 - `tantra-risk/docs/design/code-reduce-only.md` — per-repo decision record (enforcement
   matrix, rationale, verification).
 - `tantra-risk/docs/design/code-engine.md` — the enforced pipeline (steps 1.25 / 4.5).
 - `tantra-runtime/crates/tantra-runtime-api-rest/src/orders.rs` — `state_refusal` (ADR 0018).
-- `tantra-risk/docs/gaps/README.md` — gaps 0001–0004 Closed (commit `9a0bc59`).
+- `tantra-risk/docs/gaps/README.md` — gaps 0001–0004 Closed (`9a0bc59`); gaps 0006–0007 Open.

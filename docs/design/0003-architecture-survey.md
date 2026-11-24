@@ -1,6 +1,6 @@
 # 0003 — Architectural Survey: Coupling, Interfaces, Scalability, Modularity & Security
 
-**Status**: Proposed (architecture & security audit) — filed 2026-11-13  
+**Status**: Partially Superseded / Operationalized (2026-11-24 re-evaluation in §7; open items tracked in Plans `0019` & `0021`) — filed 2026-11-13  
 **Scope**: Full `tantra-labs` superproject (14 Git submodules + `tantra-ui-web`, spanning 9 Rust workspaces / ~60+ crates, 4 Python packages, and a Next.js/TypeScript + WASM web frontend).  
 **Method**: Direct verification of `Cargo.toml`, `pyproject.toml`, `package.json`, Rust/Python/TypeScript sources, and workspace invariants against `docs/design/architecture.md` and `docs/ddd-conflict.md`.
 
@@ -151,3 +151,22 @@ L0 (tantra-core)
 8. **Bound Channels & Eliminate Sync I/O on Async Workers**: Replace all 7 `unbounded_channel` sites with bounded channels + explicit backpressure; move `auth.rs`, `profile_store.rs`, and `portfolio_store.rs` off global `std::sync::Mutex` + sync `std::fs` onto async storage / SQLx.
 9. **Persist Runtime State & Bound Payloads**: Back `OrderLedger`, `ApprovalQueue`, and `TradingState` with `tantra-runtime-persistence`; cap `axum::body::to_bytes` and per-socket WS subscription maps.
 10. **Converge UI Contracts & Retire Legacy Shims**: Generate OpenAPI/TS types for `tantra-ui-web`, remove `tantra_adapters/base.py`, `HONBA_*` defaults, and legacy `ExecRouter`, and route `tantra-cli` backtests directly through `tantra-runtime`/`tantra-ffi`.
+
+
+---
+
+## 7. 2026-11-24 Re-evaluation Against Latest Source
+
+Re-verified against current workspace heads (after `design 0006` R0–R5, Plan `0020`, and T21/T22 landings):
+
+### Resolved since 2026-11-13
+- **JWT-only Auth Bypass (`§5.2` CRITICAL)**: Fixed in `tantra-runtime-api-rest/src/lib.rs:244` (`if config.auth.is_enabled()` mounts `AuthLayer` for both `tokens_file` and JWT).
+- **WebSocket Chat IDOR & Auth Forwarding (`§5.2` HIGH)**: Fixed in `chat.rs:617` (`Caller` extracted to scope `(caller_id, workspace)`) and `tantra-ui-web` BFF proxy (`design 0006` R4).
+- **Keyless `POST /orders` Collision & REST Order DTOs (`§5.2`, `§2.2`)**: Fixed in `orders.rs` + `/api/v2` (`design 0006` R0–R5; `v1` and unprefixed mounts removed, `openapi.v2.json` drives TS/Rust/Python clients and docs).
+- **Inline Tests in `tantra-agent-analytics/src/volatility.rs:313` (`§4.2`)**: Moved to `tantra-agent/crates/tantra-agent-analytics/tests/volatility_tests.rs` (2026-11-24). Same rule also cleaned up in `tantra-runtime-api/src/strategy_loop.rs` → `tests/strategy_loop_tests.rs`.
+- **Envelope Body Cap (`§3.2`)**: `v2.rs:76` now enforces `MAX_ENVELOPE_BYTES` (note: `dispatch.rs:108,150,160` still uses `usize::MAX`).
+
+### Still Open (tracked in Plans `0019` and `0021`)
+- **Coupling & Tier Cycles (`§1.2`)**: `tantra-market-store` ↔ `tantra-agent-analytics`, `tantra-agent-mcp` → `tantra-market-pricing` + `tantra-ledger-allocation` (R1/R4), `tantra-ledger-journal` → `tantra-market-finance`, `tantra-runtime-strategy/src/dispatch.rs` concrete `ZerodhaExecutor` + `Runtime::block_on` (root gap `0011` / `runtime 0028`).
+- **Concurrency & Persistence (`§3.2`)**: `mpsc::unbounded_channel` remains in `tantra-market-core/src/ws_client.rs`, `tantra-market-{dhan,zerodha}`, `tantra-exec-{zerodha,upstox,angelone}`, and `tantra-agent-mcp/src/transport.rs`; `dispatch.rs` still calls `to_bytes(..., usize::MAX)`.
+- **Security & Secrets (`§5.2`–`§5.3`)**: `validate_exp = false` at `auth.rs:690,731`; `cors_layer` (`lib.rs:365`) omits `AUTHORIZATION`; non-loopback bind logs warning instead of failing closed (`bootstrap.rs:607`); plaintext `BrokerCredentials`/`SessionTokens` + `HONBA_*` env names (root gap `0011`).

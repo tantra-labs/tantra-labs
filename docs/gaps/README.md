@@ -10,7 +10,6 @@ provider repo's own `docs/gaps/README.md` is the implementation tracker.
 | # | Title | Provider Repo / Scope | Filed |
 |---|-------|-----------------------|-------|
 | [0001](0001-market-broker-feed-stubs.md) | Real broker WS feed crates (`zerodha`, `upstox`, `fyers`, `angelone`, `dhan`) — **feature tracker, 2 of 5 shipped 2026-11-13**: `tantra-market-dhan` (DhanHQ v2) and `tantra-market-zerodha` (Kite Connect 3) are real; `upstox`, `fyers`, `angelone` are re-added as real crates when their wire protocols are implemented (task T3.3) | `tantra-market` | 2026-11-12 |
-| [0009](0009-stale-plan-index-rows-0015-0016.md) | Root `docs/plans/README.md` rows 0015/0016 still say T21.5–T21.6 / T22.6–T22.8 "planned" though they are implemented; the architectural-analysis unification batch isn't indexed | root `docs/plans/README.md` | 2026-11-21 |
 | [0010](0010-order-idempotency-end-to-end.md) | End-to-end order idempotency and unknown-outcome handling: client order id never reaches brokers; failover/transport replay double-submits; fills lack exec id | `tantra-exec` (consumers: `tantra-core`, `tantra-ledger`, `tantra-adapters`, `tantra-strategies`) | 2026-11-23 |
 | [0011](0011-secrets-leak-debug-logs-urls.md) | Credentials and tokens leak via `Debug`, logs and URLs across Rust and Python | `tantra-exec` secret types (consumers: `tantra-market`, `tantra-runtime`, `tantra-agent`, `tantra-adapters`) | 2026-11-23 |
 | [0012](0012-fabricated-data-presented-as-real.md) | Fabricated or synthetic data presented as real (violates `PortError::unavailable` rule) | `tantra-core` (consumers: `tantra-runtime`, `tantra-agent`, `tantra-ui`, `tantra-ui-web`, `tantra-adapters`, `tantra-ffi`) | 2026-11-23 |
@@ -36,6 +35,7 @@ provider repo's own `docs/gaps/README.md` is the implementation tracker.
 
 | # | Title | Closed In |
 |---|-------|-----------|
+| 0009 | Stale `docs/plans/README.md` rows `0015`/`0016` showing implemented T21.5–T21.6 / T22.6–T22.8 tracks as "planned" | Closed 2026-11-24: moved plans `0015` (T21.1–T21.6) and `0016` (T22.1–T22.8; `data 0026` & `strategies 0008` closed) to Implemented Plans in `docs/plans/README.md`, noting `tantra-ui-web` gap `0078` remains open for Playwright tests; obsolete `Here is an architectural analysis of the.md` already retired |
 | 0002 | Real `tantra-market-feed` / `tantra-market-loaders` implementations — **feature tracker**: the empty stub crates were removed 2026-11-13 (plan 0003); `MarketDataFeed` stays in `core`, lakehouse in `store` (task T3.4) | Closed 2026-11-13 (T3.4): feed traits in `tantra-market-core`, lakehouse/loaders in `tantra-market-store`, and real `MarketDataFeed` implementations exist on top of core (`dhan` `fb82571`, `zerodha` `ad79205`) |
 | 0006 | `tantra-exec-angelone` stub | Closed 2026-11-13 (T4.11): real SmartAPI 2.0 `BrokerExecutor` adapter (`tantra-exec` `2258bbb`) — REST executor + SmartStream order feed + `BrokerEnumMap` wire tables + exact-decimal payloads; gap `tantra-exec` 0001 closed |
 | 0003 | `tantra-runtime/tantra-indicators` exact duplicate of `tantra-market-indicators` | Deleted 2026-11-13 (plan 0003 Phase 2) — nothing imported it |
