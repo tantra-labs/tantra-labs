@@ -4,7 +4,7 @@ REPOS := tantra-core tantra-risk tantra-ledger tantra-market tantra-exec tantra-
 SSH_SOCK := $(if $(XDG_RUNTIME_DIR),$(XDG_RUNTIME_DIR),/run/user/$(shell id -u))/ssh-agent.sock
 export SSH_AUTH_SOCK ?= $(SSH_SOCK)
 
-.PHONY: default build build-dev build-prod build-release build-debug dev prod release debug check check-dev check-prod test fmt clippy clean prepare
+.PHONY: default build build-dev build-prod build-release build-debug dev prod release debug check check-dev check-prod test fmt clippy clean prepare api-gate
 
 # Default build is 'prod' (no debug build unless asked for specifically)
 default: prod
@@ -36,6 +36,12 @@ check-dev:
 
 test:
 	@for r in $(REPOS); do echo "==> test $$r"; (cd $$r && $(MAKE) test); done
+
+# Root design 0006 R4 CI gate: clients, examples and docs call only canonical /api/v2 paths,
+# and the generated API reference matches the runtime's openapi.v2.json.
+api-gate:
+	@scripts/check-api-paths.sh
+	@python3 tantra-docs/scripts/gen_api_reference.py --check && echo "api reference: OK (matches openapi.v2.json)"
 
 fmt:
 	@for r in $(REPOS); do (cd $$r && $(MAKE) fmt); done
