@@ -472,6 +472,31 @@ Multi-asset empirical return, streak & `6×6` Markov regime equilibrium, percent
 
 ---
 
+## T24 — Workspace Design Review Remediation (root plan 0021) · Waves 0–3 — Proposed 2026-11-23
+
+**Source**: [`docs/plans/0021-workspace-design-review-2026-11.md`](plans/0021-workspace-design-review-2026-11.md) (133 per-repo gaps + root gaps 0010–0029; Wave 0 gates everything after)
+
+| Wave | Task | Repo / gap | Governing doc |
+| :---: | :--- | :--- | :--- |
+| 0 | Fix bridge export dropping datasets; freeze `gc` | `tantra-data` 0027, 0029 | [`data 0027`](../tantra-data/docs/gaps/0027-bridge-export-drops-datasets-from-main.md) |
+| 0 | Send client order ids; never auto-retry order POSTs | `tantra-exec` 0004, `tantra-adapters` 0008 | [`root 0010`](gaps/0010-order-idempotency-end-to-end.md) |
+| 0 | Stop logging tokens; WS resubscribe | `tantra-market` 0010 | [`market 0010`](../tantra-market/docs/gaps/0010-ws-client-resilience-and-token-logging.md) |
+| 0 | Fail-closed bind and CORS; strategy crate decoupling | `tantra-runtime` 0020, 0028 | [`runtime 0020`](../tantra-runtime/docs/gaps/0020-fail-closed-bind-and-cors.md) |
+| 0 | Fail-closed reference data; modify-order halts | `tantra-risk` 0006, 0007 | [`risk 0006`](../tantra-risk/docs/gaps/0006-fail-closed-reference-data.md) |
+| 0 | Honest MCP tools; `propose_trade` through `Decision`/`RiskEngine` | `tantra-agent` 0011, 0012 | [`agent 0011`](../tantra-agent/docs/gaps/0011-mcp-stub-tools-fabricate-results.md) |
+| 0 | Remove or label fabricated data | `tantra-ui-web` 0079, `tantra-ui` 0008 | [`root 0012`](gaps/0012-fabricated-data-presented-as-real.md) |
+| 0 | CI for 7 Rust repos; lockfiles and toolchain pin | root 0024, 0025 | [`root 0024`](gaps/0024-no-ci-for-rust-repos.md) |
+| 1 | Corporate-action scoping, fill side, exec-id dedupe | `tantra-ledger` 0014–0019 | [`ledger 0014`](../tantra-ledger/docs/gaps/0014-corporate-action-scoping.md) |
+| 1 | Durable order-id map, reconcile, secret types | `tantra-exec` 0005–0009 | [`root 0011`](gaps/0011-secrets-leak-debug-logs-urls.md) |
+| 1 | Risk 0008–0010; runtime 0021/0026/0029–0031 | `tantra-risk`, `tantra-runtime` | [`plan 0021`](plans/0021-workspace-design-review-2026-11.md) |
+| 1 | Stops leave `SimulatedContext`; Python `tantra.risk` reaches `RiskEngine` | `tantra-strategies` 0009/0010, `tantra-ffi` 0003 | [`root 0013`](gaps/0013-risk-gate-single-shared-fail-closed.md) |
+| 2 | One position/enums model; pricing and math single source | root 0014, 0015 | [`root 0014`](gaps/0014-unified-financial-enums-and-position-model.md) |
+| 2 | Indicator parity; broker consolidation; fill-model unification | root 0016, 0017, 0021 | [`root 0016`](gaps/0016-indicator-golden-parity-suite.md) |
+| 2 | Lakehouse contract; OpenAPI clients; artifact drift | root 0018, 0022, 0029 | [`root 0018`](gaps/0018-lakehouse-manifest-ref-contract.md) |
+| 3 | Deployment architecture; build, CI, release engineering | root plans 0022, 0023 | [`plan 0023`](plans/0023-build-ci-release-engineering.md) |
+
+---
+
 ## Per-repo summary
 
 | Repo | Open gaps | Active / proposed plans | Tasks in this list |
