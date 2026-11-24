@@ -1,519 +1,318 @@
 # 0001 — Fincept & Quantcepts Feature Parity, Gap Closure, and Platform Expansion Master Plan
 
-> **Status**: Approved Architecture & Implementation Roadmap  
-> **Target Scope**: Platform-wide across `tantra-core`, `tantra-risk`, `tantra-ledger`, `tantra-market`, `tantra-exec`, `tantra-agent`, `tantra-runtime`, `tantra-data`, `tantra-ffi`, `tantra-ui`, `tantra-docs`  
-> **Reference Inputs**:  
-> - `docs/tmp/fincept-quantcepts-mapping.md` (Draft concept mapping & inventory)  
-> - `docs/design/architecture.md` & `AGENTS.md` (Strategic & Tactical DDD invariants)  
-> - `docs/roadmap/roadmap.md` (Platform milestone sequencing)  
-> - `tantra-agent/docs/plans/0001-mcp-gateway-discovery-and-quantitative-engines.md`  
-> - `tantra-agent/docs/plans/0002-autonomous-jobs-memory-and-strategy-verification-engine.md`  
-> - `tantra-data/docs/plans/0001-mcp-market-and-screener-data-feed-ports.md`  
-> - `tantra-ui/docs/plans/0001` through `0004` (Chat terminal, UX reference, result blocks, CLI/TUI)  
-> - `tantra-docs/docs/plans/0001-mcp-gateway-and-quantitative-toolset-reference.md`  
+> **Status**: Active Umbrella Master Plan — **Original Layers 0–6 & Core Parity Substantially Implemented (2026-11-09..2026-11-23)**; **Revised 2026-11-24** to incorporate `docs/design/0001`–`0006` and `docs/plans/0005`–`0023`.  
+> **Target Scope**: Platform-wide across all 15 submodules + `tantra-ui-web` (`tantra-core`, `tantra-risk`, `tantra-ledger`, `tantra-market`, `tantra-exec`, `tantra-agent`, `tantra-runtime`, `tantra-data`, `tantra-strategies`, `tantra-adapters`, `tantra-ffi`, `tantra-ui`, `tantra-ui-web`, `tantra-examples`, `tantra-docs`).  
+> **Canonical Governance & Active Plans**:
+> - [`AGENTS.md`](../../AGENTS.md) & [`.agents/rules/`](../../.agents/rules/) (Tier DAG, Zero-I/O, Zero-Floats, Parallel `tests/`, `prod` profile, Fail-Closed Security, Gap Tracking)
+> - [`docs/design/architecture.md`](../design/architecture.md) & Design Series [`0001`](../design/0001-crate-topology-audit-and-target.md)–[`0006`](../design/0006-runtime-api-surface.md)
+> - [`docs/plans/README.md`](README.md) (Master index of active plans `0005`–`0023` and implemented plans `0002`–`0007`)
+> - [`docs/future-work-bottoms-up-build-order.md`](../future-work-bottoms-up-build-order.md) (Layers 0–6 of the initial Fincept/Quantcept parity batch — **Complete**)
+> - [`docs/task-list-tracks-and-phases.md`](../task-list-tracks-and-phases.md) (Live execution ledger across Tracks `T0`–`T24`)
+> - [`tantra-docs/docs/ai/fincept-vs-quantcept.md`](../../tantra-docs/docs/ai/fincept-vs-quantcept.md) & `tantra-agent/docs/plans/0007` (MCP Ecosystem Guide)
 
 ---
 
 ## 0. Executive Summary & Vision
 
-Fincept (18 stateful toolsets, 443 tools, 17 stateless analytics engines, Qt desktop terminal) and Quantcept (AI research desk for financial markets) demonstrate how an institutional quantitative trading workbench and AI-first agent ecosystem operate in practice.
+Fincept (18 stateful toolsets, 443 tools, 17 stateless analytics engines, desktop terminal) and Quantcept (AI research desk for financial markets) served as the initial capability benchmark for `tantra-labs`.
 
-A cross-repo architectural gap analysis against `tantra-labs` reveals two fundamental truths:
-1. **Tantra's Domain Core is Architecturally Superior**: Tantra’s zero-I/O domain purity, sub-15 µs SEBI pre-trade risk gate (`tantra-risk`), aggregate-owned FIFO tax-lot accounting (`tantra-ledger`), research-live backtest parity, and strict zero-floats invariant (`rust_decimal::Decimal` everywhere) provide an institutional foundation that Fincept lacks (Fincept has no documented decimal policy and relies on untyped pub/sub).
-2. **Tantra Has Honest Breadth Gaps**: Fincept provides broader surface area in technical indicators (201 vs 17), screening breadth (4,000 fields & global scope vs India-only), missing advanced quantitative engine families (GARCH volatility, regime detection, copulas, structural change points, portfolio allocation optimization, derivatives/options pricing & Greeks, general statistical forecasting), agent platform conventions (two-tier MCP discovery, universal result envelopes, in-memory `$ref` data chaining, large-result paging), and workstation UI screens (54 desktop screens across multiple financial subdomains).
+### 0.1 Where We Started vs. Where We Stand (2026-11-24)
+1. **Tantra's Domain Core & Parity Foundation Have Landed**:
+   - **Layers 0–6 Complete** (`docs/future-work-bottoms-up-build-order.md`): `tantra-core::quant`, `tantra-ledger-allocation` (MVO, Risk Parity, HRP, Black-Litterman, MPO, discrete shares), `tantra-risk` MCP annotations + reduce-only/collar/OTR gates, `tantra-market-pricing` (Black-Scholes, Greeks, IV solver), `tantra-exec-angelone`, `tantra-agent-forecast` (ARIMA, ETS, Theta, TBATS, GBDT), `tantra-agent-panel` (FE, RE, Fama-MacBeth, GMM), `tantra-agent-analytics` (GARCH, HMM, CUSUM change points, Copulas, Cointegration, DSR/PBO/WFO/MC), `tantra-agent-mcp` (Two-Tier Discovery, `_jq`, `TantraResultEnvelope`, `DataReferenceStore`), `tantra-ffi` (`tantra` Python wheel + Arrow zero-copy), and `tantra-docs` (16 toolset reference pages + `llms.txt` + `docs/paper-trading/` + `docs/user-guide/`).
+   - **Major Cross-Repo Tracks Shipped (`T0`–`T18`, `T21`–`T22`, `0020`, `runtime 0016`)**:
+     - **Crate Topology & Facades (`design/0001`, `plan 0003`)**: Deleted 12 stub/duplicate crates and standardized repo-named facade crates across all multi-crate Rust workspaces.
+     - **Standalone Paper Exchange (`plan 0007` / `T14`)**: `tantra-exec-paper` single exchange matching engine powering REST `/orders`, `/ws/live`, strategy dispatch, backtest, `tantra.paper` Python wheel, WASM browser session, and `paper_serve`, verified with byte-identical `paper_golden.json` vectors.
+     - **Lakehouse v3 (`design/0004`, `plan 0011` / `T17` Ph 1–3)**: Git-style content-addressed Parquet store (`objects/sha256`, `catalog.duckdb`, `refs/{heads,tags}`), `Decimal128(18, 4)` instrument master, `(instrument_uid, ts)` RowGroup pruning, and deterministic backtest `data_ref`/`commit_sha` pinning.
+     - **Elephant Edge (EE+) & Composable `OverlayScene` Loop (`plans 0005`, `0015` / `T12`, `T21`)**: `tantra-core::{levels,options,order_blocks,signals}`, `tantra-market-finance::studies::pipeline` (`StrategyLoopKernel`, `SweepRunner`, `HedgeOverlayPolicy`), `OverlayScene` 6-layer interactive graphic contract, `/api/v2/studies/strategy-loop/*`, and `tantra-tui` `StrategyLab` tab.
+     - **Concept & Indicator Library (`plan 0016` / `T22`)**: `tantra_library` in `tantra-strategies` (44 entries, 12 LuxAlgo-style concept pages, `SignalStudy`), `tantra-library-mcp` stdio server, `/api/v2/studies/*`, and `IndicatorLibraryPort`.
+     - **Dockview Workstation & VibePrompt Agentic Pane (`plan 0020`)**: `tantra-ui-web` migrated to MIT `dockview-react` (23 `DockPanelKind` panels), 324-icon taxonomy, multi-theme/4-family typography bridge, `agent-copilot` VibePrompt pane, `SqlxSessionStore` threads CRUD, and `DisplayBlock::CodeDiff`.
+     - **Live Option Chain (`tantra-runtime` gap `0016`)**: `GET /api/v2/options/chain` with `OptionsChainQuery`/`OptionsChainResponse`, Tuesday expiry schedule, PCR/Max Pain/IV regime, live quotes + `ParquetOpenInterestStore` + honest `theoretical_bs` fallback wired into `tantra-ui-web`.
 
-This master plan establishes the end-to-end blueprint to **achieve 100% parity and supersede every gap and feature** identified in `docs/tmp/fincept-quantcepts-mapping.md`, while uncompromisingly enforcing Tantra's core architectural tenets:
-- **Zero Floats Rule**: All monetary, price, quantity, margin, fee, and risk values use `rust_decimal::Decimal` (Rust) and `decimal.Decimal` (Python). No floating-point contamination.
-- **Zero-I/O Domain Purity**: Domain logic and analytical compute engines are pure, deterministic, and free from wall-clock, network, database, or disk dependencies.
-- **NoFX Untrusted AI Principle**: All AI and LLM outputs are strictly advisory; automated trade actions generate proposed signals that must be deterministically vetted by `tantra-risk`.
-- **In-Process High Performance**: Compute engines execute in native Rust (with PyO3/Arrow zero-copy bridge via `tantra-ffi`), avoiding subprocess JSON cold-start latency.
+2. **How the Architecture Evolved Beyond Original `0001`**:
+   - **UI Split Resolved (`plans 0019`, `0020`)**: `tantra-ui-web` (Next.js + Dockview + WASM charts) is the canonical browser workstation; `tantra-ui-app` (Leptos 0.8 CSR) is superseded and scheduled to have its unique pure models (`paper.rs`, `studio_ee.rs`, `system.rs`, `simulator.rs`) merged into `tantra-ui-core` / `tantra-tui` as `tantra-tui` adopts `Trading-R1`-inspired agentic TUI patterns before retiring `tantra-ui-app`.
+   - **ACP Orchestrator + Specialist Sub-Agents (`design/0005`)**: Moves beyond a flat 40-tool loop to an ACP v1 orchestrator + specialist `AgentSpec` sub-agents (`Delegate` / `Inline` `CoordinationMode`), host-side turn blackboard (`_meta.tantra.summary`), deterministic `tantra-core::fo` expiry/symbology, and NSE bhavcopy F&O/index data.
+   - **Canonical `/api/v2` Contract (`design/0006`)**: Consolidates ~95 duplicated routes into one fail-closed, route-registry-enforced, `ResponseEnvelope<T>` `/api/v2` surface (`openapi.v2.json`), unified `GET /api/v2/stream` WS, `GET /api/v2/acp` (retiring `/ws/chat`), and generated Rust/TS/Python clients (`tantra-runtime-client`, `api-schema.d.ts`, `tantra.client` + `Client.inproc`).
+   - **New Domain Workbenches & Hardening Plans**: Trade Signal Generator (`0008`), Qullamaggie Swing (`0009`), Screener QVM & Alpha-Alerts (`0010`), `Experimental-Analysis` Statistical & Event Workbench (`0014`), 71-Strategy Options Analysis & Quantsapp Parity Suite (`0017`, `0018`), Audit/DAG/Wiring (`0019`), Workspace Design Review (`0021`), Deployment Architecture (`0022`), and Build/CI/Release Engineering (`0023`).
+
+### 0.2 Non-Negotiable Core Invariants
+- **Zero Floats Rule**: `f32`, `f64`, and Python `float` are banned in monetary, price, quantity, margin, fee, statutory tax, and risk paths; use `rust_decimal::Decimal` / `decimal.Decimal` / Arrow `Decimal128`. Numerical solvers (`BlackScholesModel`, SVI, `erf`/GARCH internals) isolate `f64` strictly internally and return `Decimal` at public boundaries.
+- **Zero-I/O & Zero-Clock Purity**: Core domain and compute crates (`tantra-core`, `tantra-risk`, `tantra-ledger`, `tantra-market-{indicators,signals,normalizer}`, `tantra-runtime-strategy`, `tantra-agent-tools`) contain zero network, disk, DB, or wall-clock calls; timestamps are injected explicitly.
+- **NoFX Untrusted AI Principle**: All LLM and specialist outputs deserialize with `deny_unknown_fields` into closed schemas (`Decision`, `AgentSpec` handoffs, `ViewKind`) and pass `tantra-risk::RiskEngine` unconditionally.
+- **Data Honesty (`PortError::unavailable`)**: Missing feeds or catalogs must never be fabricated; every response carries explicit provenance (`live` | `delayed_public` | `theoretical_model` | `unavailable(gap_ref)`).
 
 ---
 
 ## 1. System Architecture Topology
 
-The target platform integrates the 18 stateful toolsets, 17 analytical engines, MCP infrastructure, and 54-screen UI across Tantra's 6 architectural layers:
+The evolved platform maps across Tantra's 7 tiers (`L0`–`L6`), incorporating `design/0001`–`0006` and the `0019` DAG repair targets:
 
+```text
+┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                         LAYER 5: DUAL WORKSTATIONS (tantra-ui-web & tantra-ui)                                │
+│  ┌─────────────────────────────────────────────────┐ ┌──────────────────────────────────────────────────────┐ │
+│  │ tantra-ui-web (Next.js + MIT Dockview v8)       │ │ tantra-tui & tantra-cli (Rust Static Binary)         │ │
+│  │ • 23 Dockview panels + 324-icon taxonomy        │ │ • Ratatui TUI (8 tabs + Trading-R1 Agentic UX:       │ │
+│  │ • VibePrompt agent-copilot + OverlayScene       │ │   Plan/Sources rail, Ctrl+P Palette, Questionnaire)    │ │
+│  │ • Experimental-Analysis (13 tabs) & Options     │ │ • CLI: tools, mcp config, study-loop, export (Typst) │ │
+│  │   Analysis (6 sub-tabs + AI Dossier)            │ │ • tantra-ui-api-wasm (canonical WASM engine)         │ │
+│  │ • Unified WASM ChartCanvas + api-schema.d.ts    │ │ • Absorbs unique tantra-ui-app models -> retire app  │ │
+│  └────────────────────────┬────────────────────────┘ └───────────────────────────┬──────────────────────────┘ │
+└───────────────────────────┼──────────────────────────────────────────────────────┼────────────────────────────┘
+                            │ /api/v2 (REST + /stream WS + /acp WS)                │ In-proc / tantra-runtime-client
+┌───────────────────────────▼──────────────────────────────────────────────────────▼────────────────────────────┐
+│                                 LAYER 3: AI AGENTS & ACTOR RUNTIME                                            │
+│  ┌────────────────────────────────────────────────────────┐ ┌───────────────────────────────────────────────┐ │
+│  │ tantra-agent (ACP + MCP + Research + Analytics)        │ │ tantra-runtime (tantra-serve / tantra-serverd) │ │
+│  │ • tantra-agent-acp: Orchestrator + AgentSpec subagents │ │ • Canonical /api/v2 route registry + OpenAPI  │ │
+│  │   (Delegate / Inline modes, turn blackboard, _meta)    │ │ • Fail-closed auth + Caller scoping + SQLx    │ │
+│  │ • tantra-agent-mcp: Stdio + SSE/HTTP, Two-Tier Gateway │ │ • Supervised actors (Market -> Risk -> Exec)  │ │
+│  │   (search, describe, read_result, _jq, library proxy)  │ │ • Backtest (via tantra-exec-paper) + Enhancer │ │
+│  │ • tantra-agent-core: TantraResultEnvelope, RefStore,   │ │ • Study APIs (/studies/{loop,library,exp})    │ │
+│  │   Jobs (cron/budgets), UserMemory (Vector+BM25)        │ │ • Live Option Chain + Alpha-Alerts Engine     │ │
+│  │ • research (AST verify), genetic (Odysseus), report    │ │ • Supervised tantra-library-mcp child         │ │
+│  └────────────────────────┬───────────────────────────────┘ └──────────────────────┬────────────────────────┘ │
+└───────────────────────────┼────────────────────────────────────────────────────────┼──────────────────────────┘
+                            │ Ports (R1-R4)                                          │ L3 -> L2 / L1 / L0
+┌───────────────────────────▼────────────────────────────────────────────────────────▼──────────────────────────┐
+│                     LAYER 2 & LAYER 1: MARKET EYE, EXECUTION HAND, RISK GATE, LEDGER HEART                    │
+│  ┌────────────────────────────────────────────────────────┐ ┌───────────────────────────────────────────────┐ │
+│  │ L2: tantra-market & tantra-exec                        │ │ L1: tantra-risk & tantra-ledger               │ │
+│  │ • tantra-market-indicators (47+ files -> 201 Decimal)  │ │ • tantra-risk: <15µs SEBI gate (OTR, collars, │ │
+│  │ • tantra-market-finance::studies (Period, Markov 6x6,  │ │   reduce-only, freeze, stop-protection, WASM) │ │
+│  │   Outliers, ORB-15, StrategyLoopKernel, OverlayScene)  │ │ • tantra-ledger-oms + portfolio (FIFO/T+1)    │ │
+│  │ • tantra-market-pricing (BS, IV, Greeks -> 2nd-order,  │ │ • tantra-ledger-allocation (MVO, HRP, BL, MPO)│ │
+│  │   SVI/SABR, American, Dual-Measure MC)                 │ │ • tantra-ledger-journal: Canonical Decimal    │ │
+│  │ • tantra-market-{dhan,zerodha} WS + Lakehouse v3 store │ │   Indian statutory cost tables (0019 P4.1)    │ │
+│  │ • tantra-exec-paper (SSOT matching), router, slicer,   │ │   + contract notes + performance              │ │
+│  │   audit WAL, auth, zerodha/upstox/angelone             │ │                                               │ │
+│  └────────────────────────┬───────────────────────────────┘ └──────────────────────┬────────────────────────┘ │
+└───────────────────────────┼────────────────────────────────────────────────────────┼──────────────────────────┘
+                            │                                                        │
+┌───────────────────────────▼────────────────────────────────────────────────────────▼──────────────────────────┐
+│                       LAYER 0, 4, 6: SHARED KERNEL, PYTHON FFI, LAKEHOUSE & LIBRARY                           │
+│  ┌────────────────────────────────────────────────────────┐ ┌───────────────────────────────────────────────┐ │
+│  │ L0: tantra-core (Zero-I/O, Zero-Floats)                │ │ L4 & L6: Bridge, Library, Lakehouse & Docs    │ │
+│  │ • Price/Qty/Money, Decision, Wire DTOs, Ports          │ │ • tantra-ffi: PyO3 + Arrow PyCapsule,         │ │
+│  │ • levels, options, order_blocks, signals, chart_pattern│ │   tantra.{paper,options,risk,portfolio,client}│ │
+│  │ • screener (converged Decimal AST), classification     │ │ • tantra-strategies: SDK + tantra_library (44 │ │
+│  │ • trade_plan (TradePlanner/Presets)                    │ │   entries, 12 concept pages, MCP server)      │ │
+│  │ • fo (ExpiryCalendar, ContractSymbol — design/0005)    │ │ • tantra-data: Lakehouse v3 CAS (sha256),     │ │
+│  │ • quant & analytics (0019 P4.2 canonical L0 math)      │ │   catalog.duckdb, filings, deals, MF, F&O     │ │
+│  └────────────────────────────────────────────────────────┘ └───────────────────────────────────────────────┘ │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   LAYER 5: WORKSTATIONS (tantra-ui)                                    │
-│  ┌───────────────────────────────┐ ┌───────────────────────────────┐ ┌───────────────────────────────┐ │
-│  │ Leptos 0.8 WASM Studio        │ │ Ratatui TUI Terminal          │ │ Native CLI (tantra-cli)      │ │
-│  │ 54 Screens (Markets, Trading, │ │ Full-screen TUI with          │ │ Direct commands, tool search, │ │
-│  │ Portfolio, News, Workbench)   │ │ AgentChat, Sparklines, Tables │ │ Ask, Jobs, Doctor, MCP config │ │
-│  └───────────────┬───────────────┘ └───────────────┬───────────────┘ └───────────────┬───────────────┘ │
-└──────────────────┼─────────────────────────────────┼─────────────────────────────────┼─────────────────┘
-                   │                                 │                                 │
-┌──────────────────▼─────────────────────────────────▼─────────────────────────────────▼─────────────────┐
-│                               LAYER 3: AI AGENTS & ACTOR RUNTIME                                        │
-│  ┌───────────────────────────────────────────────────────────────────────────────────────────────────┐  │
-│  │ tantra-agent-mcp: Hosted OAuth 2.1 & Local Stdio/SSE Server                                      │  │
-│  │  • Two-Tier Discovery Gateway: tantra_search_tools, tantra_describe_tool, tantra_call_tool      │  │
-│  │  • Paged Result Reader: tantra_read_result (>40KB tickets)                                       │  │
-│  │  • Universal Result Envelope (tantra/result/v1) with DisplayBlocks (Table, MetricGrid, Chart)    │  │
-│  │  • Tool Annotations: readOnlyHint, destructiveHint, idempotentHint                                │  │
-│  ├───────────────────────────────────────────────────┬───────────────────────────────────────────────┤  │
-│  │ tantra-agent (AI Core & Loop)                    │ tantra-runtime (Central Execution & Actors)  │  │
-│  │  • Autonomous Job Scheduler (Cron, Budgets)       │  • Supervised Actor Pipeline (Market->Ledger) │  │
-│  │  • Persistent Financial Memory & Distillation     │  • Backtest Engine & Walk-Forward Optimizer   │  │
-│  │  • Static Strategy Verification (Lookahead/Leak)  │  • Paper Trading Engine & Live/Paper Parity   │  │
-│  │  • Odysseus Genetic Strategy Synthesizer          │  • Multi-Period Execution Simulator           │  │
-│  └───────────────────────────────────────────────────┴───────────────────────────────────────────────┘  │
-└──────────────────────────────────────────────────┬──────────────────────────────────────────────────────┘
-                                                   │
-┌──────────────────────────────────────────────────▼──────────────────────────────────────────────────────┐
-│                   LAYER 2 & LAYER 1: QUANT ENGINES, MARKET EYE, RISK & LEDGER                           │
-│  ┌───────────────────────────────────────┐  ┌────────────────────────────────────────────────────────┐  │
-│  │ tantra-market & Analytical Engines   │  │ tantra-risk & tantra-ledger (Domain Heart)           │  │
-│  │  • 201 Technicals + 61 Candlestick    │  │  • SEBI Pre-Trade Gate (<15 µs p99.99, OTR, Bans)      │  │
-│  │  • Options Pricing & Vol Surfaces     │  │  • Rich OMS State Machine & Order Book Aggregates      │  │
-│  │  • GARCH Volatility & VaR/ES Engine   │  │  • FIFO Tax-Lot Portfolio & Capital Gains (STCG/LTCG)  │  │
-│  │  • Allocation & Optimizer (HRP, MVO)  │  │  • Double-Entry Balance Sheet Journal                  │  │
-│  │  • Stats, Copulas, Regimes, Breaks    │  │  • Indian Statutory Cost Engine (STT, GST, Stamp, SEBI)│  │
-│  └───────────────────────────────────────┘  └────────────────────────────────────────────────────────┘  │
-└──────────────────────────────────────────────────┬──────────────────────────────────────────────────────┘
-                                                   │
-┌──────────────────────────────────────────────────▼──────────────────────────────────────────────────────┐
-│                               LAYER 0, 4, 6: DATA LAKEHOUSE & SHARED KERNEL                             │
-│  ┌─────────────────────────────────────┐  ┌─────────────────────────────────────────────────────────┐  │
-│  │ tantra-core (Shared Kernel L0)     │  │ tantra-data & tantra-ffi (Data Lakehouse & Bridge)    │  │
-│  │  • Canonical Decimal Value Objects  │  │  • In-Memory Ephemeral Store ($tantra/ref/<uuid>)      │  │
-│  │  • tantra/result/v1 Wire Envelopes │  │  • 4,000-Field Vectorized Screener Engine (Arrow)       │  │
-│  │  • Universal Domain Events & Ports  │  │  • Filings Ingestion (BSE/NSE/SEBI), Macro, Corporate   │  │
-│  │  • Table-Driven Broker Wire Mappings│  │  • PyO3 / Arrow Zero-Copy Extension (tantra wheel)     │  │
-│  └─────────────────────────────────────┘  └─────────────────────────────────────────────────────────┘  │
-└────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-```
+
+### 1.1 Key DAG & Ownership Repairs Active (`plan 0019` §3 & `plan 0021` §2.2)
+- **L0 Pure Analytics (`0019` P4.2, root `0015`)**: Move pure zero-I/O statistical and validation engines (`EquityStats`, `TradeStats`, `WalkForward`, `Holdout`, `MonteCarlo`, `DSR`, `PBO`, `CostStress`, `FactorAttribution`, `GARCH`, `HMM`, `Cointegration`, `Copula`, `ChangePoint`, `erf`) into `tantra-core::analytics`, eliminating the illegal `L2 → L3` edge (`tantra-market-store` → `tantra-agent-analytics`) and 3-way analytics duplication.
+- **L1 Statutory Cost Tables (`0019` P4.1)**: Move canonical NSE/BSE/NFO/MCX/CDS `Decimal` statutory fee/STT/stamp/SEBI/GST tables into `tantra-ledger-journal`, eliminating the illegal `L1 → L2` edge (`tantra-ledger-journal` → `tantra-market-finance`), deleting `f64` schedules in `tantra-market-finance/src/india/costs/`, and exposing fee previews via WASM/REST.
+- **Single Simulation SSOT (`0019` P2.1, root `0021`)**: Retire duplicated `tantra-runtime-backtest/src/sim/{l2_book,slippage,mis,latency}.rs` in favor of `tantra-exec-paper` (`L2`).
+- **Single-Source Pricing, Enums & Clients (`root 0014`, `0015`, `0022`)**: Consolidate `Bar`/`Order`/`Position` models in `tantra-core` and `tantra` Python wheel (`0019` P4.5); bind `tantra-market-pricing` via wheel/WASM so TS/Python do not duplicate Black-Scholes (`ui-web 0080`).
 
 ---
 
-## 2. Platform & MCP Infrastructure Gap Closure
+## 2. Platform, ACP & MCP Infrastructure
 
 ### 2.1 Hosted Multi-Tenant MCP Server & Streamable HTTP
-- **Current State**: `tantra-agent-mcp` is scoped primarily to local stdio / loopback.
-- **Target Implementation**:
-  - Implement dual transports in `tantra-agent-mcp`:
-    1. `StdioTransport`: Fast zero-overhead pipe for local CLI (`tantra-cli mcp`) and desktop workstations.
-    2. `HttpStreamTransport`: Production HTTP server implementing MCP Streamable HTTP (Server-Sent Events for streaming responses, HTTP POST for tool invocations).
-  - Add OAuth 2.1 authorization with PKCE and scoped bearer tokens (`Bearer vyp_...`), multi-tenant account isolation, and tenant-level quota/rate limiting.
-  - Expose health check, schema reflection, and protocol handshake endpoints conforming to the latest MCP specification.
+- **Shipped**: `tantra-agent-mcp` (`transport.rs`, `server.rs`, `client.rs`) implements `StdioTransport` + Axum HTTP/SSE transport (`mcp_stdio_server`), plus `tantra-library-mcp` (Python stdio MCP server for `tantra_library`).
+- **Remaining Gaps**:
+  - Upgrade Axum SSE to full **MCP Streamable HTTP** specification and add **OAuth 2.1 PKCE / bearer auth**, tenant isolation, and per-tenant quota/rate metering (`tantra-agent` gap `0016`, `plan 0022`).
+  - Replace the `mpsc::unbounded_channel` in `tantra-agent-mcp/src/transport.rs` with bounded backpressure channels (`plan 0019` P1.5).
 
-### 2.2 Terminal-as-MCP-Host in `tantra-ui`
-- **Current State**: Terminal only operates as a consumer; LLM tool dispatching is not integrated into desktop/TUI client.
-- **Target Implementation**:
-  - Embed `McpHostManager` inside `tantra-ui-core`:
-    - `ProviderAdapter` trait with pluggable implementations: Anthropic (Claude 3.5 Sonnet / 3.7 Opus), OpenAI (GPT-4o, o3-mini), Google Gemini (Gemini 2.0 Flash / Pro), and Local Models (Ollama / vLLM / llama.cpp).
-    - `ToolDispatcher`: Dispatches tool requests to both local embedded tools (workspace, screen navigation, chart rendering, local note-taking) and remote/in-process MCP servers.
-    - Expose ~40 internal workstation tools enabling the conversational agent to manipulate the UI (e.g., `ui_open_chart`, `ui_set_watchlist`, `ui_render_backtest_report`, `ui_create_alert`).
+### 2.2 Terminal & Workstation Host Architecture (ACP + MCP)
+- **Evolution**: The original `McpHostManager` sketch in `tantra-ui-core` evolved into a cleaner two-door architecture (`design/0005`, `design/0006`):
+  - **ACP Host (`tantra-agent-acp`)**: `tantra-runtime` exposes `GET /api/v2/acp` (JSON-RPC over WebSocket); `tantra-tui` connects via `AcpClient` (`agent_link.rs`), and `tantra-ui-web` connects via its `agent-copilot` VibePrompt Dockview pane (`plan 0020`; Web migration from `/ws/chat` → `/api/v2/acp` tracked in `tantra-agent` plan `0019` Ph 4).
+  - **CLI MCP Client & Generator (`tantra-cli`)**: `tantra tools search|describe|call` and `tantra mcp config --client <claude-code|cursor|vscode|gemini>` shipped (`T10.5`).
+  - **LLM Provider Configuration (`tantra-agent/docs/design/provider-config.md`)**: Configured via `tantra.jsonc` (`model`, `agents.coordination`, `agents.<id>.model`, `{file:}` secrets); **zero** LLM-style environment variables.
+  - **Remaining**: Complete `tantra-tui` `Trading-R1`-style agentic workstation upgrades (`plan 0019` §5.2: Plan/Sources rail, `Ctrl+P` Command Palette, Capability Browser, structured Approval Questionnaire) and `tantra-agent` plan `0019` Ph 4–6 (retire `/ws/chat`).
 
-### 2.3 Two-Tier Tool Discovery Gateway
-- **Current State**: Flat tool registration prone to LLM context bloat when scaling beyond 40 tools.
-- **Target Implementation**:
-  - Implement two-tier discovery in `tantra-agent-mcp`:
-    - **Tier 1 (Eager Core Tools)**: Advertised on startup:
-      - `tantra_search_tools(query, category)`: Semantic & keyword search across tool names, descriptions, and tags.
-      - `tantra_describe_tool(tool_name)`: Returns complete JSON schema, parameter bounds, zero-float validation rules, and examples.
-      - `tantra_call_tool(tool_name, arguments)`: Dynamic dispatch wrapper.
-      - `tantra_read_result(ref_id, offset, limit)`: Large-payload pagination.
-    - **Tier 2 (Categorized Catalogs)**: 15 domain toolsets partitioned into namespaces (`market`, `technicals`, `scanner`, `analytics`, `validation`, `allocation`, `risk`, `regimes`, `change_points`, `volatility`, `copula`, `pricing`, `ledger`, `research`, `backtest`).
+### 2.3 Two-Tier Tool Discovery Gateway & `_jq` Filtering
+- **Shipped (`tantra-agent-mcp/src/tools.rs`, `jq.rs`)**:
+  - **Discovery Tools**: `tantra_search_tools(query, category)`, `tantra_describe_tool(tool_name)`, and `tantra_read_result(ref_id, offset, limit)`, plus `tantra_library_search` / `tantra_library_describe` / `tantra_indicator_compute` / `tantra_signal_study`. *(Note: Tool invocation uses native MCP `tools/call` directly—no redundant `tantra_call_tool` wrapper.)*
+  - **Response Filtering (`_jq`)**: `serde_json_path`-based `_jq` filter supported across MCP tools to trim context tokens.
+  - **Registered MCP Surface**: 32+ quantitative, library, strategy-loop, and presentation tools across `discovery`, `market`, `technicals`, `scanner`, `analytics`, `allocation`, `derivatives`, `regimes`, `volatility`, `research`, `ledger`, `study-loop`, and `view` categories.
+- **Remaining**: Decompose `tantra-agent-mcp/src/tools.rs` (3,325L) into per-domain modules (`0019` P3.1), repair R1/R4 compliance (`tantra-agent-mcp` currently imports `tantra-ledger-allocation` & `tantra-market-pricing` directly — `design/0003` §1.2, `0019` P4.2), and eliminate stub/fabricated MCP responses (`tantra-agent` gap `0011`).
 
 ### 2.4 Universal Result Envelope (`tantra/result/v1`)
-- **Current State**: Endpoint-specific DTOs without a unified cross-platform representation.
-- **Target Implementation**:
-  - Define `TantraResultEnvelope<T>` in `tantra-core::result` as the canonical wire contract:
-    ```rust
-    #[derive(Debug, Clone, Serialize, Deserialize)]
-    pub struct TantraResultEnvelope<T> {
-        pub schema: String,                    // "tantra/result/v1"
-        pub status: ResultStatus,              // Ok | Warning | Error
-        pub meta: ExecutionMeta,               // elapsed_ms, timestamp_ist, engine_version, precision
-        pub summary: String,                   // 1-line plain language summary for the agent
-        pub data: T,                           // Strongly-typed domain payload
-        pub blocks: Vec<DisplayBlock>,         // Visual blocks: Table, MetricGrid, Chart, Alert
-        pub refs: HashMap<String, String>,     // Ephemeral data handles ($tantra/ref/...)
-        pub warnings: Vec<String>,             // Non-fatal advisory notes
-        pub error: Option<ResultError>,        // Structured code & actionable remediation hint
-    }
-    ```
-  - Standardize `DisplayBlock` rendering across `tantra-cli` (colored UTF-8 ANSI), `tantra-tui` (interactive Ratatui widgets), and `tantra-ui-app` (Leptos reactive DOM components).
+- **Shipped (`tantra-agent-core/src/result.rs`)**:
+  ```rust
+  pub struct TantraResultEnvelope<T> {
+      pub schema: String,                    // "tantra/result/v1"
+      pub status: ResultStatus,              // Ok | Error
+      pub meta: ExecutionMeta,               // elapsed_ms, timestamp_ist, version, precision = "exact_decimal_zero_floats"
+      pub summary: String,                   // 1-line plain language summary
+      pub data: T,                           // Strongly-typed domain payload
+      pub blocks: Vec<DisplayBlock>,         // Presentation blocks
+      pub refs: HashMap<String, String>,     // Ephemeral data handles ($tantra/ref/...)
+  }
+  ```
+- **Evolved `DisplayBlock` Variants (7 variants)**:
+  1. `Table { title, columns, rows }`
+  2. `MetricGrid { items: Vec<MetricItem> }`
+  3. `Chart { title, chart_type, series_ref }` *(client-side `series_ref` resolution tracked in `tantra-agent` gap `0009`)*
+  4. `Alert { level, message }`
+  5. `OverlayScene { title, symbol, timeframe, scene, time_axis }` *(added in Track `T21` / `plan 0015`)*
+  6. `View { kind: ViewKind, title, symbols, summary, highlights, include_tools }` *(added via `present_view`, `agent 0020`)*
+  7. `CodeDiff { title, lang, code, hunks: Vec<CodeDiffHunk> }` *(added in `plan 0020` for interactive `StrategyDiffCard` hunk accept/reject)*
+- **Renderers**: Shipped in `tantra-cli` (`block_render.rs`), `tantra-tui` (`result_block.rs`), and `tantra-ui-web` (`AgentPane` / `StrategyDiffCard` / `OverlayScenePrimitive`).
 
-### 2.5 In-Memory Ephemeral Data References (`$tantra/ref/...`)
-- **Current State**: Large payloads round-trip through LLM context or require ad-hoc files.
-- **Target Implementation**:
-  - Build `DataReferenceStore` in `tantra-agent-core` backed by memory-mapped Apache Arrow record batches and DuckDB in-memory tables.
-  - Large time-series (e.g. 10,000 1-minute bars or 4,000 screener rows) are assigned a URI handle (`$tantra/ref/ohlcv/nse_reliance_1m_20261106`).
-  - Downstream compute tools accept `series_ref` or `matrix_ref` directly, reading via zero-copy reference without converting to or from JSON strings.
+### 2.5 In-Memory Ephemeral Data References (`$tantra/ref/...`) & Turn Blackboard
+- **Shipped (`tantra-agent-core/src/ref_store.rs`)**: `DataReferenceStore` emits `$tantra/ref/<id>` handles and supports `export` / `resolve` / `tantra_read_result` pagination (`offset`/`limit`).
+- **Evolved (`design/0005` §4.3 & §8.4)**: Host-side **turn blackboard** keeps large `$tantra/ref/...` payloads server-side during specialist orchestration and streams compact `_meta.tantra.summary` step cards to UI clients. *(Note: current `DataReferenceStore` stores `serde_json::Value` with `RwLock<HashMap>`; optional Arrow/DuckDB mmap backing and TTL/memory-cap eviction remain future scale enhancements.)*
 
-### 2.6 Large-Result Pagination & Tool Safety Annotations
-- **Paging**: Results exceeding 40 KB automatically truncate data in the immediate envelope, register the full batch in the cache, and emit a ticket paged through `tantra_read_result`.
-- **Tool Safety Annotations**: Every tool schema includes:
-  - `read_only_hint: bool` (e.g., true for quotes, indicators, screens; false for orders)
-  - `destructive_hint: bool` (e.g., true for position closure, algo termination, database purge)
-  - `idempotent_hint: bool` (e.g., true for stateless compute; false for order placement)
-  - Client-side approval gates in CLI/TUI intercept any tool flagged with `destructive_hint` or `!read_only_hint` and demand human confirmation before dispatching.
+### 2.6 Tool Safety Annotations & Approval Gates
+- **Shipped**: `ToolRisk` taxonomy (`ReadOnly`, `LocalWrite`, etc.) in `tantra-agent-core` / `tantra-agent-chat`, `propose_trade` formulating a closed `Decision::PlaceOrder` (`NoFX` approval-queue pattern), `tantra-risk` annotation hooks (`T1`), and interactive chat permission checks (`tantra-agent-chat/src/permission.rs`).
+- **Remaining**: Wire `propose_trade` cleanly through `Decision` → `RiskEngine` (`tantra-agent` gap `0012`), expose explicit MCP `readOnlyHint`/`destructiveHint`/`idempotentHint` fields on all tool schemas, and persist `ApprovalQueue` + `TradingState` via SQLx (`tantra-runtime` gap `0021`, `plan 0019` P2.7).
+
+### 2.7 Agent Orchestration over ACP (`docs/design/0005`)
+- **Planned Architecture (Option B — Accepted 2026-11-21)**:
+  - **Deterministic F&O Resolution (`tantra-core::fo`)**: Pure, zero-I/O, WASM-clean `ExpiryCalendar` (handling Sep 2025 NSE Tuesday cutover and holiday shifts via injected `&[NaiveDate]`) and `ContractSymbol` builders, backed by `fo_contracts` tool (`ContractMasterPort`) and NSE bhavcopy F&O/index ingestion in `tantra-data`.
+  - **Specialist `AgentSpec` Registry & `CoordinationMode`**: `resolver`, `options_analyst`, `market_analyst`, `strategist` specs running in `Delegate` mode (nested budgeted `run_turn` for capable models) or `Inline` mode (merged toolset/prompt for local CPU models like Qwen3-30B-A3B), emitting ACP `plan` updates and nested `tool_call` `_meta.tantra.{agent,parent_call_id,summary}` updates.
+
+### 2.8 Canonical `/api/v2` Runtime API Surface (`docs/design/0006`)
+- **Accepted 2026-11-22 (Phases `R0`–`R3` Landed; `R4`–`R5` Remaining)**:
+  - Single resource-oriented `/api/v2` contract driven by one route registry (`v2_canonical.rs`) uniting router construction, fail-closed `Caller` auth scopes, per-route body caps, `ResponseEnvelope<T>`, and `openapi.v2.json`.
+  - Generated clients (`tantra-runtime-client` in Rust, `api-schema.d.ts` in TS, `tantra.client` + `Client.inproc` in `tantra-ffi` wheel).
+  - Unified authenticated multiplexed WebSocket `GET /api/v2/stream` (replacing `/ws`, `/ws/market`, `/ws/live`) and `GET /api/v2/acp` (retiring `/ws/chat`), followed by removal of un-prefixed root and `/api/v1` mounts (`R5`).
 
 ---
 
-## 3. The 18 Stateful Toolsets (443 Tools Parity)
+## 3. The 18 Stateful Toolsets (Parity Status & Roadmap Alignment)
 
-| Toolset Namespace | Complete Capabilities to Implement | Target Crate(s) | Implementation Plan & Bounded Context |
+Mapping the original 18 Fincept stateful domains onto Tantra's actual crates, shipped tools, and active plans:
+
+| Toolset Namespace | Capabilities & Parity Scope | Actual Target Crate(s) | Status (2026-11-24) & Next Actions |
 |---|---|---|---|
-| **1. `market`** | Real-time quotes, level-2/level-3 order book depth, OHLCV candles (1s to 1M), split/dividend adjusted prices, option chains with Greeks, futures term structures/basis, corporate actions, holiday & economic calendars. | `tantra-market-core`, `tantra-market-feed`, `tantra-data` | Expand Indian broker WebSockets to synthesize unified real-time books. Integrate NSE/BSE corporate calendars and RBI economic release schedules. |
-| **2. `backtest`** | Event-driven backtesting, multi-asset basket backtests, hyperparameter sweeps, parameter heatmaps, slippage/impact profiles, benchmark comparisons, walk-forward logs. | `tantra-runtime-backtest`, `tantra-runtime-enhancer` | Expose backtest runner as an MCP toolset. Emit structured tearsheets and `$tantra/ref` equity curve handles. |
-| **3. `algo`** | Algorithmic strategy registry, semantic versioning, composite basket execution, live deployment state, execution mode switching (Live, Paper, Shadow). | `tantra-runtime-strategy`, `tantra-agent-trader-loop` | Build versioned strategy catalog (`AlgoIdRegistry`), basket weight definitions, and execution router dispatching to live/paper OMS. |
-| **4. `crypto`** | Spot and perpetual futures connectivity, order books, funding rate histories, liquidation feeds, institutional custody wallets, regulatory compliance logs. | `tantra-market-crypto`, `tantra-exec-crypto` (new pluggable crates) | Implement an isolated L2/L6 crypto adapter following strict zero-float rules. Keep physically segregated from Indian equity brokers to maintain SEBI compliance boundaries. |
-| **5. `data`** | Historical time-series lakehouse, point-in-time dividend/split adjustments, vendor fundamentals (P/E, P/B, EV/EBITDA, ROCE), RBI macro series, yield curves. | `tantra-data-lakehouse`, `tantra-data-ports` | Extend DuckDB/Parquet partitions to ingest RBI DBIE macro data, Indian sovereign bond yields, and vendor fundamental matrices with exact decimal scales. |
-| **6. `filings`** | NSE/BSE corporate filings, financial disclosures (P&L, Balance Sheet, Cash Flow), shareholding patterns, insider trading reports (PIT disclosures), SAST disclosures. | `tantra-data-filings` (new crate) | Automated scraper and parser for BSE/NSE corporate announcements (XBRL and PDF extraction to Arrow/DuckDB). |
-| **7. `deals`** | Bulk deals, block deals, insider acquisitions/disposals, institutional investor (FII/DII) daily trading activity, promoter pledge tracking. | `tantra-data-deals` (new crate) | Daily ingestion pipeline capturing NSE/BSE block/bulk sheets and NSDL/CDSL depository pledge metrics. |
-| **8. `portfolio`** | Real-time mark-to-market valuation, Brinson-Fachler performance attribution, multi-factor attribution, scenario stress-testing, FIFO/LIFO tax lots, index benchmark comparisons. | `tantra-ledger-portfolio`, `tantra-agent-analytics` | Extend portfolio domain aggregate with Brinson allocation/selection decomposition and historical scenario shock matrices. |
-| **9. `paper`** | Virtual trading account, realistic fill simulation (latency modeling, queue position, slippage, partial fills), margin checks, equity curves. | `tantra-runtime-paper` (new module in `tantra-runtime`) | Paper-trading execution engine sharing exact OMS and risk aggregate logic with the live execution gateway. |
-| **10. `workspace`** | Dynamic watchlists, multi-condition alert rules, markdown research notes, executable analytical notebooks, custom synthetic index definitions, report exports. | `tantra-ui-core`, `tantra-agent-core` | Local SQLite/JSON storage for user workspace state; full bi-directional sync with CLI, TUI, and Web workstations. |
-| **11. `research`** | Autonomous quantitative research loop: natural language hypothesis generation, domain grammar formulation, genetic candidate mutation, walk-forward verification. | `tantra-agent-research`, `tantra-agent-genetic` | Formalize research manifests, hypothesis generation loop, and statistical verification pipelines. |
-| **12. `agents`** | Multi-agent lifecycle management, cron-based scheduled jobs, long-term memory distillation, turn-by-turn checkpointing, multi-dimensional budget enforcement. | `tantra-agent-core::jobs`, `tantra-agent-core::memory`, `tantra-agent-chat::session` | Implement cron evaluator, SQLite-based vector+BM25 memory store, and interactive approval gates. |
-| **13. `account`** | Multi-tenant SaaS accounting, API token management, credit balances, rate limit metering, audit logging. | `tantra-runtime-api-rest::auth` | Tenant accounting layer with per-endpoint token metering for hosted deployments. |
-| **14. `analytics`** | Cross-asset factor returns, macro factor decomposition, rolling beta/alpha, implied volatility surfaces, skew curves, regime classification summaries. | `tantra-agent-analytics`, `tantra-market-analytics` | Aggregate analytical metrics across engines into high-level summary cards and visual blocks. |
-| **15. `screener`** | Vectorized universe screening across 4,000 fundamental, technical, and liquidity metrics; nested logical conditions (`and`/`or`/`crosses`); custom formula evaluation. | `tantra-data-screener` | Fast filter DSL evaluating predicates over Apache Arrow RecordBatches, outputting top results and `$tantra/ref` handles. |
-| **16. `quantlab`** | Experiment lineage tracking, trial history, Deflated Sharpe Ratio (DSR), Probability of Backtest Overfitting (PBO), White's Reality Check, signal correlation matrices. | `tantra-agent-research::quantlab` | Research experiment database recording every backtest run, hyperparameter set, and statistical significance test. |
-| **17. `news`** | Multi-source financial news aggregation (NSE/BSE feeds, financial press), keyword search, LLM-based sentiment scoring, real-time news monitors with desktop alerts. | `tantra-agent-news` (new crate) | Streaming news ingestor with regex/semantic tagging and sentiment classification pipeline. |
-| **18. `altdata`** | Indian macroeconomic indicators (GST collections, power demand, port shipping volume, rail freight, FASTag toll collections), sovereign yield curves. | `tantra-data-altdata` (new crate) | Specialized data connectors for high-frequency Indian economic proxy datasets. |
+| **1. `market`** | Quotes, L2 depth, OHLCV (`1s`–`1M`), CA adjustments, live option chains with Greeks/PCR/Max Pain, F&O expiries, holiday & economic calendars | `tantra-market-{core,store,dhan,zerodha}`, `tantra-runtime-api-rest`, `tantra-agent-chat-tools` | **Substantially Shipped**: Quotes, bars, `market_depth`, `OptionsChainTool`, `GET /api/v2/options/chain` (gap `0016`), Dhan + Zerodha WS feeds, NSE holidays, Forex Factory calendar. **Open**: Upstox/Fyers/AngelOne WS (`T3.3`), NSE bhavcopy F&O/index master (`design/0005` P2), `tantra-market` gap `0010` WS resilience. |
+| **2. `backtest`** | Event-driven backtesting, multi-asset baskets, GA/Bayesian/WFO sweeps, DSR/PBO, slippage/impact, `$tantra/ref` equity curves | `tantra-runtime-backtest`, `tantra-runtime-enhancer`, `tantra-exec-paper`, `tantra-agent-mcp` | **Substantially Shipped**: `tantra-exec-paper` unified fill engine (`T14`), `CatalogLoader` v3 `data_ref` pinning (`T17.4`), `StrategyLoopKernel` + `/api/v2/studies/strategy-loop/*` (`T21`). **Open**: Deduplicate backtest sim clone (`0019` P2.1), wire `tantra-runtime-enhancer` GA/Bayesian/WFO/MC/Stress into `/api/v2/sweeps` (`0019` P5.1). |
+| **3. `algo`** | Strategy registry, semantic versions, baskets, TradePlanner/TradeManager presets, live/paper/shadow routing, SOR & freeze slicing | `tantra-strategies`, `tantra-core::trade_plan`, `tantra-runtime-strategy`, `tantra-exec-{router,slicer}` | **Partial**: Versioned manifests, `BasketManifest`, `strategy_manage`, `TradePlanner` P1 (`core 0005`), EE+ (`T12`/`T21`). **Open**: `TradeManager` + presets (`0008`), `Qullamaggie` (`0009`), wire `tantra-exec-{router,slicer,angelone,upstox}` & `tantra-runtime-actors` into `tantra-serve` (`0019` P5.1), decouple `dispatch.rs` (`runtime 0028`). |
+| **4. `crypto`** | Spot/perps connectivity, funding rates, custody | *(Out of scope for SEBI core)* | **Resolved NO-GO (`tantra-exec` `d529bc9`)**: Kept out of Indian brokerage execution to maintain clean SEBI boundaries; multi-asset non-equity breadth focuses on **FX & Commodities** via `Experimental-Analysis` (`0014`). |
+| **5. `data`** | Historical lakehouse, CA adjustments, fundamentals, macro series, yield curves, CAS pinning | `tantra-data`, `tantra-market-{store,normalizer}`, `tantra-runtime-backtest` | **Substantially Shipped**: Lakehouse v3 CAS (`objects/sha256`, `catalog.duckdb`, `refs/` — `0011` Ph 1–3), fundamentals/macro/calendar stores, `CatalogInstrumentMaster` `Decimal128`. **Open**: Fix `bridge_exporter` tree drop (`data 0027`), F&O spreads/basis (`0014`), `tantra_library` `BarSource` (`data 0026`), Phase 4 legacy deprecation (`0011`). |
+| **6. `filings`** | NSE/BSE corporate filings, XBRL/PDF financial disclosures, shareholding, PIT insider, SAST | `tantra-data`, `tantra-market-store`, `tantra-agent-chat-tools` | **Substantially Shipped**: `FilingsProjectionReader`, `filings_search`, `financial_statements`, BSE shareholding + NSE PIT (`T5.5`, `T18.5`). **Open**: Wire `read_bse_ixbrl` (`0019` P5.2); SAST + analyst estimates remain open-and-documented (`data 0024`). |
+| **7. `deals`** | Bulk/block deals, FII/DII flows, delivery %, promoter pledges | `tantra-data`, `tantra-market-store`, `tantra-agent-chat-tools` | **Shipped**: `BlockDealsTool`, `GET /market-data/block-deals`, `InstitutionalFlowsTool` (FII/DII), `DeliveryAnalysisTool`, pledge records (`T5.3`, `T5.9`, `T5.10`, `T18.5`). |
+| **8. `portfolio`** | MTM valuation, FIFO/LIFO tax lots, STCG/LTCG, Indian statutory fees, performance & Brinson attribution | `tantra-ledger-{portfolio,journal,performance}`, `tantra-agent-chat-tools` | **Substantially Shipped**: `PortfolioView`/`Positions`/`Orders`/`TaxLots`/`Pnl`, `TaxReportTool` + `LedgerStatementTool` (STCG/LTCG), FIFO bracket exits (`T12.7`), `SharedLedger`. **Open**: Per-caller paper accounts (`runtime 0017`), durable OMS/ledger event log (`ledger 0019`), L1 cost-table consolidation (`0019` P4.1), contract-note reconciliation (`0019` P5.1). |
+| **9. `paper`** | Virtual exchange account, realistic L2 matching, latency/slippage/MIS, margin & equity curves | `tantra-exec-paper`, `tantra-runtime-api-rest`, `tantra-ffi`, `tantra-ui-api-wasm` | **Shipped (`plan 0007` / `T14`)**: Unified `tantra-exec-paper` across REST, `/ws/live`, strategies, backtest, `tantra.paper`, WASM, and `paper_serve`. **Open**: Per-caller isolation (`runtime 0017`), `is_delivery` statutory tax fix (`0019` P1.3). |
+| **10. `workspace`** | Watchlists, multi-condition alerts, layouts, notes, notebooks, report exports | `tantra-ui-web`, `tantra-runtime-api-rest`, `tantra-agent-report` | **Partial**: Watchlists, `PriceAlert`, Dockview `toJSON()`/`fromJSON()` layouts, Typst/MD `ResearchNote` (`tantra-agent-report`). **Open**: First-class `/api/v2/alerts` (`Alpha-Alerts` group edge + event alerts, `0010` / `runtime 0007`), wire `tantra-agent-report` into CLI/TUI/REST (`0019` P5.2). |
+| **11. `research`** | Autonomous quant loop: hypothesis, genetic synthesis, AST verification, strategy loops | `tantra-agent-{research,genetic}`, `tantra-strategies::tantra_library` | **Partial**: `tantra-agent-research` (incl. static AST `verify`) & `tantra-agent-genetic` (Odysseus) crates built; `strategy_loop_*` MCP/chat tools + `tantra_library` shipped (`T21`, `T22`). **Open**: Wire `research` & `genetic` into `tantra-runtime-jobs` & MCP (`0019` P5.2). |
+| **12. `agents`** | Multi-agent orchestration, cron jobs, persistent Vector+BM25 memory, checkpoints, budgets | `tantra-agent-{acp,core,chat,plugins}`, `tantra-runtime-jobs` | **Substantially Shipped**: `UserMemory` + `ProfileBudget`, `tantra-runtime-jobs` monitor bridge (`T6.3`), `SqlxSessionStore` threads + trace (`0020`), `tantra-agent-acp` TUI pipeline. **Open**: Specialist `AgentSpec` orchestrator (`design/0005`), wire `tantra-agent-plugins` + `trader-loop` (`0019` P5.2), single IST cron runner (`runtime 0032`). |
+| **13. `account`** | Multi-tenant auth, scoped API tokens, rate metering, audit logging | `tantra-runtime-api-rest::auth`, `tantra-exec-audit` | **Partial**: Fail-closed auth middleware (`tokens_file` + JWT) + `Caller` extraction + `auth_scope` drift guard (`design/0006` R0). **Open**: Fail-closed bind/CORS (`runtime 0020`), unified `AuditSink` (`runtime 0033`), tenant billing/quotas (`plan 0022`). |
+| **14. `analytics`** | Factor decomposition, GARCH, HMM regimes, changepoints, copulas, options positioning, `Experimental-Analysis` | `tantra-core::analytics`, `tantra-agent-analytics`, `tantra-market-finance::studies` | **Substantially Shipped**: All core quant engines built (`T6.9`, `T20`, `T21`). **Open**: Consolidate pure math into L0 `tantra-core::analytics` (`0019` P4.2), complete `Experimental-Analysis` Ph 2–3 (`0014`) & Quantsapp positioning/VRP models (`0017`, `0018`). |
+| **15. `screener`** | Vectorized screening, nested `Decimal` DSL, QVM score, F&O/technical scanners | `tantra-core::screener`, `tantra-market-indicators`, `tantra-data`, `tantra-ui-web` | **Partial (`0010` P1 Shipped)**: Converged recursive `Decimal` AST + `classification` VOs + `ScreenerQueryTool` + CLI/Web scanner. **Open**: QVM composite, `ADR%(20)` / cross-sectional rank (`0009`), 4,000-field DuckDB/Parquet `ScreenerEvaluatorPort` & MCP (`0010` P2–P9, `agent 0013`). |
+| **16. `quantlab`** | Experiment lineage, trial history, DSR, PBO, permutation tests, Signal Study | `tantra-core::analytics`, `tantra-agent-analytics`, `tantra-strategies::tantra_library`, `tantra-runtime-persistence` | **Substantially Shipped**: `DsrResult`, `PboResult`, `permutation_test_*`, `SignalStudy` (`tantra_library`), `RunManifest.{data_commit_sha, data_as_of_ist}`, `LoopSessionStore`. **Open**: Unified experiment catalog UI & cross-run lineage (`0015`/`0019`). |
+| **17. `news`** | Financial news ingestion, search, outlier-dated news, sentiment & topic monitors | `tantra-data`, `tantra-agent-chat-tools` | **Partial**: Moneycontrol RSS ingestion, `DuckDbNewsStore`, `NewsSearchTool` (`T5.4`), `HistoricalOutlierNewsTool` design (`0014` / `agent 0016`). **Open**: Multi-source sentiment pipeline & real-time desktop alert monitors. |
+| **18. `altdata`** | Indian high-frequency macro proxies (GST, power, freight, PMI), sovereign yield curves | `tantra-data`, `tantra-market-finance` | **Partial**: `MacroSeriesTool` (`T7.7`), sovereign/macro scaffolding. **Open**: Dedicated Indian high-frequency proxy connectors and NSS sovereign curve integration (`tantra-data`). |
 
 ---
 
-## 4. The 17 Stateless Analytics Compute Engines
+## 4. Stateless Analytics Compute Engines (Actual Crate Mapping & Additions)
 
-All 17 engines reside in zero-I/O pure compute crates, enforcing `rust_decimal::Decimal` and WASM compatibility:
+All stateless compute engines enforce zero-I/O purity, `rust_decimal::Decimal` boundaries (isolating any numerical `f64` solvers internally), and `wasm32-unknown-unknown` targetability where applicable. Note that the original plan's hypothetical `tantra-math-*` crate names were realized under the actual workspace crates below:
 
-### 4.1 Fincept Stats (`tantra-math-stats`)
-- **Capabilities**:
-  - Ordinary Least Squares (OLS) and Weighted Least Squares (WLS) regression with robust standard errors (HC0, HC1, HC2, HC3, Newey-West HAC).
-  - Vector Autoregression (VAR) with lag length selection (AIC, BIC, HQIC).
-  - Unit-root and stationarity testing: Augmented Dickey-Fuller (ADF) with drift/trend specifications, Kwiatkowski-Phillips-Schmidt-Shin (KPSS).
-  - R-style formula parser (e.g. `returns ~ niftr_ret + bank_ret + 1`).
-  - Statistical hypothesis tests: Jarque-Bera normality, Durbin-Watson autocorrelation, Breusch-Pagan heteroskedasticity.
+| # | Original Fincept Engine | Canonical Tantra Crate(s) & Modules | Status & Implemented Capabilities | Remaining Additions |
+|---|---|---|---|---|
+| **4.1** | **Fincept Stats** | `tantra-core::analytics::stats` *(consolidating `tantra-agent-analytics` per `0019` P4.2)* | **Partial**: Core descriptive/distribution stats, normal CDF/`erf`, OLS/regression primitives. | WLS with HC0–HC3/HAC Newey-West SEs, VAR lag selection (AIC/BIC/HQIC), ADF/KPSS unit-root, R-style formula parser, Jarque-Bera/Durbin-Watson/Breusch-Pagan. |
+| **4.2** | **Fincept Forecast (ML)** | `tantra-agent-forecast` (`gradient_boost.rs`, `features.rs`) | **Partial**: Native Rust gradient-boosted trees (`gradient_boost`) + automated lag/feature engineering (`features`). | Conformal prediction intervals (90%/95% distribution-free coverage) & cross-sectional panel ML. |
+| **4.3** | **Fincept Allocation** | `tantra-ledger-allocation` (`lib.rs`, `mpo.rs`) | **Shipped (`T2.1`–`T2.4`, `T6.9`)**: MVO, Risk Parity / ERC, `Hrp`, `BlackLitterman`, exact bound-constrained solve, discrete whole-share allocator, `MpoConfig`. | HERC, NCO, Entropy Pooling, full 26-measure tail-risk suite (EVaR, MAD, Semivariance). |
+| **4.4** | **Fincept Portfolio Optimizer** | *(Merged into `tantra-ledger-allocation` + `tantra-core::sizing`)* | **Shipped**: Unified with `4.3` (no separate crate); `calculate_position_size` (`FixedFractional`/`VolTarget`/`Kelly`/`ERC`). | Markowitz Critical Line Algorithm (CLA) & LP-formulated CVaR/Semivariance frontier; weight/ADV caps (`0008`). |
+| **4.5** | **Fincept Quant** | `tantra-core::quant` + `tantra-core::analytics` | **Shipped (`core 0001`, `T0.7`)**: Exact `Decimal` simple/log/cumulative returns, realized/EWMA volatility, rolling stats, Sharpe/Sortino/Calmar. | Parkinson/Garman-Klass/Rogers-Satchell/Yang-Zhang range vol in L0 (`Yang-Zhang` partly in `market-finance`), Omega ratio, SIR/SEIR contagion models. |
+| **4.6** | **Fincept Volatility** | `tantra-agent-analytics::{volatility,cointegration}` → `tantra-core::analytics` (`0019` P4.2) | **Shipped (`T6.6`, `T6.9`)**: `fit_garch11`, `test_engle_granger` cointegration, parametric/historical VaR & CVaR. | EGARCH, GJR-GARCH, Student-t GARCH, Lo-MacKinlay Variance Ratio, Johansen multivariate cointegration. |
+| **4.7** | **Fincept Panel** | `tantra-agent-panel` (`fixed_effects`, `random_effects`, `fama_macbeth`, `asset_pricing`, `gmm`) | **Shipped (`Layer 4A`)**: Pooled OLS, Fixed Effects, Random Effects (GLS), Fama-MacBeth two-step, 2SLS/IV, GMM, factor risk decomposition. | Wire `panel_regression` & `fama_macbeth` into `tantra-agent-chat-tools` & `tantra-agent-mcp` (`0019` P5.2). |
+| **4.8** | **Fincept TS Forecast** | `tantra-agent-forecast` (`arima`, `ets`, `theta`, `tbats`) | **Shipped (`Layer 4A`)**: `ARIMA`, `ETS`, `Theta`, `TBATS` univariate forecasting + `tantra_forecast_series` MCP tool. | Automated SARIMA Hyndman-Khandakar order search, Croston & SBA intermittent demand models. |
+| **4.9** | **Fincept Technicals** | `tantra-market-indicators` (47 Rust files) + **`tantra-strategies::tantra_library`** (`0016`/T22) + `tantra-market-signals` | **Shipped (`T22.1`–`T22.7`)**: 47 Rust streaming indicator files + **44 `tantra_library` entries** (LuxAlgo-style Predictive Ranges, VIDYA-trend, Reversal Bars, 12 concept pages, `tantra-library-mcp`, `/api/v2/studies/*`). | Complete `Decimal` migration of ~25 remaining `f64` indicators (`tantra-market` gap `0009` / `0019` P4.4); expand to 201 indicators + 61 candlesticks with golden parity (`root 0016`); optional Rust port (`tantra-market` `0005`). |
+| **4.10** | **Fincept Scanner** | `tantra-core::screener` + `tantra-market-indicators::screener` + `tantra-data` | **Shipped (`0010` P1)**: Converged recursive `Decimal` AST (`AND`/`OR`, `CrossesAbove/Below`, `RelativeTo`, `ClassificationFilter`). | 4,000-field DuckDB/Arrow `ScreenerEvaluatorPort` + QVM scoring (`0010` P2–P9) + `ADR%(20)` & cross-sectional rank (`0009`). |
+| **4.11** | **Fincept Performance** | `tantra-ledger-performance` + `tantra-core::analytics` + `tantra-agent-analytics` | **Shipped (`T2.5`, `T2.6`, `T6.6`)**: `EquityStats`, `TradeStats`, `DsrResult`, `PboResult` (CSCV), `CostStressResult`, `PerformanceReport`, tearsheets. | Consolidate pure stats into L0 `tantra-core::analytics` (`0019` P4.2); wire `tantra-ledger-performance` into REST/CLI (`0019` P5.1). |
+| **4.12** | **Fincept Change Points** | `tantra-agent-analytics::changepoint` → `tantra-core::analytics` (`0019` P4.2) | **Shipped (`T6.9`)**: `detect_cusum_change_points`, `detect_structural_break`, `tantra_change_point` MCP tool. | Exact PELT (`O(n)`) & Binary Segmentation (BinSeg) multi-parameter break search. |
+| **4.13** | **Fincept Regimes** | `tantra-agent-analytics::regime` → `tantra-core::analytics` (`0019` P4.2) | **Shipped (`T6.9`)**: Gaussian HMM (Baum-Welch + Viterbi) + `RegimeLabel` + `tantra_detect_regimes` MCP tool. | Student-t emissions, 3-state (`Calm`/`Volatile`/`Crash`) defaults, forward occupancy matrix. |
+| **4.14** | **Fincept Copula** | `tantra-agent-analytics::copula` → `tantra-core::analytics` (`0019` P4.2) | **Shipped (`T6.9`)**: Bivariate Clayton & Gumbel copulas + seeded Copula-VaR + `tantra_copula_tail_risk`. | Gaussian, Student-t, Frank copulas + R-vine / C-vine multi-asset tail dependence. |
+| **4.15** | **Fincept Multi-Period** | `tantra-ledger-allocation::mpo` + `tantra-runtime-enhancer` | **Shipped (`T6.9`)**: `MpoConfig` + `tantra_multi_period_optimize` MCP tool. | Almgren-Chriss temporary + permanent square-root impact simulation harmonized with `tantra-risk`. |
+| **4.16** | **Fincept Portfolio Lab** | `tantra-agent-research` + `tantra-agent-analytics` + `tantra-runtime-enhancer` | **Shipped (`T6.6`, `T6.9`)**: Purged/embargoed walk-forward (`evaluate_walk_forward`), permutation tests (`sharpe`/`win_rate`), `HoldoutResult`. | 46-metric Factor Lab (quintile spreads, IC / Rank IC time-series) & full experiment lineage UI. |
+| **4.17** | **Fincept Pricing** | `tantra-market-pricing` + `tantra-ui-api-wasm` | **Shipped (`Layer 1c`, `runtime 0016`)**: `BlackScholesModel`, 5 classic Greeks (`Decimal` 8dp), Brent/NR IV solver. | **Track `T23` (`0017`, `0018`)**: 2nd-order Greeks (Vanna, Volga, Charm), Bjerksund-Stensland (2002) American, CRR binomial tree, SVI/SABR vol surface fit, dual-measure ($\mathbb{P}/\mathbb{Q}$) Monte Carlo, NSS yield curves; single-source WASM/wheel binding (`root 0015`). |
 
-### 4.2 Fincept Forecast (`tantra-math-forecast-ml`)
-- **Capabilities**:
-  - High-performance gradient boosted decision trees (via native Rust Tree-Booster or zero-copy Arrow bridge to LightGBM/XGBoost).
-  - Conformal prediction intervals for distribution-free uncertainty estimation at target coverage (e.g. 90%, 95%).
-  - Multi-horizon recursive and direct forecasting with automated feature lag generation.
-  - Cross-sectional panel ML support across instrument universes.
-
-### 4.3 Fincept Allocation (`tantra-math-allocation`)
-- **Capabilities**:
-  - 26 risk measures: Variance, Semivariance, Mean Absolute Deviation (MAD), Value-at-Risk (VaR), Conditional VaR (CVaR/Expected Shortfall), Maximum Drawdown, Entropic Value-at-Risk (EVaR).
-  - Risk Parity and Equal Risk Contribution (ERC) via cyclical coordinate descent.
-  - Hierarchical Risk Parity (HRP), Hierarchical Equal Risk Contribution (HERC), and Nested Clustered Optimization (NCO).
-  - Black-Litterman model: Combining market equilibrium priors with quantitative views and subjective confidence matrices.
-  - Entropy Pooling: Flexible views on distributions and stress-test scenarios.
-
-### 4.4 Fincept Portfolio Optimizer (`tantra-math-portfolio-opt`)
-- **Capabilities**:
-  - Markowitz Mean-Variance Optimization (MVO): Efficient frontier generation, tangency portfolio, minimum variance portfolio.
-  - Markowitz Critical Line Algorithm (CLA) for exact piecewise-linear frontier tracing under linear inequality and box constraints.
-  - Semivariance / CVaR optimization via linear programming formulation.
-  - Discrete Share Allocator: Converts continuous portfolio weights into integer share quantities respecting instrument lot sizes, minimum tick increments, and available cash.
-
-### 4.5 Fincept Quant (`tantra-math-quant`)
-- **Capabilities**:
-  - High-throughput series algebra: Simple, logarithmic, and cumulative returns; price normalization; forward-filling and alignment.
-  - Realized volatility, Parkinson high-low volatility, Garman-Klass volatility, Rogers-Satchell volatility, Yang-Zhang drift-independent volatility.
-  - Exponentially Weighted Moving Average (EWMA) volatility and covariance matrices (RiskMetrics lambda = 0.94 / 0.97).
-  - Rolling Sharpe, Sortino, Omega, and Calmar ratios.
-  - Epidemic and shock propagation models (SIR/SEIR) for financial market contagion simulation.
-
-### 4.6 Fincept Volatility (`tantra-math-volatility`)
-- **Capabilities**:
-  - Generalized Autoregressive Conditional Heteroskedasticity models:
-    - GARCH(p, q) with Normal and Student-t innovation distributions.
-    - Exponential GARCH (EGARCH) for asymmetric leverage effects.
-    - Glosten-Jagannathan-Runkle GARCH (GJR-GARCH).
-  - Parametric, Historical, and Monte Carlo Value-at-Risk (VaR) and Expected Shortfall (CVaR).
-  - Lo-MacKinlay Variance Ratio tests for random walk hypothesis validation.
-  - Engle-Granger two-step and Johansen cointegration tests for statistical arbitrage pair identification.
-
-### 4.7 Fincept Panel (`tantra-math-panel`)
-- **Capabilities**:
-  - Panel data econometrics: Pooled OLS, Fixed Effects (Within transformation), Random Effects (GLS / Swamy-Arora).
-  - Fama-MacBeth two-step cross-sectional regression for asset pricing factor risk premia and t-statistics.
-  - Instrumental Variables (IV / Two-Stage Least Squares 2SLS) and Generalized Method of Moments (GMM).
-  - Fama-French 3-factor and 5-factor risk decomposition adapted for Indian equities.
-
-### 4.8 Fincept TS Forecast (`tantra-math-forecast-ts`)
-- **Capabilities**:
-  - Univariate statistical time-series forecasting:
-    - Autoregressive Integrated Moving Average (ARIMA) and Seasonal ARIMA (SARIMA) with automated Hyndman-Khandakar order search.
-    - Exponential Smoothing State Space models (ETS: Error, Trend, Seasonal).
-    - Theta method (standard and dynamic).
-    - Trigonometric, Box-Cox, ARMA, Trend, Seasonal (TBATS) models for complex seasonality.
-  - Intermittent demand models: Croston’s method and Syntetos-Boylan Approximation (SBA) for sparse event forecasting.
-
-### 4.9 Fincept Technicals (`tantra-market-indicators` expansion)
-- **Capabilities**:
-  - Expand from 17 indicators to full 201 incremental technical indicators (complete TA-Lib + modern quantitative indicators):
-    - Trend: SMA, EMA, WMA, DEMA, TEMA, TRIMA, KAMA, MAMA, Hull MA, Arnaud Legoux MA, Supertrend, Ichimoku Kinko Hyo, Parabolic SAR, ZigZag.
-    - Momentum: RSI, MACD, Stochastic, Stochastic RSI, Williams %R, CCI, CMO, ROC, Ultimate Oscillator, TRIX, TSI, Awesome Oscillator.
-    - Volatility: Bollinger Bands, ATR, Keltner Channels, Donchian Channels, Chaikin Volatility, Historical Volatility, Mass Index.
-    - Volume: OBV, Volume Profile, VWAP, Anchored VWAP, Money Flow Index (MFI), Chaikin Money Flow (CMF), Accumulation/Distribution, Force Index.
-    - Support/Resistance: Central Pivot Range (CPR), Camarilla Pivots, Fibonacci Retracements/Extensions.
-  - 61 Candlestick Pattern Recognizers: Doji (Dragonfly, Gravestone), Hammer, Hanging Man, Engulfing (Bullish/Bearish), Morning/Evening Star, Three White Soldiers, Three Black Crows, Harami, Piercing Line, Dark Cloud Cover, Marubozu.
-  - Zero-I/O, zero floats (`rust_decimal`), pure streaming state machine traits with `push(&Bar) -> IndicatorValue`.
-
-### 4.10 Fincept Scanner (`tantra-data-screener`)
-- **Capabilities**:
-  - Multi-dimensional screening over 4,000 fundamental, technical, and liquidity metrics across NSE/BSE stocks, indices, and F&O underlyings.
-  - Vectorized condition evaluation engine evaluating boolean expression trees with comparison operators (`>`, `<`, `>=`, `<=`, `==`, `crosses_above`, `crosses_below`, `between`).
-  - Mathematical formula screens (e.g. `(pe_ratio < 20) and (rsi_14 > 50) and (close > vwap)`).
-
-### 4.11 Fincept Performance (`tantra-agent-analytics`)
-- **Capabilities**:
-  - Exhaustive return and risk reporting: Cumulative Return, CAGR, Max Drawdown, Average Drawdown Duration, Calmar Ratio, Sharpe Ratio, Sortino Ratio, Omega Ratio, Tail Ratio, Gain-to-Pain Ratio.
-  - Deflated Sharpe Ratio (DSR) correcting for selection bias and non-normal returns.
-  - Probability of Backtest Overfitting (PBO) via Combinatorial Symmetric Cross-Validation (CSCV).
-  - Automated interactive tearsheet generation with SVG/Unicode equity curves and monthly returns heatmaps.
-
-### 4.12 Fincept Change Points (`tantra-math-changepoints`)
-- **Capabilities**:
-  - Pruned Exact Linear Time (PELT) algorithm for optimal structural change point detection with linear computational complexity.
-  - Binary Segmentation (BinSeg) and Window-based change point search.
-  - Multi-parameter break detection: mean shifts, variance shifts, distribution breaks, and rolling beta instability across market cycles.
-
-### 4.13 Fincept Regimes (`tantra-math-regimes`)
-- **Capabilities**:
-  - Gaussian and Student-t Hidden Markov Models (HMM) for 2-state (Bull/Bear) and 3-state (Calm/Volatile/Crash) market regime classification.
-  - Expectation-Maximization (Baum-Welch algorithm) for parameter estimation; Viterbi algorithm for optimal hidden state sequence decoding.
-  - Transition probability matrix estimation and forward regime occupancy forecasting.
-
-### 4.14 Fincept Copula (`tantra-math-copula`)
-- **Capabilities**:
-  - Bivariate parametric copulas: Gaussian, Student-t, Clayton (lower tail dependence), Gumbel (upper tail dependence), Frank.
-  - Regular Vine (R-vine) and Canonical Vine (C-vine) copulas for high-dimensional non-linear dependence modeling across Indian market sectors.
-  - Copula-based Value-at-Risk (Copula-VaR) capturing extreme joint tail risk during market contagion.
-
-### 4.15 Fincept Multi-Period (`tantra-runtime-enhancer::multi_period`)
-- **Capabilities**:
-  - Multi-period portfolio policy optimization under transaction costs and market impact constraints.
-  - Dynamic market impact simulator modeling linear temporary impact and square-root permanent market impact (Almgren-Chriss framework).
-  - Optimization-aware pre-trade sizing checks harmonized with `tantra-risk`.
-
-### 4.16 Fincept Portfolio Lab (`tantra-agent-research::portfolio_lab`)
-- **Capabilities**:
-  - 46 specialized portfolio risk/return diagnostic measures.
-  - Factor Lab: Cross-sectional factor ranking, quintile spread analysis, Information Coefficient (IC) and Rank IC (Spearman) time-series.
-  - Walk-forward cross-validation with purged and embargoed training splits to eliminate lookahead bias and serial correlation leakage.
-
-### 4.17 Fincept Pricing (`tantra-market-pricing` / `tantra-math-pricing`)
-- **Capabilities**:
-  - Analytical and numerical option pricing:
-    - Black-Scholes-Merton model for European options (NSE index options: NIFTY, BANKNIFTY).
-    - Bjerksund-Stensland (2002) closed-form approximation for American options (NSE stock options).
-    - Cox-Ross-Rubinstein (CRR) binomial trees with discrete dividend handling.
-  - Option Greeks: Delta, Gamma, Vega, Theta, Rho, Vanna, Volga, Charm.
-  - Implied Volatility (IV) solver using Brent’s method with Newton-Raphson fallbacks.
-  - Volatility surface fitting: SVI (Stochastic Volatility Inspired) and SABR parametric models across strikes and expiries.
-  - Fixed Income: Sovereign zero-coupon yield curve bootstrapping (Nelson-Siegel-Svensson), bond duration, modified duration, convexity.
+### New Compute Engines Added Post-`0001` (4.18 – 4.21)
+- **4.18 Statistical & Event Study Kernel (`tantra-market-finance::studies` — `0014` / `T20`)**: Pure `Decimal` (`wasm32`-clean) regime-aware `PeriodSchedule` (pre/post Sep 3, 2025 NSE `Fri→Thu` → `Wed→Tue` expiry cutover), `6×6` Markov transition equilibrium, empirical distributions (`16-bucket`, `10-bps`, probability levels), Abraham Wald survivability outliers, `5m` ORB-15, cross-asset correlation, CAR event studies, and F&O spread/basis/statutory cost evaluation.
+- **4.19 Composable Strategy & Loop Kernel (`tantra-market-finance::studies::pipeline` — `0015` / `T21`)**: Orthogonal `ZoneExtractor` × `IndicatorEvaluator` × `SignalPrimitive` × `StopExitPolicy` × `HedgeOverlayPolicy` × `FrictionModel` primitives, `StrategyLoopKernel`, `SweepRunner` (IS/OOS + DSR), and `OverlayScene` 6-layer projection (**Implemented**).
+- **4.20 Trade Signal Generator & Geometric Patterns (`tantra-core::{trade_plan,chart_pattern}` — `0008`, `0009`)**: Versioned `TradePlanner` presets (`qullamaggie`, `ee_plus`, `atr_swing`, `pattern_breakout`) (`trade_plan` P1 **Shipped**), `TradeManager` profit-booking ladders & trailing stops, and `Decimal` geometric chart patterns (VCP, flags, triangles, double bottoms).
+- **4.21 Deterministic F&O Calendar & Symbology (`tantra-core::fo` — `design/0005`)**: Zero-I/O, WASM-clean `ExpiryCalendar` (rule versions + holiday shift) and `ContractSymbol` builders (**Planned**).
 
 ---
 
-## 5. Workstation UI & Architectural Patterns (`FinceptTerminal` → `tantra-ui`)
+## 5. Workstation UI & Architectural Patterns (`0019`, `0020`, `0014`–`0018`)
 
-### 5.1 Architecture Rigor & Zero-Float Enforcement
-- **Resilience Data Plane**: Market feeds implement a resilient in-process event plane with circuit-breaking and last-known-good caching so transient broker disconnects do not crash UI widgets.
-- **Table-Driven Anti-Corruption Layer (`BrokerEnumMap<T>`)**: Replace broker-specific `match` or `if` chains with static declarative mapping tables translating vendor wire enums (Zerodha binary tokens, Upstox string flags, Angel One integer codes) to canonical `tantra-core` models.
-- **Strict Decimal Audit**: Zero-float policy strictly enforced. Any algorithms ported or modeled from external reference implementations are verified using `proptest` against floating-point epsilon divergence.
-- **In-Process Python FFI**: UI scripts and analytical extensions execute via `tantra-ffi` (PyO3 + Apache Arrow PyCapsule zero-copy transfer), eliminating the 0.5–1.5s cold-start penalty and JSON overhead of subprocess bridges.
+### 5.1 Architecture Rigor, Single-Source Contracts & WASM Convergence
+- **Dual-Workstation Split (`0019` Decision 3, `0020`)**:
+  - **Browser (`tantra-ui-web`)**: Next.js + MIT `dockview-react` v8 workstation shell (`/workspace` sole shell; legacy `(app)/*` routes redirected), 324-icon taxonomy (`<TantraIcon>`), unified `--color-*`/`--dv-*`/WASM chart theme & 4-family typography bridge, `api-schema.d.ts` generated from `openapi.v2.json` (`design/0006`), `decimal.js` zero-float parsing.
+  - **Terminal & CLI (`tantra-tui` + `tantra-cli`)**: Static Rust binary using `tantra-runtime-client` and `AcpClient`. Unique pure models from `tantra-ui-app` (`paper.rs`, `studio_ee.rs`, `system.rs`, `simulator.rs`) merge into `tantra-ui-core` / `tantra-tui`, `tantra-tui` adopts `Trading-R1` agentic UX patterns (`0019` §5.2), and `tantra-ui-app` (Leptos CSR) is retired.
+- **WASM Single Source**: Merge `tantra-ui-web-wasm` into `tantra-ui-api-wasm` (`tantra-ui-web` gap `0002`, `0019` P5.3) so chart rendering, `tantra-exec-paper`, `tantra-market-pricing`, and statutory fee previews share one canonical `wasm32` artifact.
+- **Resilience & Anti-Corruption**: `BrokerEnumMap<T>` declarative wire mappings (`tantra-exec`, `tantra-market`), `PortError::unavailable` on offline feeds (never synthetic fabrication — `root 0012`), and zero `f64` leakage across REST/WASM/TS boundaries.
 
-### 5.2 54-Screen Terminal Feature Inventory
-`tantra-ui` will provide complete screen coverage across its Leptos WASM Web UI (`tantra-ui-app`) and native Ratatui TUI (`tantra-tui`):
+### 5.2 Consolidated Screen & Panel Inventory (Fincept 54-Screen Parity → Dockview + TUI)
 
-```
-tantra-ui Screen Surface Inventory (54 Screens)
-├── 1. Markets & Feeds (8 screens)
-│   ├── 01. Live Market Overview (NSE/BSE indices, breadth, heatmaps)
-│   ├── 02. Advanced Interactive Charting (Candlesticks, 201 indicators, drawing tools)
-│   ├── 03. Market Depth & L2/L3 Order Book Visualizer
-│   ├── 04. Derivatives Desk (F&O chain, open interest analysis, PCR, max pain)
-│   ├── 05. Futures Term Structure & Basis Tracker
-│   ├── 06. Corporate Actions & Dividend Calendar
-│   ├── 07. Economic Calendar (RBI policy, CPI, IIP, GDP releases)
-│   └── 08. Cross-Asset Sector Heatmap & Correlation Matrix
-├── 2. Universe Screener & Scanner (5 screens)
-│   ├── 09. Futuristic Multi-Field Screener (4,000 fields, condition builder)
-│   ├── 10. Technical Breakout & Pattern Scanner (61 candlestick patterns)
-│   ├── 11. Fundamental Value & Quality Screener (P/E, ROCE, Piotroski F-Score)
-│   ├── 12. Volume Spike & Unusual Activity Scanner
-│   └── 13. Custom Formula Screener & Saved Screens Catalog
-├── 3. Trading & Execution (8 screens)
-│   ├── 14. Order Entry Ticket (Regular, AMO, Iceberg, Sliced TWAP/VWAP)
-│   ├── 15. Active Orders & Executions Monitor (Blotter with fill audit)
-│   ├── 16. Positions Desk & Real-time Mark-to-Market P&L
-│   ├── 17. Algorithmic Basket Trading & Multi-Leg Order Desk
-│   ├── 18. Pre-Trade Risk Gate Dashboard (SEBI OTR, price bands, margin buffer)
-│   ├── 19. Emergency Kill-Switch & Risk Override Desk
-│   ├── 20. Smart Order Router (SOR) Execution Diagnostics
-│   └── 21. Paper Trading Sandbox & Execution Replay Desk
-├── 4. Portfolio & Risk (8 screens)
-│   ├── 22. Portfolio Summary & Demat Holdings Ledger (T+1 settlement tracking)
-│   ├── 23. Performance Tearsheet & Equity Curve Viewer
-│   ├── 24. Brinson-Fachler Asset Allocation & Selection Attribution
-│   ├── 25. Factor Risk Decomposition Desk (Fama-French & Macro factors)
-│   ├── 26. Historical Scenario Stress-Testing & Shock Simulator
-│   ├── 27. FIFO Tax-Lot Ledger & Realized Capital Gains (STCG/LTCG)
-│   ├── 28. Statutory Cost Inspector (STT, GST, Stamp Duty breakdown)
-│   └── 29. Benchmark Tracking & Relative Alpha Workbench
-├── 5. Quantitative Analytics & Pricing (9 screens)
-│   ├── 30. Portfolio Optimizer Studio (MVO, HRP, Black-Litterman, CLA)
-│   ├── 31. Volatility Lab (GARCH fitting, volatility cones, term structure)
-│   ├── 32. Options Pricing & Greeks Calculator (Black-Scholes, American)
-│   ├── 33. Implied Volatility Surface & Smile Visualizer
-│   ├── 34. Time-Series Forecasting Workbench (ARIMA, LightGBM, Conformal)
-│   ├── 35. Market Regime Classification Desk (HMM state transitions)
-│   ├── 36. Structural Break & Change Point Detector (PELT)
-│   ├── 37. Tail Risk & Copula Dependence Explorer
-│   └── 38. Statistical Arbitrage & Cointegration Pairs Desk
-├── 6. Research, Strategy & Backtesting (8 screens)
-│   ├── 39. Event-Driven Backtest Runner & Parameter Sweep Studio
-│   ├── 40. Walk-Forward Optimizer & Overfitting Guardrails (DSR/PBO)
-│   ├── 41. Odysseus Genetic Strategy Synthesizer & Mutation Studio
-│   ├── 42. Strategy Verification Desk (Static AST lookahead & leakage scanner)
-│   ├── 43. Strategy Code Editor & Step Catalog Browser
-│   ├── 44. Backtest Run Catalog & Experiment Lineage Tracker
-│   ├── 45. Typst Tearsheet Document Compiler & PDF Exporter
-│   └── 46. Financial Research Notebooks & Scratchpads
-├── 7. AI Agent & Conversational Studio (5 screens)
-│   ├── 47. AgentChat Interactive Console (Streaming markdown, turn checkpoints)
-│   ├── 48. Tool Gateway Browser & Schema Inspector (Search, Describe, Call)
-│   ├── 49. Scheduled Autonomous Jobs Desk (Cron manager, budget controls)
-│   ├── 50. Long-Term Financial Memory Browser & Distillation Editor
-│   └── 51. Multi-Persona Configuration & MCP Client Settings Exporter
-└── 8. News, Filings & Workspace (3 screens)
-    ├── 52. Financial News Feed, Sentiment Analyzer & Topic Monitors
-    ├── 53. Corporate Filings Ingestion Desk (NSE/BSE announcements, XBRL)
-    └── 54. Workspace Preferences, Watchlist Manager & Cloud Sync
-```
+Rather than 54 separate Leptos routes, Fincept/Quantcept capabilities map cleanly onto **`tantra-ui-web`'s 23 Dockview `DockPanelKind` panels + integrated study/options tabs** and **`tantra-tui`'s 8+ agentic tabs**:
+
+| Domain Group | Original Fincept Screens | Current `tantra-ui-web` Dockview Panel / Sub-Tab | Current `tantra-tui` / `tantra-cli` Surface | Parity Status (2026-11-24) |
+|---|---|---|---|---|
+| **1. Markets & Feeds** | Live Overview, Charting (201 indicators), L2 Depth, Derivatives Chain, Term Structure, Corp Actions, Econ Calendar, Sector Heatmap | `chart` (`ChartWorkspace` + WASM `ChartCanvas` + `OverlayScene`), `order-book`, `option-chain` (`/api/v2/options/chain`), `calendar` (`CalendarBoard`), `data-window`, `object-tree` | `MarketFeed`, `Positioning`, `StrategyLab`, `TuiApp` Watchlist/Depth | **Substantially Shipped**: Dockview `chart`, `option-chain`, `order-book`, `calendar` live. **Open**: `options-analysis` 6-subtab + Dealer Positioning/Term Structure (`0017`/`0018`), sector heatmap (`0014`), TUI `Trading-R1` UX. |
+| **2. Universe Screener & Scanners** | Multi-Field Screener (4,000 fields), Pattern Scanner (61 candles), Fundamental/QVM, Volume/OI Spike, Saved Screens | `screener` (`ScreenerTabContent` + `ScreenerTable` + `ScreenerExplainDrawer`) | `Screener` tab + `tantra scan --server` | **Partial**: Converged `Decimal` DSL + UI table/explain drawer + CLI live scan. **Open**: 4,000-field QVM/fundamental joins, `Alpha-Alerts` group rules (`0010`), Qullamaggie `ADR%`/leader scanner (`0009`), F&O UOA/Trap scanners (`0018`). |
+| **3. Trading & Execution** | Order Ticket (AMO/Iceberg/TWAP), Orders Blotter, Positions MTM, Basket Algo, Pre-Trade Risk, Kill-Switch, SOR Diagnostics, Paper Sandbox | `order-panel`, `trading-panel` (`TradingDock`: Positions/Orders/History/Trades/Activity/Analytics), `workbench` (`TradeWorkbenchView`), `alerts` | `/positions` (`/ws/live`), `tantra paper`, `paper.rs` import (`0019` P5.3) | **Partial**: Paper order ticket, `TradingDock`, `TradeWorkbench`, `/ws/live` TUI panel shipped. **Open**: `tantra-exec-{router,slicer}` SOR/TWAP/VWAP UI, Kill-Switch & Risk Gate console, `GET /api/v2/stream` WS unification (`design/0006`). |
+| **4. Portfolio & Risk** | Portfolio Summary/Holdings, Performance Tearsheet, Brinson Attribution, Factor Risk, Scenario Stress, FIFO Tax Lots, Statutory Costs, Benchmark | `portfolio` (`PortfolioScreen`), `portfolio-detail` (`PortfolioRiskTab`, `PortfolioActivityTab`, `PortfolioSettingsTab`), `journal` (`JournalDashboard`), `reports` | `Portfolio` tab + `tantra-ui-core` `system.rs` | **Substantially Shipped**: Portfolio/detail/risk/journal/reports panels shipped. **Open**: Brinson & Fama-French factor screens, scenario shock studio, L1 WASM statutory fee inspector (`0019` P4.1), per-caller isolation (`runtime 0017`). |
+| **5. Quant Analytics, Experimental & Options** | Portfolio Optimizer, Vol Lab, Options Pricing/Greeks, IV Surface, Forecasting, Regimes, Change Points, Copulas, Stat Arb | `analysis` (`ExperimentalAnalysisTab` — Tabs 1–13), **new `options-analysis`** (`0017`/`0018`: Builder, AI Optimizer, GEX/Vanna/Charm/Trap, Vol/VRP, Chain, Repair/MC, AI Dossier) | `StrategyLab` (`OverlayScene`), `tantra study-loop`, `tantra elephant` | **In Progress**: `Experimental-Analysis` Ph 1 shipped (`0014`), `OptionChainPanel` wired (`runtime 0016`). **Open**: `Experimental-Analysis` Ph 2–3 (`0014` — ORB-15, Correlation, Event CAR, Outliers), `options-analysis` 6 sub-tabs + Dossier (`0017`/`0018`), Optimizer/Copula/Regime UI panels. |
+| **6. Research, Strategy & Backtesting** | Backtest Runner, Walk-Forward DSR/PBO, Odysseus Genetic, AST Verification, Code Editor, Lineage Catalog, Typst PDF, Notebooks | `python-editor`, `pine-editor`, `workbench`, `reports`, `tables` | `StrategyLab` (`/ee-study`, `/loop-eval`, `/loop-sweep`, `/hedge`), `tantra export` (`0019` P5.2) | **Partial**: `python-editor`, `pine-editor`, `StrategyLab`, `DisplayBlock::CodeDiff` (`StrategyDiffCard`) shipped. **Open**: `T21.5` Web Layer Pill Bar & Hint Inspector, `Indicator Lab` tab (`T22.8`), Typst PDF export wiring (`0019` P5.2), `QuantLab` lineage UI. |
+| **7. AI Agent & Conversational Studio** | AgentChat Console, Tool Gateway Browser, Scheduled Jobs, Memory Browser, Persona/MCP Exporter | `agent-copilot` (`AgentPane` VibePrompt UI: `AgentRunTrace`, `PromptBudgetBar`, `StrategyDiffCard`, `ToolPayloadTree`, `SupportPanel`) | `AgentChat` (`tantra-agent-acp`), `tantra tools`, `tantra mcp config` | **Substantially Shipped**: Dockview `agent-copilot` (`0020`), ACP TUI chat (`agent 0019` Ph 0–3), `present_view` (`agent 0020`). **Open**: Web → ACP migration (`agent 0019` Ph 4), Plan/Sources rail + Capability Browser + Questionnaire in TUI (`0019` §5.2), Jobs/Memory/Persona manager panels. |
+| **8. News, Filings & Workspace** | News & Sentiment, Corporate Filings (NSE/BSE XBRL), Workspace Preferences & Sync | `SettingsModal` (4-family fonts, theme bridge), `WorkspaceSwitcher`, `CommandPalette` (`Ctrl+K`), `watchlist` | CLI `memory`/`plugin`/`skills`/`doctor`, `~/.tantra` | **Partial**: `SettingsModal`, `CommandPalette`, `watchlist`, `NewsSearch`/`FilingsSearch` tools shipped. **Open**: Dedicated News/Sentiment & Filings browser panels, cloud/SQLx profile sync (`runtime 0021`). |
 
 ---
 
-## 6. Phased Implementation Roadmap
+## 6. Phased Implementation Roadmap (Original Phases + Active Next-Wave Tracks)
+
+### 6.1 Status of Original `0001` Phases 1–6
+- **Phase 1 — Protocol & MCP Infrastructure**: **✅ Core Shipped** (`TantraResultEnvelope`, `DataReferenceStore`, `tantra_search_tools`/`describe_tool`/`read_result`, `_jq`, SSE/Stdio transports, `ToolRisk` annotations). *Remaining*: Streamable HTTP + OAuth 2.1 (`agent 0016`), `Chart` client ref resolution (`agent 0009`), R1/R4 MCP decoupling.
+- **Phase 2 — Pure Quant Compute Engines**: **✅ Foundations Shipped** (`tantra-core::quant`, `tantra-ledger-allocation`, `tantra-agent-{analytics,forecast,panel}`, `tantra-market-pricing`, `tantra-market-finance::studies`, `tantra_library`). *Remaining*: L0 `tantra-core::analytics` consolidation (`0019` P4.2), `tantra-market-indicators` `Decimal` migration (`market 0009`), advanced variants (EGARCH/Johansen/PELT/Vine Copulas/Bjerksund-Stensland/SVI-SABR/CLA).
+- **Phase 3 — Data Lakehouse, Screeners & Disclosures**: **✅ Core Shipped** (Lakehouse v3 CAS Ph 1–3, `tantra-core::screener` AST, deals/news/filings/FII-DII/delivery/MF/shareholding/holidays/option-chain). *Remaining*: `bridge_exporter` tree fix (`data 0027`), NSE bhavcopy F&O/index master (`design/0005` P2), F&O spread/event tables (`0014`), 4,000-field QVM screener & Alpha-Alerts (`0010`), SAST/estimates (`data 0024`).
+- **Phase 4 — Agent Platform & Verification**: **✅ Core Shipped** (`UserMemory`, `tantra-runtime-jobs` monitor bridge, `tantra-agent-research::verify`, `SqlxSessionStore` threads + trace, `tantra-agent-acp` TUI). *Remaining*: `AgentSpec` specialist orchestrator (`design/0005`), wiring `research`/`genetic`/`trader-loop`/`plugins`/`report` (`0019` P5.2), `propose_trade` `RiskEngine` boundary (`agent 0012`).
+- **Phase 5 — Workstations & UI**: **✅ Core Shipped** (`tantra-ui-web` Dockview + VibePrompt `0020`, `DisplayBlock` CLI/TUI/Web renderers, `tantra-tui` `StrategyLab`/`/ws/live`, `tantra tools`/`mcp config`). *Remaining*: `T21.5` Web OverlayScene, `T22.8` Indicator Lab, `0014` Ph 2–3 (`Experimental-Analysis`), `0017`/`0018` (`Options Analysis`), `0019` §5.2 (`Trading-R1` TUI & `tantra-ui-app` retirement).
+- **Phase 6 — Docs, FFI & Verification**: **✅ Core Shipped** (`tantra-docs` 16 toolset pages + `llms.txt` + `paper-trading` + `user-guide` + `reading-list`, `tantra` PyO3/Arrow wheel + `tantra.paper`). *Remaining*: Options training curriculum (`0017`), `Client.inproc` (`design/0006`), `make verify-architecture` & `make verify-generated` CI gates (`0019`, `0023`).
+
+### 6.2 Forward Execution Sequence (Waves 0–3, Feature Tracks & Deployment)
 
 ```mermaid
 flowchart TD
-    subgraph P1["Phase 1: Foundation & Wire Protocols"]
-        P1A["Universal Result Envelope (tantra/result/v1)"]
-        P1B["In-Memory Ref Store ($tantra/ref/...)"]
-        P1C["Two-Tier MCP Gateway Discovery"]
-        P1D["Hosted OAuth 2.1 & Streamable HTTP"]
-    end
+    W0["Wave 0: Stop-the-Bleeding Gates (0021 / 0019 P0-P1)\n• data 0027 bridge export • exec 0004/adapters 0008 idempotency\n• market 0010 secrets • runtime 0020 bind/CORS • risk 0006-0007\n• agent 0011-0012 honesty • root 0024-0025 CI & lockfiles"]
+    W1["Wave 1: Correctness, Durability & DAG Repair (0019 P2-P4, 0021)\n• L0 tantra-core::analytics & L1 tantra-ledger-journal cost tables\n• Durable OMS/Ledger/Risk/Approvals (SQLx) • Indicator Decimal (gap 0009)\n• Sim SSOT (exec-paper) & Python model unification"]
+    API["Wave 1b: Core Enablers (design/0005 & design/0006)\n• tantra-core::fo + NSE bhavcopy F&O/index master\n• AgentSpec ACP orchestrator (Delegate/Inline)\n• /api/v2 R4-R5 (GET /stream, /acp, retire v1 & /ws/chat)"]
+    W2["Wave 2: Subsystem Wiring & Agentic Workstations (0019 P5)\n• Unified tantra-serve / tantra-serverd (18 unwired crates)\n• Trading-R1 Agentic tantra-tui & retire tantra-ui-app\n• Single tantra-ui-api-wasm + generated client drift gates"]
+    FEAT["Wave 2b: Feature Expansion Tracks\n• 0008 TSG + 0009 Qullamaggie (T16) + 0010 Screener/Alpha-Alerts\n• 0014 Experimental-Analysis Ph 2-3 (T20) + 0016 T22.8 Indicator Lab\n• 0017/0018 Options Analysis 71-Strategy & Quantsapp Suite (T23)"]
+    W3["Wave 3: Release Engineering & Deployment (0022 & 0023)\n• B0-B4: Lockstep tags, wheels, SBOMs, signing, AGPL/MIT notices\n• D0-D5: Workstation -> Compose -> Multi-node K8s SEBI -> Low-latency -> WASM"]
 
-    subgraph P2["Phase 2: Pure Quant Math Engines"]
-        P2A["Technicals 201 + 61 Candlesticks"]
-        P2B["Stats & Econometrics (OLS, VAR, ADF)"]
-        P2C["Allocation & Optimization (MVO, HRP, CLA)"]
-        P2D["Volatility (GARCH, VaR/ES) & Copulas"]
-        P2E["Regimes (HMM) & Change Points (PELT)"]
-        P2F["Options Pricing, Greeks & Vol Surfaces"]
-    end
-
-    subgraph P3["Phase 3: Data Lakehouse & Screeners"]
-        P3A["4,000-Field Vectorized Screener"]
-        P3B["NSE/BSE Corporate Filings & Deals Pipeline"]
-        P3C["Macro & Alternative Data Series Ingestion"]
-    end
-
-    subgraph P4["Phase 4: Agent Platform & Verification"]
-        P4A["Autonomous Scheduled Job Engine (Cron, Budget)"]
-        P4B["Local Memory Engine (Vector, BM25, Distill)"]
-        P4C["Static AST Strategy Verification Engine"]
-        P4D["Turn Checkpointing & Time-Travel"]
-    end
-
-    subgraph P5["Phase 5: Workstations (TUI, CLI, WASM)"]
-        P5A["Result Block Renderers (Table, MetricGrid, Chart)"]
-        P5B["Terminal-as-MCP-Host (ProviderAdapter, Tools)"]
-        P5C["54-Screen Terminal Feature Rollout"]
-    end
-
-    subgraph P6["Phase 6: Docs, FFI & Verification"]
-        P6A["MkDocs Material 15 Engine Reference & llms.txt"]
-        P6B["PyO3 / Arrow Zero-Copy FFI Export"]
-        P6C["Zero-Float Proptest & Golden Vector Suite"]
-    end
-
-    P1 --> P2
-    P1 --> P3
-    P2 --> P4
-    P3 --> P4
-    P4 --> P5
-    P5 --> P6
+    W0 --> W1
+    W0 --> API
+    W1 --> W2
+    API --> W2
+    API --> FEAT
+    W1 --> FEAT
+    W2 --> W3
+    FEAT --> W3
 ```
-
-### Phase 1: Protocol Standardization & MCP Infrastructure
-- **Deliverables**:
-  - Implement `TantraResultEnvelope`, `ExecutionMeta`, and `DisplayBlock` in `tantra-core::result`.
-  - Implement `DataReferenceStore` in `tantra-agent-core` with Arrow zero-copy memory management.
-  - Implement `tantra_search_tools`, `tantra_describe_tool`, `tantra_call_tool`, and `tantra_read_result` in `tantra-agent-mcp`.
-  - Add Streamable HTTP transport and OAuth 2.1 PKCE authorization to `tantra-agent-mcp`.
-  - Add tool safety annotations (`read_only_hint`, `destructive_hint`, `idempotent_hint`).
-
-### Phase 2: Core Analytical & Quantitative Compute Engines
-- **Deliverables**:
-  - Expand `tantra-market-indicators` to 201 incremental indicators and 61 candlestick pattern detectors.
-  - Build `tantra-math-stats` (OLS, WLS, VAR, ADF, KPSS, formulas).
-  - Build `tantra-math-allocation` and `tantra-math-portfolio-opt` (MVO, CLA, HRP, HERC, Black-Litterman, Discrete Share Allocator).
-  - Build `tantra-math-volatility` (GARCH, EGARCH, GJR-GARCH, VaR, CVaR, Cointegration).
-  - Build `tantra-math-regimes` (HMM) and `tantra-math-changepoints` (PELT, BinSeg).
-  - Build `tantra-math-copula` (Bivariate & Vine copulas).
-  - Build `tantra-market-pricing` (Black-Scholes, Bjerksund-Stensland, Greeks, IV solver, SVI surfaces).
-  - Build `tantra-math-forecast-ts` (ARIMA, ETS, Theta) and `tantra-math-forecast-ml` (Tree-Booster, Conformal intervals).
-
-### Phase 3: Data Lakehouse, Universe Screener & Disclosure Feeds
-- **Deliverables**:
-  - Implement 4,000-field vectorized screener in `tantra-data-screener` evaluating Arrow RecordBatches.
-  - Connect screener results to `$tantra/ref/...` cache.
-  - Create `tantra-data-filings` and `tantra-data-deals` for automated BSE/NSE corporate disclosures, block deals, and insider trading ingestion.
-  - Ingest RBI macro series and sovereign bond yield curves in `tantra-data-lakehouse`.
-
-### Phase 4: Autonomous Agent Infrastructure & Verification
-- **Deliverables**:
-  - Implement Autonomous Job Engine (`tantra-agent-core::jobs`) with cron triggers, multi-dimensional budgets (turns, INR statutory, tokens), and interactive approval gates.
-  - Implement Local Financial Memory Engine (`tantra-agent-core::memory`) with hybrid SQLite Vector + BM25 search and periodic distillation.
-  - Implement Static Strategy Verification Engine (`tantra-agent-research::verify`) scanning ASTs for lookahead bias and future timestamp access.
-  - Implement turn checkpointing and session time-travel (`/undo`, `/redo`) in `tantra-agent-chat`.
-
-### Phase 5: Workstations, Terminal Host & Screen Rollout
-- **Deliverables**:
-  - Implement `DisplayBlock` visual renderers in `tantra-cli` (ANSI) and `tantra-tui` (Ratatui widgets).
-  - Implement `McpHostManager` and `ProviderAdapter` in `tantra-ui-core` to enable desktop/TUI terminal-as-MCP-host calling external LLMs.
-  - Roll out the 54 terminal screens across `tantra-ui-app` (Leptos 0.8 WASM) and `tantra-tui` (Ratatui).
-  - Implement CLI tool commands (`tantra tools search`, `describe`, `call`) and MCP client configuration generators.
-
-### Phase 6: Ecosystem Documentation, FFI & Rigorous Verification
-- **Deliverables**:
-  - Publish complete documentation for all 15 MCP toolsets and 17 engines in `tantra-docs` with `llms.txt`.
-  - Expose all analytical engines through `tantra-ffi` (PyO3 + Arrow zero-copy) compiling the `tantra` Python wheel.
-  - Conduct zero-float audits with static clippy rules and property-based tests (`proptest`) across all numeric engines.
 
 ---
 
 ## 7. Architectural Invariants & Verification Matrix
 
-To ensure this expansion preserves the integrity of `tantra-labs`, every deliverable must pass this verification matrix before merging:
+Every deliverable across `tantra-labs` must pass the binding gates in [`.agents/checklists/pre-commit-gate.md`](../../.agents/checklists/pre-commit-gate.md), [`.agents/rules/testing-and-verification.md`](../../.agents/rules/testing-and-verification.md), and [`.agents/rules/build-discipline.md`](../../.agents/rules/build-discipline.md):
 
 | Requirement / Invariant | Validation Mechanism | Pass Criteria |
 |---|---|---|
-| **Zero Floats Rule** | `cargo clippy -- -D clippy::float_arithmetic` and AST linter across all math and domain crates. | Zero `f32`/`f64` usage in monetary, price, quantity, and risk paths. `Decimal` used exclusively. |
-| **Zero-I/O Domain Purity** | Dependency graph audit (`cargo tree`); compiler checks ensuring no `tokio`, network, filesystem, or wall-clock calls in pure compute crates. | 100% pure function execution; deterministic outputs for identical inputs. |
-| **NoFX Advisory Safety** | Integration tests simulating unapproved trade tool invocations by LLMs. | Pre-trade risk gate intercepts any trade signal. AI tool cannot bypass `tantra-risk`. |
-| **Golden Vector Parity** | Golden vector comparison tests against TA-Lib, SciPy, and QuantLib standard baselines. | Max absolute difference `< 1e-12` against validated analytical benchmarks. |
-| **Latency Budget** | Criterion benchmarks in CI for analytical compute engines and risk gate. | Sub-15 µs risk checks; sub-1 ms indicator updates; sub-50 ms portfolio optimization on 100 assets. |
-| **Parallel Test Rule** | Structural directory validation script. | All unit, integration, and property tests reside in `<crate>/tests/` parallel to `<crate>/src/`. |
+| **Canonical `prod` Profile** | `make prod` (`cargo build --workspace --profile prod`); `make check`; `cargo clippy --all-targets -- -D warnings`; `cargo fmt --check`. *(Never bare `cargo build --release`.)* | Zero warnings, zero format diffs, green `prod` build (or targeted test binaries where `tantra-runtime-api-rest` hits 15 GiB LTO OOM). |
+| **Zero Floats Rule** | Static clippy lints, `tantra-core`/`tantra-ledger`/`tantra-risk` audits, `proptest` / `hypothesis` suites (`0019` P4.6 `make verify-architecture`). | Zero `f32`/`f64` in monetary, price, quantity, statutory fee, margin, and risk paths (`Decimal` / `Decimal128` exclusively). |
+| **Strict L0–L6 Tier DAG & Zero-I/O** | `cargo tree` / `cargo metadata` DAG checker (`dependency_rules.rs` R1–R4 + `make verify-architecture`) + `wasm32-unknown-unknown` build check. | Zero cross-repo cycles, zero upward edges, zero network/FS/clock calls in pure domain crates. |
+| **Parallel Test Directory Rule** | Structural scan (`grep -rn "cfg(test)" */src */crates/*/src`). | **0** inline `#[test]` or `#[cfg(test)] mod tests` blocks inside `src/`. All tests live in parallel `tests/`. |
+| **Fail-Closed Security & Untrusted AI** | Negative auth/scope tests (`401`/`403`), `Caller` scoping tests, `deny_unknown_fields` on `Decision`/handoffs, `ZeroizeOnDrop`/redacted `Debug`, parameterized SQL. | Zero unauthenticated non-loopback binds, zero unscoped routes, zero AI bypasses of `RiskEngine`, zero secret leaks in logs/URLs. |
+| **Generated Contract & Parity Gates** | `make verify-generated` (`openapi.v2.json`, `domain_schema.json`, `.pyi`, `api-schema.d.ts`, single WASM), `paper_golden.json` cross-runtime parity, `tantra-docs/scripts/verify_conformance.py`. | Zero schema/client drift; byte-identical golden parity across Rust, Python wheel, and WASM. |
+| **Per-Stack Full Suites** | Python: `ruff check . && ruff format --check . && mypy --strict && pytest -v`; Web: `npx tsc --noEmit && npm run lint && npx vitest run && npm run build`; Docs: `mkdocs build --strict`. | All stack gates green prior to commit/merge. |
 
 ---
 
-## 8. Summary of Gaps Closed
+## 8. Summary of Parity Closed & Forward Trajectory
 
-By executing this master plan, `tantra-labs` completely eliminates every gap identified in `docs/tmp/fincept-quantcepts-mapping.md`:
-1. **MCP Infrastructure**: Transforms from local-only stdio into an institutional-grade, hosted OAuth 2.1 streamable gateway with discovery tiers, `$tantra/ref` caching, and universal result envelopes.
-2. **Terminal Host**: Equips `tantra-ui` with native LLM orchestration, provider adapters, and UI control tools.
-3. **Stateful Toolsets**: Reaches 100% parity across all 18 domains (443 tools), including derivatives chains, corporate filings, deal feeds, and pluggable crypto.
-4. **Stateless Compute**: Introduces all 17 quantitative engines in pure, zero-float Rust—spanning GARCH volatility, HMM regimes, copulas, changepoints, Black-Litterman allocation, and options pricing.
-5. **Workstation UX**: Delivers the complete 54-screen institutional trading desk across both Web (Leptos) and Terminal (Ratatui TUI).
+1. **MCP & Agent Protocol**: Evolved from local-only stdio into a dual-mode system with Two-Tier Discovery, `_jq` filtering, `TantraResultEnvelope` (`7 DisplayBlock`s incl. `OverlayScene`, `View`, `CodeDiff`), `$tantra/ref/...` caching, `tantra-agent-acp`, and upcoming `AgentSpec` specialist orchestration (`design/0005`) + OAuth 2.1 Streamable HTTP (`plan 0022`).
+2. **Unified Execution, Lakehouse & API Contracts**: Closed major structural gaps via `tantra-exec-paper` (`0007`), Lakehouse v3 CAS (`0011`), and canonical `/api/v2` route-registry contracts (`design/0006`).
+3. **Stateless & Domain Compute**: Shipped core engines across `tantra-core`, `tantra-ledger-allocation`, `tantra-market-{pricing,finance,indicators}`, `tantra-agent-{analytics,forecast,panel}`, and `tantra_library` (44 entries), with L0/L1 DAG consolidation (`0019`), `Experimental-Analysis` (`0014`), Trade Signal Generator / Qullamaggie (`0008`/`0009`), Screener QVM (`0010`), and 71-Strategy Options Analysis (`0017`/`0018`) sequenced cleanly.
+4. **Workstations & Production Readiness**: Delivered the `tantra-ui-web` Dockview + VibePrompt workstation (`0020`) and `tantra-tui` `StrategyLab` / `/ws/live` surfaces, with `0019` (`Trading-R1` TUI + `tantra-serve`), `0021` (Wave 0–3 remediation), `0022` (SEBI-aware deployment), and `0023` (CI/lockfiles/SBOM/release train) governing the path to full production release.
