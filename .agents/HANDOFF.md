@@ -2,7 +2,7 @@
 
 **Status**: Bottoms-up Fincept/Quantcept gap-closing build order
 (`docs/future-work-bottoms-up-build-order.md`) — Layers 0–6 GREEN.
-**Latest landed**: **`tantra-runtime` gap `0017` (per-caller paper accounts) COMPLETE 2026-11-24** (`CallerPaperAccounts` + `PaperAccount` per-caller `OrderLedger`/`ExecGateway`/`PaperExchange`, bounded bar replay, shared-ledger `"rest-api:<caller>"` isolation, `OrderLedger::owners` removed); **`tantra-agent` gap `0009` (`DisplayBlock::Chart` series refs) COMPLETE 2026-11-24** (`tantra-agent-core` `RefReader` + `extract_chart_series` + `DisplayBlock::Chart.series`, `tantra-agent-chat` `resolve_display_blocks` / `TurnConfig::ref_reader` + ACP roundtrip, `tantra-tui` Ratatui Braille chart/sparkline + `tantra-cli` Unicode sparkline); **`tantra-market` gap `0007` (`AdrPct`, `ChandelierExit`) COMPLETE 2026-11-24**; **Root design `0006` runtime API surface R0–R5 COMPLETE 2026-11-24** (one `/api/v2` contract, v1/aliases removed); `tantra-runtime` gap `0016` (`GET /api/v2/options/chain`) 2026-11-23; Root Plan `0020` Full Stack COMPLETE 2026-11-22; T21/T22 (`2026-11-20`); T14 Paper Exchange, T12 EE+, T18, and T17 Lakehouse v3 Phases 1–3.
+**Latest landed**: **`tantra-market` gap `0009` (Zero-Floats `Decimal` indicator internals) COMPLETE 2026-11-24** (migrated all 31 remaining `tantra-market-indicators` modules + `Adx`/`Supertrend` O(1) state + `Obv` fix to exact `rust_decimal::Decimal`, removed `bar_f64`/`quantity_f64`, updated `tantra-market-signals` + `signals_{day,swing}.json` `sharp_v_all_firings`, updated `tantra-runtime` `chat_market`/`sma_crossover`/`rsi_reversal`); **`tantra-runtime` gap `0017` (per-caller paper accounts) COMPLETE 2026-11-24**; **`tantra-agent` gap `0009` (`DisplayBlock::Chart` series refs) COMPLETE 2026-11-24**; **`tantra-market` gap `0007` (`AdrPct`, `ChandelierExit`) COMPLETE 2026-11-24**; **Root design `0006` runtime API surface R0–R5 COMPLETE 2026-11-24** (one `/api/v2` contract, v1/aliases removed); `tantra-runtime` gap `0016` (`GET /api/v2/options/chain`) 2026-11-23; Root Plan `0020` Full Stack COMPLETE 2026-11-22.
 Date: 2026-11-24 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md`
 
@@ -33,8 +33,8 @@ Playbook: `docs/future-work-bottoms-up-build-order.md`
 
 ## Immediate Next Step
 1. **Browser smoke QA** against a relaunched `tantra serve`: Option Chain live/fallback, Dockview workspace, Settings → Security token entry + `/api/runtime` proxy with auth on.
-2. **Remaining chronological gaps/plans**: Complete `tantra-market/docs/gaps/0009` (`f64` indicator internals audit/Decimal migration), then `tantra-ui-web` gap `0002`, `tantra-agent` `0011..`, and `tantra-runtime` `0018..`.
-3. **Active cross-repo roadmaps**: `docs/plans/0009` (Qullamaggie), `docs/plans/0008` (Trade Signal Generator, P3 closed), `docs/plans/0010` (Screener/QVM P2–P9), `docs/plans/0019` (Codebase audit & unwired subsystem wiring), and T3.3 remaining feeds (`upstox`/`fyers`/`angelone`).
+2. **Chronological open gaps/plans audit & closure**: Re-evaluate & close oldest open `docs/gaps/` and `docs/plans/` across repos (`tantra-ui-web` `0078` / legacy plans `0001`–`0002`, `tantra-core` `0003`+, `tantra-market` `0003`/`0010`+, `tantra-exec` `0004`+, `tantra-ffi` `0003`+, `tantra-docs` `0001`+).
+3. **Active cross-repo roadmaps**: `docs/plans/0009` (Qullamaggie), `docs/plans/0008` (Trade Signal Generator, P3 closed), `docs/plans/0010` (Screener/QVM P2–P9), `docs/plans/0019` (Codebase audit & unwired subsystem wiring), `docs/plans/0021` (Workspace design review), and T3.3 remaining feeds (`upstox`/`fyers`/`angelone`).
 
 ## Operating Invariants
 - Toolchain: `cargo 1.97.1` / `rustc 1.97.1`; edition 2024, `rust-version = "1.85"`.
