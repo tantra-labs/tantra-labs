@@ -2,7 +2,7 @@
 
 **Status**: Bottoms-up Fincept/Quantcept gap-closing build order
 (`docs/future-work-bottoms-up-build-order.md`) — Layers 0–6 GREEN.
-**Latest landed**: **Root design `0006` runtime API surface R0–R5 COMPLETE 2026-11-24** (one `/api/v2` contract, v1/aliases removed); `tantra-runtime` gap `0016` (`GET /api/v2/options/chain`) 2026-11-23; Root Plan `0020` Dockview + VibePrompt UI + Multi-Font System & Backend Gap Closures (`tantra-ui-web`, `tantra-agent` gap `0010`, `tantra-runtime` gap `0014`, `tantra-ui` `CodeDiff`) COMPLETE 2026-11-22; T21/T22 cross-repo architectural unification (`2026-11-20`); T14 Paper Exchange, T12 EE+, T18 fixes, and T17 Lakehouse v3 Phases 1–3.
+**Latest landed**: **`tantra-market` gap `0007` (`AdrPct`, `ChandelierExit`) COMPLETE 2026-11-24** (`tantra-market-indicators` exact-Decimal `AdrPct` & `ChandelierExit` + proptests, `tantra-ffi` indicator registry + `tantra-strategies` SDK `IndicatorRegistry`); **Root design `0006` runtime API surface R0–R5 COMPLETE 2026-11-24** (one `/api/v2` contract, v1/aliases removed); `tantra-runtime` gap `0016` (`GET /api/v2/options/chain`) 2026-11-23; Root Plan `0020` Dockview + VibePrompt UI + Multi-Font System & Backend Gap Closures COMPLETE 2026-11-22; T21/T22 cross-repo architectural unification (`2026-11-20`); T14 Paper Exchange, T12 EE+, T18 fixes, and T17 Lakehouse v3 Phases 1–3.
 Date: 2026-11-24 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md`
 
@@ -41,7 +41,7 @@ Executed Phases 0–4 of `docs/plans/0020-dockview-vibeprompts-ui-web-migration.
 ## Immediate Next Step
 1. **Browser smoke QA** against a relaunched `tantra serve`: Option Chain live/fallback, Dockview workspace, Settings → Security token entry + `/api/runtime` proxy with auth on.
 2. **Remaining chat/runtime gaps**: Implement `tantra-runtime/docs/gaps/0017` (per-caller paper cash/positions), `tantra-agent/docs/gaps/0009` (`DisplayBlock::Chart` series refs), and T21.6 (`StrategyLoopPort`).
-3. **Active cross-repo roadmaps**: `docs/plans/0009` (Qullamaggie), `docs/plans/0008` (Trade Signal Generator), `docs/plans/0010` (Screener/QVM P2–P9), `docs/plans/0019` (Codebase audit & unwired subsystem wiring), and T3.3 remaining feeds (`upstox`/`fyers`/`angelone`).
+3. **Active cross-repo roadmaps**: `docs/plans/0009` (Qullamaggie), `docs/plans/0008` (Trade Signal Generator, P3 closed), `docs/plans/0010` (Screener/QVM P2–P9), `docs/plans/0019` (Codebase audit & unwired subsystem wiring), and T3.3 remaining feeds (`upstox`/`fyers`/`angelone`).
 
 ## Operating Invariants
 - Toolchain: `cargo 1.97.1` / `rustc 1.97.1`; edition 2024, `rust-version = "1.85"`.

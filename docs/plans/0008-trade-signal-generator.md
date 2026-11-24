@@ -44,7 +44,7 @@ The pieces exist but are not connected cleanly:
 | Backtest | `tantra-runtime-backtest` (`engine.rs`) sizes using cash-only `INR` equity, overwrites order quantities pre-exec, and lacks intrabar H/L trailing/partials | partial |
 | Live brackets | `tantra-exec` gap 0003, `tantra-ledger` gap 0012 open (1-to-1 bracket assumption incompatible with multi-leg partial exits) | missing |
 | Chat/MCP | `strategy_suggest` is a **stub** (hardcoded prices, SL = entry × 0.988, always BUY); `TradeSuggestionTool` mislabels output `"strategy_run"` | stub |
-| Indicators | ATR, Supertrend, PSAR, Keltner, Donchian, pivots exist; **ADR%(20) and Chandelier missing** | partial |
+| Indicators | ATR, Supertrend, PSAR, Keltner, Donchian, pivots, **ADR%(20) and Chandelier Exit** (`AdrPct`, `ChandelierExit`) | done |
 
 Per-repo documents:
 
@@ -52,7 +52,7 @@ Per-repo documents:
 |---|---|---|
 | P1 | Canonical `TradePlanSpec` / `EntryRule` / `StopRule` / `TrailRule` / `TargetLadder` / `TradePlan` / `ChartPattern`, `TradePlanner::plan`, typed `PlanError`; unify with plan 0003 stop/signal types; extend `RiskBudget` caps | [`tantra-core` plan 0005](../../tantra-core/docs/plans/0005-trade-planner-and-manager.md) — **P1 shipped 2026-11-17** (T12 prerequisite); plan 0003 (level-map types) **implemented** (see [`tantra-core` plans index](../../tantra-core/docs/plans/README.md)) |
 | P2 | `TradeManager` pure state machine (`on_entry_fill`, `on_bar`, `on_session_close` → `MoveStop` / `PartialExit` / `ExitAll`), tick-snapping, intrabar policy, canonical preset TOMLs + golden vectors | same |
-| P3 | ADR%(20) and Chandelier exit indicators | [`tantra-market` gap 0007](../../tantra-market/docs/gaps/0007-adr-pct-and-chandelier-exit.md) |
+| P3 | ADR%(20) and Chandelier exit indicators | **Closed 2026-11-24** ([`tantra-market` closed gap `0007`](../../tantra-market/docs/gaps/README.md#closed-gaps)): `AdrPct` + `ChandelierExit` (`tantra-market-indicators`, `tantra-ffi`, `tantra-strategies` SDK) |
 | P3b | Chart pattern analyzer: geometric + multi-bar candlesticks over `&[Bar]` (`Decimal` geometry + `DateTime<Utc>`, `PatternStage { FormingArmed, BreakoutConfirmed }`, no look-ahead), per-pattern edge stats | [`tantra-market` plan 0002](../../tantra-market/docs/plans/0002-chart-pattern-analyzer.md) (+ `ChartPattern` in core plan 0005 §2a) |
 | P4 | PyO3 `tantra.trade_plan` bindings (`TradePlanner`, `TradeManager`, `ChartPattern`, canonical presets); reconcile `declarative.py` OCO and `TRAILING_STOP` | [`tantra-ffi` plan 0004](../../tantra-ffi/docs/plans/0004-trade-planner-bindings.md) |
 | P5 | SDK `ctx.equity()`, `Strategy.plan_trade(signal, preset, **overrides)`, `on_trade_action`, `partial_exit`; read canonical presets from FFI; drive `SimulatedContext` via Rust `TradeManager` | [`tantra-strategies` plan 0003](../../tantra-strategies/docs/plans/0003-trade-plan-sdk.md) |
@@ -80,7 +80,7 @@ Plans and gaps this work unblocks or partly closes:
      - ladder quantities sum to at most the position
      - no look-ahead (`confirmed_at` respected; close-only exits act on the next bar)
 2. **P3 & P3b, L2 `tantra-market` (parallel with P1 once `ChartPattern` lands in core).**
-   - P3: ADR%(20) and Chandelier indicators (`tantra-market` gap `0007`).
+   - P3: ADR%(20) and Chandelier indicators (`tantra-market` gap `0007` — closed 2026-11-24).
    - P3b: `PatternAnalyzer` over `&[Bar]` (exact `Decimal` OHLC + `DateTime<Utc>` timestamps; distinct from `f64`-only `Detector::detect(&Series)`), emitting `ChartPattern` with explicit `PatternStage { FormingArmed, BreakoutConfirmed }`.
 3. **Cross-cutting L1 alignment (`tantra-risk` gap 0005 & `tantra-ledger` gap 0012).**
    - `RiskBudget` / `validate_sizing_request` enforce `max_weight_pct` and `max_adv_pct`; `SizingRiskRefusal::fmt` uses `Money.currency` instead of hardcoded `"INR"`.
