@@ -243,5 +243,5 @@ says the chain is unavailable, instead of guessing.
      status and text.
    - That summary holds what was resolved or computed, the key numbers taken from tools, and
      what's unavailable.
-   - Raw `$tantra/ref/...` payloads stay host-side, so no client fetch method is added.
-     Agent gap 0009 (client-resolvable Chart refs) stays open and separate.
+   - Raw `$tantra/ref/...` payloads stay host-side, so no client fetch method is added;
+     `DisplayBlock::Chart.series` carries bounded host-resolved slices (agent gap 0009 closed 2026-11-24).
