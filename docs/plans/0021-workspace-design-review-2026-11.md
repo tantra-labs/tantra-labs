@@ -12,7 +12,7 @@ The five critical gaps:
 - [tantra-market 0010](../../tantra-market/docs/gaps/0010-ws-client-resilience-and-token-logging.md) — the WS client never resubscribes and logs the access token in the URL.
 - [tantra-exec 0004](../../tantra-exec/docs/gaps/0004-idempotent-submit-and-outcome-unknown.md) — the client order id is never sent; the SOR fails over on timeout, so an order can be submitted twice.
 - [tantra-adapters 0008](../../tantra-adapters/docs/gaps/0008-order-idempotency-and-replay.md) — no client order id or algo tag; order POSTs are replayed on transport errors and 401.
-- [tantra-data 0027](../../tantra-data/docs/gaps/0027-bridge-export-drops-datasets-from-main.md) — bridge export commits a one-entry tree, so `main` drops every other dataset; with gc reachability this is data loss.
+- ~~[tantra-data 0027](../../tantra-data/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* — snapshot-merge commits, `tantra-catalog repair`, and [snapshot contract](../../tantra-data/docs/design/lakehouse-v3-snapshot-contract.md).
 
 **Non-goals** (owned by root plan 0019, referenced by phase id, not duplicated): P0 hygiene and renames; P1 safety (body caps, inline tests, bounded channels, `is_delivery`, version alignment P1.7); P2 de-duplication (paper/backtest sim clone P2.1, adapters boilerplate P2.4, adapter safeguards P2.5, persistence wiring P2.7); P3 god-file splits; P4 DAG repair (P4.1 cost tables, P4.2 analytics, P4.3 wire types, P4.4 zero-floats indicators, P4.5 Python models, P4.6 `make verify-architecture`); P5 wiring of unwired crates.
 
@@ -103,7 +103,7 @@ The five critical gaps:
 ### 2.3 Waves
 
 **Wave 0 — stop the bleeding** (small, high-leverage fixes; no feature work lands before the gate)
-1. Data: [tantra-data 0027](../../tantra-data/docs/gaps/0027-bridge-export-drops-datasets-from-main.md); freeze `gc` until [0029](../../tantra-data/docs/gaps/0029-gc-reachability-and-grace.md) lands.
+1. Data: ~~[tantra-data 0027](../../tantra-data/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)*; freeze `gc` until [0029](../../tantra-data/docs/gaps/0029-gc-reachability-and-grace.md) lands.
 2. Orders: [exec 0004](../../tantra-exec/docs/gaps/0004-idempotent-submit-and-outcome-unknown.md) and [adapters 0008](../../tantra-adapters/docs/gaps/0008-order-idempotency-and-replay.md) — send client order ids; never auto-retry order POSTs.
 3. Secrets: [market 0010](../../tantra-market/docs/gaps/0010-ws-client-resilience-and-token-logging.md) — stop logging tokens.
 4. Serving: [runtime 0020](../../tantra-runtime/docs/gaps/0020-fail-closed-bind-and-cors.md) and [0028](../../tantra-runtime/docs/gaps/0028-strategy-crate-concrete-executor-and-nested-runtime.md).

@@ -478,7 +478,7 @@ Multi-asset empirical return, streak & `6×6` Markov regime equilibrium, percent
 
 | Wave | Task | Repo / gap | Governing doc |
 | :---: | :--- | :--- | :--- |
-| 0 | Fix bridge export dropping datasets; freeze `gc` | `tantra-data` 0027, 0029 | [`data 0027`](../tantra-data/docs/gaps/0027-bridge-export-drops-datasets-from-main.md) |
+| 0 | ~~Fix bridge export dropping datasets (`0027` ✅ 2026-11-25)~~; freeze `gc` (`0029`) | `tantra-data` 0027 ✅, 0029 | [`data 0027 ✅`](../tantra-data/docs/design/lakehouse-v3-snapshot-contract.md) |
 | 0 | Send client order ids; never auto-retry order POSTs | `tantra-exec` 0004, `tantra-adapters` 0008 | [`root 0010`](gaps/0010-order-idempotency-end-to-end.md) |
 | 0 | Stop logging tokens; WS resubscribe | `tantra-market` 0010 | [`market 0010`](../tantra-market/docs/gaps/0010-ws-client-resilience-and-token-logging.md) |
 | 0 | Fail-closed bind and CORS; strategy crate decoupling | `tantra-runtime` 0020, 0028 | [`runtime 0020`](../tantra-runtime/docs/gaps/0020-fail-closed-bind-and-cors.md) |
