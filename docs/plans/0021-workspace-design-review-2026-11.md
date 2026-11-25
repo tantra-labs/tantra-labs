@@ -10,7 +10,7 @@ On 2026-11-23 the workspace was reviewed with 16 per-repo audits and 3 cross-cut
 The five critical gaps:
 - [tantra-ledger 0014](../../tantra-ledger/docs/gaps/0014-corporate-action-scoping.md) — corporate actions are not instrument-scoped and can be re-applied.
 - [tantra-market 0010](../../tantra-market/docs/gaps/0010-ws-client-resilience-and-token-logging.md) — the WS client never resubscribes and logs the access token in the URL.
-- [tantra-exec 0004](../../tantra-exec/docs/gaps/0004-idempotent-submit-and-outcome-unknown.md) — the client order id is never sent; the SOR fails over on timeout, so an order can be submitted twice.
+- ~~[tantra-exec 0004](../../tantra-exec/docs/gaps/README.md#closed-gaps)~~ (closed 2026-11-25) — `OrderTag` wire correlation, `BrokerError::OutcomeUnknown`, `find_by_client_order_id` reconciliation, no blind SOR failover/breaker trip.
 - [tantra-adapters 0008](../../tantra-adapters/docs/gaps/0008-order-idempotency-and-replay.md) — no client order id or algo tag; order POSTs are replayed on transport errors and 401.
 - ~~[tantra-data 0027](../../tantra-data/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* — snapshot-merge commits, `tantra-catalog repair`, and [snapshot contract](../../tantra-data/docs/design/lakehouse-v3-snapshot-contract.md).
 
@@ -104,7 +104,7 @@ The five critical gaps:
 
 **Wave 0 — stop the bleeding** (small, high-leverage fixes; no feature work lands before the gate)
 1. Data: ~~[tantra-data 0027](../../tantra-data/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)*; freeze `gc` until [0029](../../tantra-data/docs/gaps/0029-gc-reachability-and-grace.md) lands.
-2. Orders: [exec 0004](../../tantra-exec/docs/gaps/0004-idempotent-submit-and-outcome-unknown.md) and [adapters 0008](../../tantra-adapters/docs/gaps/0008-order-idempotency-and-replay.md) — send client order ids; never auto-retry order POSTs.
+2. Orders: [exec 0004 (closed)](../../tantra-exec/docs/gaps/README.md#closed-gaps) and [adapters 0008](../../tantra-adapters/docs/gaps/0008-order-idempotency-and-replay.md) — send client order ids; never auto-retry order POSTs.
 3. Secrets: [market 0010](../../tantra-market/docs/gaps/0010-ws-client-resilience-and-token-logging.md) — stop logging tokens.
 4. Serving: [runtime 0020](../../tantra-runtime/docs/gaps/0020-fail-closed-bind-and-cors.md) and [0028](../../tantra-runtime/docs/gaps/0028-strategy-crate-concrete-executor-and-nested-runtime.md).
 5. Risk: [risk 0006](../../tantra-risk/docs/gaps/0006-fail-closed-reference-data.md) and [0007](../../tantra-risk/docs/gaps/0007-modify-order-bypasses-halts.md).
