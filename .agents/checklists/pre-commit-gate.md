@@ -12,7 +12,7 @@ Verify every applicable item before reporting completion, committing, or updatin
 ## 2. Language Verification Matrix
 - **Rust repos**:
   - [ ] `cargo fmt --check`
-  - [ ] `cargo clippy --all-targets -- -D warnings`
+  - [ ] `cargo clippy --workspace --all-targets --profile prod -- -D warnings`
   - [ ] `cargo check --workspace --profile prod` (or `make check`)
   - [ ] `cargo test --workspace --profile prod` (or `make test`; if `tantra-runtime-api-rest` hits 15 GiB LTO OOM, run `make check` + targeted test binaries and note it)
   - [ ] `make prod` (leaves `target/prod/` fresh)
@@ -21,7 +21,7 @@ Verify every applicable item before reporting completion, committing, or updatin
   - [ ] `mypy --strict` (or `pyright`)
   - [ ] `pytest -v`
 - **Python FFI (`tantra-ffi`)**:
-  - [ ] `cargo check --workspace --profile prod` + `maturin develop` + `pytest -q`
+  - [ ] `cargo check --workspace --profile prod` + `maturin develop --profile prod` + `pytest -q`
 - **Web Frontend (`vyapaar-ui-web`)**:
   - [ ] `npx tsc --noEmit && npm run lint && npx vitest run && npm run build`
 - **Docs (`tantra-docs`)**:

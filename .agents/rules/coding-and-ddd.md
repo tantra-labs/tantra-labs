@@ -13,7 +13,7 @@
 
 ### Rust
 - **Edition & MSRV**: Edition `2024`, MSRV `1.85`, workspace toolchain `1.97.1`.
-- **Lint Parity**: Code must compile cleanly under `cargo fmt --check` and `cargo clippy --all-targets -- -D warnings`.
+- **Lint Parity**: Code must compile cleanly under `cargo fmt --check` and `cargo clippy --workspace --all-targets --profile prod -- -D warnings`.
 - **No Panics in Production**: Do not use `.unwrap()` or `.expect()` in production `src/` request/actor paths; propagate typed errors via `thiserror` / `Result`. Recover mutex poisoning cleanly only where documented, preferring async-safe locks.
 - **No Unbounded Conversions**: Never convert monetary `Decimal` to `f64` in financial calculations or API order serialization.
 

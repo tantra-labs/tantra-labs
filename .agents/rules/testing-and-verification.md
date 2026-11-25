@@ -26,9 +26,9 @@ Follow **Red → Green → Refactor** for all functional changes and bug fixes:
 
 | Ecosystem | Required Gates Before Completion |
 |---|---|
-| **Rust workspace** | `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `make check`, `make test`, `make prod` |
+| **Rust workspace** | `cargo fmt --check`, `cargo clippy --workspace --all-targets --profile prod -- -D warnings`, `make check`, `make test`, `make prod` |
 | **Rust OOM fallback** | `tantra-runtime-api-rest` full test-bin LTO link can OOM at 15 GiB RAM; if it hits SIGKILL, run `make check` + targeted test binary (`cargo test -p <crate> --test <bin> --profile prod`) and record exact command run |
 | **Python packages** | `ruff check .`, `ruff format --check .`, `mypy --strict`, `pytest -v` |
-| **PyO3 FFI (`tantra-ffi`)** | `cargo check --workspace --profile prod`, `maturin develop`, `pytest -q` |
+| **PyO3 FFI (`tantra-ffi`)** | `cargo check --workspace --profile prod`, `maturin develop --profile prod`, `pytest -q` |
 | **Web (`vyapaar-ui-web`)** | `npx tsc --noEmit`, `npm run lint`, `npx vitest run`, `npm run build` |
 | **Docs (`tantra-docs`)** | `mkdocs build --strict` |

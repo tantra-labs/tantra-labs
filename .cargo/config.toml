@@ -1,25 +1,19 @@
 [alias]
 dev = "build --workspace --profile dev"
-test = "build --workspace --profile test"
+test = "test --workspace --profile prod"
 check-dev = "check --workspace --profile dev"
-check-release = "check --workspace --profile release"
-test-release = "test --workspace --profile release"
-b = "build --workspace --profile release"
-t = "test --workspace --profile release"
-c = "check --workspace --profile release"
-r = "run --profile release"
+b = "build --workspace --profile prod"
+t = "test --workspace --profile prod"
+c = "check --workspace --profile prod"
+r = "run --profile prod"
 
 [profile.dev]
-opt-level = 3
-lto = "thin"
-codegen-units = 1
+opt-level = 1
 debug = false
 strip = "debuginfo"
 
 [profile.test]
-opt-level = 3
-lto = "thin"
-codegen-units = 1
+opt-level = 1
 debug = false
 strip = "debuginfo"
 
@@ -32,6 +26,13 @@ strip = "none"
 
 [profile.release]
 opt-level = 3
-lto = true
+lto = "thin"
 codegen-units = 1
+panic = "abort"
+
+[profile.prod]
+inherits = "release"
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
 panic = "abort"

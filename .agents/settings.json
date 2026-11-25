@@ -1,18 +1,19 @@
 {
   "permissions": {
     "allow": [
-      "Bash(cargo check *)",
-      "Bash(cargo clippy *)",
+      "Bash(cargo check --workspace --profile prod*)",
+      "Bash(cargo clippy --workspace --all-targets --profile prod*)",
       "Bash(cargo fmt --check*)",
       "Bash(cargo metadata *)",
-      "Bash(cargo test --workspace --profile prod*)",
+      "Bash(cargo test *--profile prod*)",
+      "Bash(maturin develop --profile prod*)",
       "Bash(make prod*)",
       "Bash(make check*)",
       "Bash(make test*)",
       "Bash(make fmt*)",
       "Bash(make clippy*)",
       "Bash(ruff check *)",
-      "Bash(ruff format --check*)",
+      "Bash(ruff format --check *)",
       "Bash(mypy *)",
       "Bash(pytest *)",
       "Bash(npx tsc --noEmit*)",

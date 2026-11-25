@@ -76,7 +76,7 @@ prepare:
 	  echo "    $$r/.venv -> ../.venv"; \
 	done
 	@echo "==> [3/5] tantra wheel (maturin develop)"
-	@cd tantra-ffi && ../.venv/bin/maturin develop
+	@cd tantra-ffi && ../.venv/bin/maturin develop --profile prod
 	@echo "==> [4/5] editable packages (adapters, data, strategies, examples)"
 	@cd tantra-adapters && ../.venv/bin/python -m pip install --quiet --editable .
 	@cd tantra-data && ../.venv/bin/python -m pip install --quiet --editable .
@@ -103,7 +103,7 @@ build-ui:
 	@if [ -f tantra-ui/Trunk.toml ]; then \
 	  if command -v trunk >/dev/null 2>&1; then \
 	    echo "==> tantra-ui (trunk)"; \
-	    (cd tantra-ui && trunk build --release); \
+	    (cd tantra-ui && trunk build --release --cargo-profile prod); \
 	  else \
 	    echo "skip tantra-ui: install trunk with 'cargo install --locked trunk'"; \
 	  fi; \

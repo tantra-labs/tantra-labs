@@ -114,9 +114,9 @@ Full rules: `.agents/rules/testing-and-verification.md` & `.agents/checklists/pr
 * **TDD (Red → Green → Refactor)**: Write failing contract/security/regression tests in `tests/` before modifying `src/`.
 * **Property & Golden Vectors**: Use `proptest` (Rust) / `hypothesis` (Python) for numeric/FIFO/quantization invariants, and golden byte/JSON/Arrow vectors for broker protocols, statutory fees, FFI parity, and LLM prompt replay.
 * **Canonical Verification Matrix**:
-  - **Rust**: `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `make check`, `make test`, `make prod` (note: if `tantra-runtime-api-rest` hits 15 GiB LTO OOM on full test-bin link, run `make check` + targeted test binaries).
+  - **Rust**: `cargo fmt --check`, `cargo clippy --workspace --all-targets --profile prod -- -D warnings`, `make check`, `make test`, `make prod` (note: if `tantra-runtime-api-rest` hits 15 GiB LTO OOM on full test-bin link, run `make check` + targeted test binaries).
   - **Python**: `ruff check . && ruff format --check .`, `mypy --strict`, `pytest -v`.
-  - **FFI (`tantra-ffi`)**: `cargo check --workspace --profile prod`, `maturin develop`, `pytest -q`.
+  - **FFI (`tantra-ffi`)**: `cargo check --workspace --profile prod`, `maturin develop --profile prod`, `pytest -q`.
   - **Web (`vyapaar-ui-web`)**: `npx tsc --noEmit`, `npm run lint`, `npx vitest run`, `npm run build`.
   - **Docs (`tantra-docs`)**: `mkdocs build --strict`.
 

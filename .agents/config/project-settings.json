@@ -10,15 +10,19 @@
       "targetDir": "target/prod",
       "forbiddenCommands": [
         "cargo build",
+        "cargo check",
+        "cargo clippy",
+        "cargo test",
         "cargo build --release",
-        "cargo test --release"
+        "cargo test --release",
+        "maturin develop"
       ],
       "mandatoryCommands": {
         "build": "make prod",
         "check": "make check",
         "test": "make test",
         "fmt": "cargo fmt --check",
-        "clippy": "cargo clippy --all-targets -- -D warnings"
+        "clippy": "cargo clippy --workspace --all-targets --profile prod -- -D warnings"
       },
       "oomMitigationNote": "Full prod-LTO test binary link for tantra-runtime-api-rest can exceed 15 GiB RAM; run make check plus targeted test binaries when constrained."
     },
