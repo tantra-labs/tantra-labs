@@ -15,7 +15,7 @@ Several surfaces return invented values instead of an explicit "unavailable": MC
 | [tantra-ui 0008](../../tantra-ui/docs/gaps/0008-synthetic-bars-in-run-tune-suggest.md) | high | Sine-wave bars drive run/tune/suggest |
 | [tantra-ui-web 0079](../../tantra-ui-web/docs/gaps/0079-option-chain-fabricated-fields.md) | high | Option chain silently falls back to a fabricated chain on any load error |
 | [tantra-adapters 0013](../../tantra-adapters/docs/gaps/0013-missing-data-as-zero.md) | high | Missing data fabricated as zero (prices, margins) |
-| [tantra-core 0005](../../tantra-core/docs/gaps/0005-typed-port-errors.md) | medium | `PortError` stringly-typed, no `unavailable` |
+| tantra-core 0005 ([closed](../../tantra-core/docs/gaps/README.md#closed-gaps)) | medium | `PortError::unavailable` landed 2026-11-25 |
 | [tantra-ffi 0009](../../tantra-ffi/docs/gaps/0009-strategy-runner-placeholder.md) | medium | `StrategyRunner` placeholder checksum |
 
 ## Why
@@ -24,7 +24,7 @@ A trader or an LLM agent reading "ALL PASSED", a zero margin, or a plausible-loo
 
 ## How to close it
 
-1. `tantra-core`: add typed `PortError` with `unavailable` and use it as the port contract (0005).
+1. ~~`tantra-core`: add typed `PortError` with `unavailable` and use it as the port contract (0005).~~ (Closed 2026-11-25.)
 2. `tantra-runtime`: make missing options-chain values nullable with per-field provenance instead of zeros/modelled IV (0027).
 3. `tantra-ui-web`: replace the silent `catch {}` fallback to a fabricated chain with an explicit unavailable state, and render "—" for null fields (0079).
 4. `tantra-agent`: MCP stub tools return an explicit unavailable error or call the real backtest port (0011).
