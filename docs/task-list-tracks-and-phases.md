@@ -479,8 +479,8 @@ Multi-asset empirical return, streak & `6×6` Markov regime equilibrium, percent
 | Wave | Task | Repo / gap | Governing doc |
 | :---: | :--- | :--- | :--- |
 | 0 | ~~Fix bridge export dropping datasets (`0027` ✅ 2026-11-25)~~; freeze `gc` (`0029`) | `tantra-data` 0027 ✅, 0029 | [`data 0027 ✅`](../tantra-data/docs/design/lakehouse-v3-snapshot-contract.md) |
-| 0 | Send client order ids; never auto-retry order POSTs | `tantra-exec` 0004, `tantra-adapters` 0008 | [`root 0010`](gaps/0010-order-idempotency-end-to-end.md) |
-| 0 | Stop logging tokens; WS resubscribe | `tantra-market` 0010 | [`market 0010`](../tantra-market/docs/gaps/0010-ws-client-resilience-and-token-logging.md) |
+| 0 | ~~Send client order ids; never auto-retry order POSTs (`0004` ✅, `0008` ✅ 2026-11-25)~~ | `tantra-exec` 0004 ✅, `tantra-adapters` 0008 ✅ | [`root 0010`](gaps/0010-order-idempotency-end-to-end.md) |
+| 0 | ~~Stop logging tokens; WS resubscribe (`0010` ✅ 2026-11-25)~~ | `tantra-market` 0010 ✅ | [`market 0010 ✅`](../tantra-market/docs/gaps/README.md#closed-gaps) |
 | 0 | Fail-closed bind and CORS; strategy crate decoupling | `tantra-runtime` 0020, 0028 | [`runtime 0020`](../tantra-runtime/docs/gaps/0020-fail-closed-bind-and-cors.md) |
 | 0 | Fail-closed reference data; modify-order halts | `tantra-risk` 0006, 0007 | [`risk 0006`](../tantra-risk/docs/gaps/0006-fail-closed-reference-data.md) |
 | 0 | Honest MCP tools; `propose_trade` through `Decision`/`RiskEngine` | `tantra-agent` 0011, 0012 | [`agent 0011`](../tantra-agent/docs/gaps/0011-mcp-stub-tools-fabricate-results.md) |

@@ -10,7 +10,7 @@ Secrets are plain `String`/`str` fields with derived `Debug`/`Serialize` (Rust) 
 
 | Repo tracker | Severity | What it covers |
 |---|---|---|
-| [tantra-market 0010](../../tantra-market/docs/gaps/0010-ws-client-resilience-and-token-logging.md) | critical | WsClient logs the token in the URL (plus no resubscribe / dead-connection timeout) |
+| ~~[tantra-market 0010](../../tantra-market/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* | critical | URL/error/Debug redaction, `WsHandshake` token rotation, dead-connection deadline, and resubscribe/snapshot hooks implemented |
 | [tantra-exec 0007](../../tantra-exec/docs/gaps/0007-secret-types-redaction-zeroize.md) | high | Secret types derive `Debug`/`Serialize`, no `Zeroize`, plain `String` |
 | [tantra-runtime 0028](../../tantra-runtime/docs/gaps/0028-strategy-crate-concrete-executor-and-nested-runtime.md) | high | `Debug` prints `api_key`/`access_token`; also concrete `ZerodhaExecutor` and nested runtime |
 | [tantra-market 0016](../../tantra-market/docs/gaps/0016-rest-client-timeouts-and-errors.md) | medium | Snapshot REST clients: per-call client, no timeout, error mapping |
