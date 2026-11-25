@@ -6,12 +6,12 @@
 
 ## What's stubbed or hardcoded
 
-The client order id that `tantra-core` defines never reaches a broker. Rust executors now carry `OrderTag` and `OutcomeUnknown` (`tantra-exec 0004` closed), while the Python adapters still have no idempotency token or algo tag, strategy `OrderRequest` carries no id (ids are `SIM-n` counters), and the ledger cannot recognise a replayed fill because fills carry no exec id. On top of that, Python retry layers replay non-idempotent POSTs on transport errors and after a 401, and the broker-order-id to client-order-id map is in memory only, so a restart or reconnect cannot reconcile. The result is that a single logical order can be submitted twice and a single fill can be booked twice.
+The client order id that `tantra-core` defines still lacks durable restart recovery in `tantra-exec`, exec-id dedupe in `tantra-ledger`, and strategy-side `client_order_id` generation in `tantra-strategies`. Both wire-submission and no-blind-retry paths are now closed (`tantra-exec 0004` and `tantra-adapters 0008` closed 2026-11-25), leaving durable persistence, fill dedupe, and strategy-boundary ID generation open.
 
 | Repo tracker | Severity | Status | What it covers |
 |---|---|---|---|
 | [tantra-exec 0004](../../tantra-exec/docs/gaps/README.md#closed-gaps) | critical | **closed (2026-11-25)** | `OrderTag` Base32 wire correlation, `BrokerError::OutcomeUnknown`, `find_by_client_order_id` reconciliation, no SOR failover/breaker trip on ambiguous outcome |
-| [tantra-adapters 0008](../../tantra-adapters/docs/gaps/0008-order-idempotency-and-replay.md) | critical | open | No idempotency token or algo tag; POSTs auto-retry and replay on transport error and 401 |
+| [tantra-adapters 0008](../../tantra-adapters/docs/gaps/README.md#closed-gaps) | critical | **closed (2026-11-25)** | Fail-closed Base32 wire tag emission across 7 brokers, `idempotent=False` non-retry & no 401 replay on POST orders, `AmbiguousOrderError`, order-book tag reconciliation |
 | [tantra-exec 0005](../../tantra-exec/docs/gaps/0005-durable-order-id-map-and-reconcile.md) | high | open | Broker-id to client-id map in memory only; no reconcile on reconnect |
 | [tantra-ledger 0017](../../tantra-ledger/docs/gaps/0017-fill-dedup-exec-id.md) | high | open | No exec-id dedupe; duplicate/replayed fills double-counted |
 | [tantra-strategies 0010](../../tantra-strategies/docs/gaps/0010-order-request-idempotency-key.md) | high | open | `OrderRequest` has no client order id; `SIM-n` counters |
@@ -26,7 +26,7 @@ Scenario: a strategy places an order, the broker accepts it but the response tim
 2. `tantra-exec`: send the client order id (broker tag / idempotency header) from every executor; introduce an explicit `OutcomeUnknown` result; SOR must query by client id before failing over (`0004`, closed 2026-11-25).
 3. `tantra-exec`: persist the broker-id to client-id map and reconcile open orders on reconnect (0005).
 4. `tantra-ledger`: dedupe fills by `(broker, exec_id)` before applying (0017).
-5. `tantra-adapters`: add idempotency token and algo tag; never auto-retry POSTs; refresh on 401 without replaying order placement (0008).
+5. `tantra-adapters`: add idempotency token and algo tag; never auto-retry POSTs; refresh on 401 without replaying order placement (`0008`, closed 2026-11-25).
 6. `tantra-strategies`: carry a client order id on `OrderRequest`; generate it at the strategy boundary (0010).
 7. Parity: shared golden order-lifecycle vectors (submit, timeout, retry, duplicate fill) run by `tantra-exec`, `tantra-ledger` and `tantra-adapters`.
 
