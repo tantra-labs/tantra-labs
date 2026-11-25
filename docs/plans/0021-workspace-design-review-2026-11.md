@@ -8,7 +8,7 @@
 On 2026-11-23 the workspace was reviewed with 16 per-repo audits and 3 cross-cutting audits (cross-repo duplication, deployment topology, build/CI/release). Critical claims were re-verified in code. The output is 133 per-repo gaps (5 critical, 63 high, 65 medium), 16 per-repo design-review plans, 20 root tracker gaps (0010–0029) and root plans 0021–0023. This plan is the umbrella index and the sequencing authority: it orders the work into four waves, each with a gate.
 
 The five critical gaps:
-- [tantra-ledger 0014](../../tantra-ledger/docs/gaps/0014-corporate-action-scoping.md) — corporate actions are not instrument-scoped and can be re-applied.
+- ~~[tantra-ledger 0014](../../tantra-ledger/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* — required `instrument: InstrumentId` (`CORPORATE_ACTION_WIRE_VERSION = 2`), `entry_date < ex_date` cutoff, SHA-256 `ActionId` + `AccountState::applied_corporate_actions` idempotency, rupee `Money` dividends, and `{lot_id}:DM:{action_id}` demerger lot IDs.
 - ~~[tantra-market 0010](../../tantra-market/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* — `WsHandshake` auth rotation, `redact_url`/`sanitize_error_text` + redacted `Debug`, `run_ws_loop` dead-connection deadline, integer-ms backoff -> `Failed`, `FeedHealth` counters, and `DhanFeed`/`KiteFeed` resubscribe + snapshot gap-fill.
 - ~~[tantra-exec 0004](../../tantra-exec/docs/gaps/README.md#closed-gaps)~~ (closed 2026-11-25) — `OrderTag` wire correlation, `BrokerError::OutcomeUnknown`, `find_by_client_order_id` reconciliation, no blind SOR failover/breaker trip.
 - ~~[tantra-adapters 0008](../../tantra-adapters/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* — fail-closed wire tag emission, `idempotent=False` non-retry & no 401 replay, `AmbiguousOrderError`, order-book tag lookup.
@@ -115,7 +115,7 @@ The five critical gaps:
 **Gate**: no known path loses data, double-submits an order, logs a credential or presents fabricated data as real; CI runs on every Rust repo; `Cargo.lock` tracked.
 
 **Wave 1 — correctness and durability**
-1. Ledger 0014–0019 (corporate-action scoping, `apply_fill` side, exec-id dedupe).
+1. Ledger ~~0014~~ ✅, 0015–0019 (`apply_fill` side, exec-id dedupe).
 2. Risk 0008–0010.
 3. Exec 0005–0009 (durable order-id map, reconcile, secret types).
 4. Runtime 0021, 0026, 0029–0031.

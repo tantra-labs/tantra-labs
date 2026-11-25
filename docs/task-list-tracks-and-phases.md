@@ -486,7 +486,7 @@ Multi-asset empirical return, streak & `6×6` Markov regime equilibrium, percent
 | 0 | Honest MCP tools; `propose_trade` through `Decision`/`RiskEngine` | `tantra-agent` 0011, 0012 | [`agent 0011`](../tantra-agent/docs/gaps/0011-mcp-stub-tools-fabricate-results.md) |
 | 0 | Remove or label fabricated data | `tantra-ui-web` 0079, `tantra-ui` 0008 | [`root 0012`](gaps/0012-fabricated-data-presented-as-real.md) |
 | 0 | CI for 7 Rust repos; lockfiles and toolchain pin | root 0024, 0025 | [`root 0024`](gaps/0024-no-ci-for-rust-repos.md) |
-| 1 | Corporate-action scoping, fill side, exec-id dedupe | `tantra-ledger` 0014–0019 | [`ledger 0014`](../tantra-ledger/docs/gaps/0014-corporate-action-scoping.md) |
+| 1 | ~~Corporate-action scoping (`0014` ✅ 2026-11-25)~~, fill side, exec-id dedupe | `tantra-ledger` 0014 ✅, 0015–0019 | [`ledger 0015`](../tantra-ledger/docs/gaps/0015-apply-fill-ignores-side.md) |
 | 1 | Durable order-id map, reconcile, secret types | `tantra-exec` 0005–0009 | [`root 0011`](gaps/0011-secrets-leak-debug-logs-urls.md) |
 | 1 | Risk 0008–0010; runtime 0021/0026/0029–0031 | `tantra-risk`, `tantra-runtime` | [`plan 0021`](plans/0021-workspace-design-review-2026-11.md) |
 | 1 | Stops leave `SimulatedContext`; Python `tantra.risk` reaches `RiskEngine` | `tantra-strategies` 0009/0010, `tantra-ffi` 0003 | [`root 0013`](gaps/0013-risk-gate-single-shared-fail-closed.md) |

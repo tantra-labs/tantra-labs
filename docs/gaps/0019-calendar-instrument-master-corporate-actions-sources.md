@@ -10,7 +10,7 @@ Three reference-data domains each have several sources. Calendars: `tantra-core`
 
 | Repo tracker | Severity | What it covers |
 |---|---|---|
-| [tantra-ledger 0014](../../tantra-ledger/docs/gaps/0014-corporate-action-scoping.md) | critical | Corporate actions not instrument-scoped, applied non-idempotently |
+| ~~[tantra-ledger 0014](../../tantra-ledger/docs/gaps/README.md#closed-gaps)~~ | ~~critical~~ ✅ closed 2026-11-25 | Scoped `CorporateAction`, `ActionId` idempotency, rupee `Money` dividends, unique demerger lot IDs |
 | [tantra-market 0015](../../tantra-market/docs/gaps/0015-instrument-master-keying.md) | high | Instrument master keyed by bare symbol / empty token |
 | [tantra-adapters 0012](../../tantra-adapters/docs/gaps/0012-instrument-resolution-and-tokens.md) | high | Raw broker identifiers leak; no instrument master |
 | [tantra-core 0006](../../tantra-core/docs/gaps/0006-canonical-priceband-and-calendar-trait.md) | medium | Duplicated `PriceBand` and calendar traits across four repos |
@@ -23,7 +23,7 @@ A split or bonus applied to the wrong instrument (or twice on replay) corrupts l
 ## How to close it
 
 1. `tantra-core`: one calendar trait and session model (multi-session, IST-correct), one `PriceBand`; define `CorporateAction` and the adjustment factor type (0006, 0007).
-2. `tantra-ledger`: scope corporate actions by instrument and make application idempotent (0014).
+2. ~~`tantra-ledger`: scope corporate actions by instrument and make application idempotent (0014 ✅ 2026-11-25)~~.
 3. `tantra-market`: key the instrument master by `(exchange, segment, token)` with alias resolution; one Rust resolver (0015).
 4. `tantra-data`: holidays and corporate actions flow as lakehouse-fed sources behind the core ports; Python via wheel.
 5. `tantra-adapters`: resolve through the wheel resolver; no raw broker ids past the ACL (0012).
