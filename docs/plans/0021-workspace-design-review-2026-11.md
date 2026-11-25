@@ -1,6 +1,6 @@
 # 0021 — Workspace design review (2026-11): correctness, de-duplication and release readiness
 
-**Status**: Proposed (2026-11-23)
+**Status**: In Progress (2026-11-25)
 **Scope**: all 15 repos + `tantra-ui-web` · **Siblings**: [0022](0022-future-deployment-architecture.md), [0023](0023-build-ci-release-engineering.md) · **Complements**: [0019](0019-codebase-audit-refactoring-unification-and-wiring.md)
 
 ## 0. Executive Summary & Objective
@@ -10,7 +10,7 @@ On 2026-11-23 the workspace was reviewed with 16 per-repo audits and 3 cross-cut
 The five critical gaps:
 - ~~[tantra-ledger 0014](../../tantra-ledger/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* — required `instrument: InstrumentId` (`CORPORATE_ACTION_WIRE_VERSION = 2`), `entry_date < ex_date` cutoff, SHA-256 `ActionId` + `AccountState::applied_corporate_actions` idempotency, rupee `Money` dividends, and `{lot_id}:DM:{action_id}` demerger lot IDs.
 - ~~[tantra-market 0010](../../tantra-market/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* — `WsHandshake` auth rotation, `redact_url`/`sanitize_error_text` + redacted `Debug`, `run_ws_loop` dead-connection deadline, integer-ms backoff -> `Failed`, `FeedHealth` counters, and `DhanFeed`/`KiteFeed` resubscribe + snapshot gap-fill.
-- ~~[tantra-exec 0004](../../tantra-exec/docs/gaps/README.md#closed-gaps)~~ (closed 2026-11-25) — `OrderTag` wire correlation, `BrokerError::OutcomeUnknown`, `find_by_client_order_id` reconciliation, no blind SOR failover/breaker trip.
+- ~~[tantra-exec 0004](../../tantra-exec/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* — `OrderTag` wire correlation, `BrokerError::OutcomeUnknown`, `find_by_client_order_id` reconciliation, no blind SOR failover/breaker trip.
 - ~~[tantra-adapters 0008](../../tantra-adapters/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* — fail-closed wire tag emission, `idempotent=False` non-retry & no 401 replay, `AmbiguousOrderError`, order-book tag lookup.
 - ~~[tantra-data 0027](../../tantra-data/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* — snapshot-merge commits, `tantra-catalog repair`, and [snapshot contract](../../tantra-data/docs/design/lakehouse-v3-snapshot-contract.md).
 
@@ -106,7 +106,7 @@ The five critical gaps:
 1. Data: ~~[tantra-data 0027](../../tantra-data/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)*; freeze `gc` until [0029](../../tantra-data/docs/gaps/0029-gc-reachability-and-grace.md) lands.
 2. Orders: [exec 0004 (closed)](../../tantra-exec/docs/gaps/README.md#closed-gaps) and [adapters 0008 (closed)](../../tantra-adapters/docs/gaps/README.md#closed-gaps) — send client order ids; never auto-retry order POSTs.
 3. Secrets: ~~[market 0010 (closed)](../../tantra-market/docs/gaps/README.md#closed-gaps)~~ — redacted URL/error/`Debug` logging, `WsHandshake` auth rotation, dead-connection timeout, and resubscribe replay.
-4. Serving: [runtime 0020](../../tantra-runtime/docs/gaps/0020-fail-closed-bind-and-cors.md) and [0028](../../tantra-runtime/docs/gaps/0028-strategy-crate-concrete-executor-and-nested-runtime.md).
+4. Serving: ~~[runtime 0020 (closed)](../../tantra-runtime/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* and [0028](../../tantra-runtime/docs/gaps/0028-strategy-crate-concrete-executor-and-nested-runtime.md).
 5. Risk: [risk 0006](../../tantra-risk/docs/gaps/0006-fail-closed-reference-data.md) and [0007](../../tantra-risk/docs/gaps/0007-modify-order-bypasses-halts.md).
 6. Agent: [agent 0011](../../tantra-agent/docs/gaps/0011-mcp-stub-tools-fabricate-results.md) and [0012](../../tantra-agent/docs/gaps/0012-propose-trade-untrusted-ai-boundary.md).
 7. Fabricated data: [ui-web 0079](../../tantra-ui-web/docs/gaps/0079-option-chain-fabricated-fields.md) and [ui 0008](../../tantra-ui/docs/gaps/0008-synthetic-bars-in-run-tune-suggest.md) — remove or label.
