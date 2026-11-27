@@ -6,12 +6,14 @@
 
 ## What's stubbed or hardcoded
 
-The same financial concepts are modelled several times with different shapes. There are three `Product` enums: `Product{Delivery,Intraday,CoverOrder,BracketOrder}` in `tantra-core` portfolio, `ProductType{Delivery,Intraday,Options,Futures}` in the ledger journal, and `ProductType{CncDelivery,MisIntraday,NrmlDerivative,MtfMargin}` in exec-core. Position, lot and account state appear at least five times: `PositionRecord` in `tantra-ledger/.../repository.rs:105`, `tantra-core/src/portfolio.rs:39`, `tantra-runtime-api/src/wire.rs:756`, `tantra-runtime-backtest/src/engine.rs:105`, and `AccountState` in `tantra-exec-paper/src/paper.rs:55`, plus Python copies in `tantra-ffi/python/tantra/{position,portfolio,order_state}.py`. `TaxLot.lot_id` is a `String`, and `Money::notional` hard-codes INR. Position DTOs are not derived from core via `schemars`.
+The same financial concepts are modelled several times with different shapes. There are three `Product` enums: `Product{Delivery,Intraday,CoverOrder,BracketOrder}` in `tantra-core` portfolio, `ProductType{Delivery,Intraday,Options,Futures}` in the ledger journal, and `ProductType{CncDelivery,MisIntraday,NrmlDerivative,MtfMargin}` in exec-core. Position, lot and account state appear at least five times: `PositionRecord` in `tantra-ledger/.../repository.rs:105`, `tantra-core/src/portfolio.rs:39`, `tantra-runtime-api/src/wire.rs:756`, `tantra-runtime-backtest/src/engine.rs:105`, and `AccountState` in `tantra-exec-paper/src/paper.rs:55`, plus Python copies in `tantra-ffi/python/tantra/{position,portfolio,order_state}.py`. `TaxLot.lot_id` is a `String`. (`Money::notional` hard-coding INR was fixed by tantra-core 0008.) Position DTOs are not derived from core via `schemars`.
 
 | Repo tracker | Severity | What it covers |
 |---|---|---|
-| [tantra-core 0008](../../tantra-core/docs/gaps/0008-money-currency-safety.md) | medium | `Money::notional` hard-codes INR; no currency-checked arithmetic |
+| tantra-core 0008 (closed 2026-11-26, [index](../../tantra-core/docs/gaps/README.md)) | medium | `Money::notional` hard-coded INR; no currency-checked arithmetic |
 | [tantra-ffi 0006](../../tantra-ffi/docs/gaps/0006-python-fallback-parity-vectors.md) | high | Python copies of Rust domain logic without parity vectors |
+
+- **Unchecked `Money` sums — fixed 2026-11-27**: portfolio snapshot (tantra-runtime `25868fe`), sizing gate (tantra-risk `5f5ef22`), ledger performance aggregates and settlement cash flow (tantra-ledger `fbe6cf7`), `FeeBreakdown::total()` and `Exchange::currency()` (tantra-core `688da93`), venue currency in exec (`76abc88`), ui wasm (`997dd80`), backtest fees and journal 422s (tantra-runtime `da0934e`), research fee totals (tantra-agent `d3dbeac`).
 
 ## Why
 
@@ -19,7 +21,7 @@ A position opened under one `Product` meaning cannot be mapped losslessly to ano
 
 ## How to close it
 
-1. `tantra-core`: define one canonical `Product`, `Position`, `TaxLot` (typed `LotId`) and currency-checked `Money`; derive wire DTOs with `schemars` (0008).
+1. `tantra-core`: define one canonical `Product`, `Position`, `TaxLot` (typed `LotId`) and currency-checked `Money` (done: core 0008); derive wire DTOs with `schemars` (0008).
 2. `tantra-ledger`: `PositionRecord` and journal `ProductType` become views over the core types; `Portfolio::apply_fill` is the only position-mutation path.
 3. `tantra-exec`: map broker-specific products (CNC/MIS/NRML/MTF) to core `Product` in the ACL, with a lossless-or-error mapping.
 4. `tantra-runtime`: wire DTO re-exports core types; backtest and paper call `Portfolio::apply_fill` instead of private models.
