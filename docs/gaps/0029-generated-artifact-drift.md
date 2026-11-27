@@ -21,7 +21,7 @@ Generated files are committed in several repos and no CI step regenerates and co
 
 | Repo tracker / evidence | Severity | What it covers |
 |---|---|---|
-| [core 0004](../../tantra-core/docs/gaps/0004-wire-schema-evolution-gate.md) | n/a | Wire-schema evolution gate |
+| core 0004 (closed `tantra-core` `7926c59`) | n/a | Wire-schema evolution gate — `tantra-core` now owns the generated `schema::domain_schema()` + `make schema-check`; `tantra-ffi-codegen` still builds its own copy (item 1 below) |
 | [ffi 0004](../../tantra-ffi/docs/gaps/0004-stub-and-codegen-drift-gate.md) | high | Stub codegen and no drift gate |
 | [ui-web 0084](../../tantra-ui-web/docs/gaps/0084-ci-gate-coverage.md) | n/a | CI gate coverage (`check:api-contract` missing) |
 | `tantra-ui-web/{public/wasm,src/lib/wasm,wasm/tantra-ui-web-wasm/pkg}/*.wasm` | n/a | Three identical binaries |

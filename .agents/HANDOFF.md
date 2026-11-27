@@ -4,7 +4,12 @@
 Date: 2026-11-27 · Workspace: `tantra-labs`
 Playbook: `docs/future-work-bottoms-up-build-order.md`
 
-## Latest Batch — `tantra-core` Gap `0008` (currency-safe `Money`) + root `0014` unchecked sums COMPLETE 2026-11-27
+## Latest Batch — `tantra-core` Gap `0004` (wire-schema evolution gate) COMPLETE 2026-11-27
+
+- **Core** (`7926c59`, docs `cf98763`): `schema::domain_schema()` generated from derives (the old `domain_schema.json` was a hand-written v8 copy); frozen `schema/compatibility/v10` (v9 never frozen; v7/v8 hand-written history, no longer tested); recursive `breaking_changes()` over the N-2 window (`MIN_SUPPORTED_SCHEMA_VERSION`); `src/`-scan registry test; `WireEnvelope<T>` → `CoreError::UnsupportedSchemaVersion`; `REST_API_VERSION = "v2"` (`API_VERSION` = legacy v1); `schema/golden/v10/` corpus; `make schema` / `schema-check` / `schema-freeze` (run freeze on every bump).
+- **Follow-ups (not done)**: `tantra-ffi-codegen` still builds its own `domain_schema()` and uses `API_VERSION` (root gap 0029 item 1); `tantra-runtime-api` has its own `API_VERSION = "v1"`.
+
+## `tantra-core` Gap `0008` (currency-safe `Money`) + root `0014` unchecked sums COMPLETE 2026-11-27
 
 - **Core** (`a1448f5`, `688da93`): private `Money` fields + `amount()`/`currency()`, `notional(price, qty, currency)`, `checked_add`/`checked_sub` → `CoreError::CurrencyMismatch`, `quantize`, `Money::zero`, `Exchange::currency()` (all venues INR), fallible `FeeBreakdown::total()`/`FillReport::with_fee_breakdown()`.
 - **Callers**: accessor migration in risk `b7d41af`, ledger `161cc79`, exec `fe6a954`, agent `46497a9`, runtime `ce2942c`, ui `61df2e5`; checked sums in risk `5f5ef22` (sizing refuses mixed equity currencies), ledger `fbe6cf7` (`MetricsError::CurrencyMismatch`, `Result` calendars), runtime `da0934e` (journal 422 on mismatch, backtest venue-currency fees) and `25868fe` (snapshot `Result`; `PortfolioActor::new` now seeds `initial_cash`), exec `76abc88` / ui `997dd80` (venue currency), agent `d3dbeac` (`run_simulation` → `Result`).
@@ -22,8 +27,7 @@ Playbook: `docs/future-work-bottoms-up-build-order.md`
 - **`tantra-core` `0003` & `0005` (2026-11-24..25)**: Private validated constructors + `PortError::Unavailable`/`AccountId` (`2ff789d`/`d03d8b5`, `ce32fe9`).
 
 ## Immediate Next Step
-1. **`tantra-core` Gap `0004`** (`0004-wire-schema-evolution-gate.md`).
-2. **Wave 0 remaining**: `tantra-risk` (`0006`, `0007`), `tantra-agent` (`0011`, `0012`), UI (`ui-web 0079`, `ui 0008`), CI/lockfiles (root `0024`, `0025`).
+1. **Wave 0 remaining**: `tantra-risk` (`0006`, `0007`), `tantra-agent` (`0011`, `0012`), UI (`ui-web 0079`, `ui 0008`), CI/lockfiles (root `0024`, `0025`).
 
 ## Operating Invariants
 - Toolchain: `cargo 1.97.1` / `rustc 1.97.1`; edition 2024, `rust-version = "1.85"`; canonical build profile is always `prod` (`--profile prod` / `make prod`). Run heavy Cargo test binaries one by one sequentially.

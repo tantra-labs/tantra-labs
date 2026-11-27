@@ -36,7 +36,7 @@ This plan makes builds reproducible, gives every repo a CI that actually builds 
 | [root 0025](../gaps/0025-reproducible-builds-lockfiles-toolchain.md) | Reproducible builds: lockfiles and toolchain |
 | [root 0026](../gaps/0026-licensing-files-and-attribution.md) | Licensing files and attribution |
 | [root 0029](../gaps/0029-generated-artifact-drift.md) | Generated-artifact drift |
-| [core 0004](../../tantra-core/docs/gaps/0004-wire-schema-evolution-gate.md) | Wire-schema evolution gate |
+| core 0004 (closed `tantra-core` `7926c59`) | Wire-schema evolution gate |
 | [risk 0015](../../tantra-risk/docs/gaps/0015-latency-sla-ci-gate.md) | Latency SLA CI gate |
 | [ffi 0004](../../tantra-ffi/docs/gaps/0004-stub-and-codegen-drift-gate.md) | Stub and codegen drift gate |
 | [ffi 0005](../../tantra-ffi/docs/gaps/0005-wheel-release-matrix.md) | Wheel release matrix |
@@ -90,7 +90,7 @@ Plan-only items (no standalone gap doc):
 1. `make verify-generated`: regenerate and `git diff --exit-code` for `tantra-core/schema/domain/domain_schema.json` (single source; the ffi copy is generated or dropped), `openapi.v2.json` (runtime dump, ffi copy dropped or generated), `_tantra.pyi`/`__init__.pyi`, `api-schema.d.ts` (`codegen:api --check`, wired into CI), and the ui-web `.wasm`.
 2. Stop committing three copies of the `.wasm`: build in CI and ship via release artifact, or keep one canonical copy with a hash check.
 3. `cargo check --target wasm32-unknown-unknown --profile prod` for core, indicators, ledger-portfolio, ui-core, run through `make verify-architecture` (0019 P4.6).
-4. Each consumer carries a golden test `schema hash == pinned hash`; wire corpora per released version ([core 0004](../../tantra-core/docs/gaps/0004-wire-schema-evolution-gate.md)).
+4. Each consumer carries a golden test `schema hash == pinned hash`; wire corpora per released version (core 0004, closed: `tantra-core/schema/golden/v{N}/`).
 
 **Gate**: CI fails when any generated artifact is stale; `npx tsc --noEmit`, `npm run lint`, `npx vitest run`; `ruff check .`, `ruff format --check .`, `mypy --strict`, `pytest -q`.
 
