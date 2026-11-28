@@ -107,7 +107,7 @@ The five critical gaps:
 2. Orders: [exec 0004 (closed)](../../tantra-exec/docs/gaps/README.md#closed-gaps) and [adapters 0008 (closed)](../../tantra-adapters/docs/gaps/README.md#closed-gaps) — send client order ids; never auto-retry order POSTs.
 3. Secrets: ~~[market 0010 (closed)](../../tantra-market/docs/gaps/README.md#closed-gaps)~~ — redacted URL/error/`Debug` logging, `WsHandshake` auth rotation, dead-connection timeout, and resubscribe replay.
 4. Serving: ~~[runtime 0020 (closed)](../../tantra-runtime/docs/gaps/README.md#closed-gaps)~~ *(closed 2026-11-25)* and [0028](../../tantra-runtime/docs/gaps/0028-strategy-crate-concrete-executor-and-nested-runtime.md).
-5. Risk: [risk 0006](../../tantra-risk/docs/gaps/0006-fail-closed-reference-data.md) and [0007](../../tantra-risk/docs/gaps/0007-modify-order-bypasses-halts.md).
+5. Risk: risk 0006 (closed `9bfb3c2`) and [0007](../../tantra-risk/docs/gaps/0007-modify-order-bypasses-halts.md).
 6. Agent: [agent 0011](../../tantra-agent/docs/gaps/0011-mcp-stub-tools-fabricate-results.md) and [0012](../../tantra-agent/docs/gaps/0012-propose-trade-untrusted-ai-boundary.md).
 7. Fabricated data: [ui-web 0079](../../tantra-ui-web/docs/gaps/0079-option-chain-fabricated-fields.md) and [ui 0008](../../tantra-ui/docs/gaps/0008-synthetic-bars-in-run-tune-suggest.md) — remove or label.
 8. Root: [0024](../gaps/0024-no-ci-for-rust-repos.md) and [0025](../gaps/0025-reproducible-builds-lockfiles-toolchain.md) — CI and lockfiles protect everything after.

@@ -482,7 +482,7 @@ Multi-asset empirical return, streak & `6×6` Markov regime equilibrium, percent
 | 0 | ~~Send client order ids; never auto-retry order POSTs (`0004` ✅, `0008` ✅ 2026-11-25)~~ | `tantra-exec` 0004 ✅, `tantra-adapters` 0008 ✅ | [`root 0010`](gaps/0010-order-idempotency-end-to-end.md) |
 | 0 | ~~Stop logging tokens; WS resubscribe (`0010` ✅ 2026-11-25)~~ | `tantra-market` 0010 ✅ | [`market 0010 ✅`](../tantra-market/docs/gaps/README.md#closed-gaps) |
 | 0 | Fail-closed bind and CORS; strategy crate decoupling | `tantra-runtime` 0020, 0028 | [`runtime 0020`](../tantra-runtime/docs/gaps/0020-fail-closed-bind-and-cors.md) |
-| 0 | Fail-closed reference data; modify-order halts | `tantra-risk` 0006, 0007 | [`risk 0006`](../tantra-risk/docs/gaps/0006-fail-closed-reference-data.md) |
+| 0 | Fail-closed reference data; modify-order halts | `tantra-risk` 0006, 0007 | `risk 0006` (closed `9bfb3c2`) |
 | 0 | Honest MCP tools; `propose_trade` through `Decision`/`RiskEngine` | `tantra-agent` 0011, 0012 | [`agent 0011`](../tantra-agent/docs/gaps/0011-mcp-stub-tools-fabricate-results.md) |
 | 0 | Remove or label fabricated data | `tantra-ui-web` 0079, `tantra-ui` 0008 | [`root 0012`](gaps/0012-fabricated-data-presented-as-real.md) |
 | 0 | CI for 7 Rust repos; lockfiles and toolchain pin | root 0024, 0025 | [`root 0024`](gaps/0024-no-ci-for-rust-repos.md) |

@@ -10,7 +10,7 @@ The risk gate is meant to be the one non-bypassable path for every order. Today 
 
 | Repo tracker | Severity | What it covers |
 |---|---|---|
-| [tantra-risk 0006](../../tantra-risk/docs/gaps/0006-fail-closed-reference-data.md) | high | Missing reference data fails open |
+| tantra-risk 0006 (closed `9bfb3c2`) | high | Missing reference data fails open — now `FailClosed` by default; runtime loader is tantra-runtime 0039 |
 | [tantra-risk 0007](../../tantra-risk/docs/gaps/0007-modify-order-bypasses-halts.md) | high | `ModifyOrder` bypasses halts and circuits |
 | [tantra-risk 0010](../../tantra-risk/docs/gaps/0010-shared-risk-state-and-kill-switch.md) | high | Per-process engines; kill switch not shared or persisted |
 | [tantra-runtime 0030](../../tantra-runtime/docs/gaps/0030-risk-actor-blocking-broker-ack.md) | high | Risk actor blocks on broker ack |

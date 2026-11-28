@@ -49,7 +49,7 @@ data, so the band edge is the conservative fill proxy; skipped when no band exis
 ## 5. 2026-11-24 Re-evaluation Note (latest source)
 
 - The two-layer reduce-only contract remains active, **except two fail-open defects identified by the 2026-11 design review** (root gap [`0013`](../gaps/0013-risk-gate-single-shared-fail-closed.md)):
-  - **Price collar & reference data**: §3's "skipped when no band exists" is superseded by [`tantra-risk` gap 0006](../../tantra-risk/docs/gaps/0006-fail-closed-reference-data.md) — missing price band, freeze limit, reference price, or equity must **fail closed** rather than skip checks.
+  - **Price collar & reference data**: §3's "skipped when no band exists" is superseded by `tantra-risk` gap 0006 (closed `9bfb3c2`; `RiskStrictness::FailClosed`) — missing price band, freeze limit, reference price, or equity must **fail closed** rather than skip checks.
   - **`ModifyOrder` under halts**: [`tantra-risk` gap 0007](../../tantra-risk/docs/gaps/0007-modify-order-bypasses-halts.md) notes that while `ModifyOrder` is refused under `GlobalState::ReduceOnly`, `engine.rs` still skips `GlobalState::Halted`, per-algo/market halts, band, freeze, and notional checks.
 
 ## 6. Referenced docs
